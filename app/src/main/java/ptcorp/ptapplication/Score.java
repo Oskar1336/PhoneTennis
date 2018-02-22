@@ -6,6 +6,24 @@ package ptcorp.ptapplication;
  */
 
 public class Score {
+    private String username;
+    private int wonGames, lostGames;
 
-    //TODO: Implement this obj
+    public Score(String username, int wonGames, int lostGames) {
+        this.username = username;
+        this.wonGames = wonGames;
+        this.lostGames = lostGames;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public int getWonGames() {
+        return wonGames;
+    }
+
+    public int getLostGames() {
+        return lostGames;
+    }
 }

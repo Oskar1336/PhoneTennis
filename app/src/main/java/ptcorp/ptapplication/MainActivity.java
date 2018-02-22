@@ -21,7 +21,7 @@ import android.widget.FrameLayout;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
-
+    private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
     private FrameLayout fragmentHolder;
     private FragmentManager fragmentManager;
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mAuth = FirebaseAuth.getInstance();
         loginFragment = new LoginFragment();
         homeFragment = new HomeFragment();
         myGameFragment = new MyGamesFragment();
@@ -60,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentHolder = findViewById(R.id.fragmentHolder);
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.fragmentHolder, loginFragment).commit();
+
+        mAuth = FirebaseAuth.getInstance();
+        mHandlerDB = new FirebaseDatabaseHandler(mAuth);
 
         nav = findViewById(R.id.navigation);
         nav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

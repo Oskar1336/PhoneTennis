@@ -21,6 +21,7 @@ public class FirebaseDatabaseHandler {
     private DatabaseReference mDatabaseRef;
     private FirebaseAuth mFirebaseAuth;
     private ArrayList<Score> mScoreList;
+    private OnDatabaseUpdateListener mListener;
 
     public FirebaseDatabaseHandler(FirebaseAuth mFirebaseAuth) {
         this.mFirebaseAuth = mFirebaseAuth;
@@ -33,8 +34,7 @@ public class FirebaseDatabaseHandler {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 //TODO: Update recyclerView adapter from here
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
+                showData(dataSnapshot);
             }
 
             @Override
@@ -45,8 +45,25 @@ public class FirebaseDatabaseHandler {
         });
     }
 
+    private void showData(DataSnapshot dataSnapshot) {
+        for(DataSnapshot ds : dataSnapshot.getChildren()){
+            String username = ds.child("hakansson-24").getValue(Score.class).getUsername();
+            int wonGames = ds.child("hakansson-24").getValue(Score.class).getWonGames();
+            int lostGames = ds.child("hakansson-24").getValue(Score.class).getLostGames();
+            Log.d(TAG, "showData: " + username + " " + wonGames + " " + lostGames);
+            mScoreList.add(new Score(username, wonGames, lostGames));
+        }
+    }
+
+    public void addOnUpdateListener(OnDatabaseUpdateListener listener){
+        mListener = listener;
+    }
+
     public void saveScore(Score score){
         //TODO: implement this method
     }
 
+    public interface OnDatabaseUpdateListener {
+        void updateAdapter(ArrayList<Score> list);
+    }
 }
