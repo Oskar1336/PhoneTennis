@@ -6,5 +6,6 @@ package ptcorp.ptapplication;
  */
 
 public class Score {
+
     //TODO: Implement this obj
 }
