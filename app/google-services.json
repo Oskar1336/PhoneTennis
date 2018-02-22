@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "189030394472",
+    "firebase_url": "https://phonetennis-eca49.firebaseio.com",
+    "project_id": "phonetennis-eca49",
+    "storage_bucket": "phonetennis-eca49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189030394472:android:7cadad81f4526b01",
+        "android_client_info": {
+          "package_name": "ptcorp.ptapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189030394472-1qeccrpv8bk06hb1kquoq7d0epa4hrpo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ptcorp.ptapplication",
+            "certificate_hash": "97e99501f50183dea3fa8897f85b95400d6e82ff"
+          }
+        },
+        {
+          "client_id": "189030394472-6kdirq8kthbe65pbeh66e91unnutsmmv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbCn_o1VByjgLZPms9VtzO7nCeAO3whCk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189030394472-6kdirq8kthbe65pbeh66e91unnutsmmv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
