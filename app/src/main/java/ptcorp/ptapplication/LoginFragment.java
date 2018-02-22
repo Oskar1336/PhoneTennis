@@ -17,11 +17,15 @@ public class LoginFragment extends Fragment {
 
     private Button loginBtn, createBtn;
     private EditText username, password;
+    private LoginListener listener;
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
+    public void setListener(LoginListener listener){
+        this.listener = listener;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,11 +41,22 @@ public class LoginFragment extends Fragment {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                listener.login(username.getText().toString(), password.getText().toString());
+            }
+        });
+
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.create(username.getText().toString(), password.getText().toString());
             }
         });
 
         return view;
     }
 
+    public interface LoginListener {
+        void login(String user, String pass);
+        void create(String user, String pass);
+    }
 }

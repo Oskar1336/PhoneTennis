@@ -3,8 +3,11 @@ package ptcorp.ptapplication;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,14 +21,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener{
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
 
     private BottomNavigationView nav;
-    private FrameLayout fragmentHolder;
-    private FragmentManager fragmentManager;
-    private Fragment loginFragment, homeFragment, myGameFragment, leaderboardFragment;
+    private ViewPager fragmentHolder;
+    private Fragment homeFragment, myGameFragment, leaderboardFragment;
+    private LoginFragment loginFragment;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -34,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    fragmentManager.beginTransaction().add(R.id.fragmentHolder, homeFragment).commit();
+                    fragmentHolder.setCurrentItem(1);
                     return true;
                 case R.id.navigation_myGames:
-                    fragmentManager.beginTransaction().add(R.id.fragmentHolder, myGameFragment).commit();
+                    fragmentHolder.setCurrentItem(2);
                     return true;
                 case R.id.navigation_leaderboard:
-                    fragmentManager.beginTransaction().add(R.id.fragmentHolder, leaderboardFragment).commit();
+                    fragmentHolder.setCurrentItem(3);
                     return true;
             }
             return false;
@@ -53,13 +56,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         loginFragment = new LoginFragment();
+        loginFragment.setListener(this);
         homeFragment = new HomeFragment();
         myGameFragment = new MyGamesFragment();
         leaderboardFragment = new LeaderboardFragment();
 
-        fragmentHolder = findViewById(R.id.fragmentHolder);
-        fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.fragmentHolder, loginFragment).commit();
+        fragmentHolder = findViewById(R.id.vpPager);
+        fragmentHolder.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
+        fragmentHolder.setCurrentItem(0);
+        fragmentHolder.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
 
         nav = findViewById(R.id.navigation);
         nav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -109,5 +119,45 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void login(String user, String pass) {
+        fragmentHolder.setCurrentItem(1);
+        nav.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void create(String user, String pass) {
+
+    }
+
+    private class FragmentPageAdapter extends FragmentPagerAdapter {
+
+
+
+        public FragmentPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position){
+                case 0:
+                    return loginFragment;
+                case 1:
+                    return homeFragment;
+                case 2:
+                    return myGameFragment;
+                case 3:
+                    return leaderboardFragment;
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
     }
 }
