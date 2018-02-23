@@ -7,11 +7,21 @@ package ptcorp.ptapplication;
 
 public class Score {
     private String username;
-    private int wonGames, lostGames;
+    private long wonGames, lostGames;
 
-    public Score(String username, int wonGames, int lostGames) {
+    public Score() {
+
+    }
+
+    public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setWonGames(long wonGames) {
         this.wonGames = wonGames;
+    }
+
+    public void setLostGames(long lostGames) {
         this.lostGames = lostGames;
     }
 
@@ -19,11 +29,11 @@ public class Score {
         return username;
     }
 
-    public int getWonGames() {
+    public long getWonGames() {
         return wonGames;
     }
 
-    public int getLostGames() {
+    public long getLostGames() {
         return lostGames;
     }
 }

@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by LinusHakansson on 2018-02-21.
@@ -46,12 +47,15 @@ public class FirebaseDatabaseHandler {
     }
 
     private void showData(DataSnapshot dataSnapshot) {
-        for(DataSnapshot ds : dataSnapshot.getChildren()){
-            String username = ds.child("hakansson-24").getValue(Score.class).getUsername();
-            int wonGames = ds.child("hakansson-24").getValue(Score.class).getWonGames();
-            int lostGames = ds.child("hakansson-24").getValue(Score.class).getLostGames();
-            Log.d(TAG, "showData: " + username + " " + wonGames + " " + lostGames);
-            mScoreList.add(new Score(username, wonGames, lostGames));
+        Log.d(TAG, "showData:" + dataSnapshot.toString());
+
+        for (DataSnapshot dsScore : dataSnapshot.child("Leaderboard").child("Scores").getChildren()) {
+            Score score = new Score();
+            Log.d(TAG, "showData: " + dsScore.toString());
+            score.setUsername(dsScore.getValue(Score.class).getUsername());
+            score.setWonGames(dsScore.getValue(Score.class).getWonGames());
+            score.setLostGames(dsScore.getValue(Score.class).getLostGames());
+            mScoreList.add(score);
         }
     }
 
