@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initFirebase();
         gDB = new GamesDatabaseHandler(this);
         loginFragment = new LoginFragment();
         loginFragment.setListener(this);
@@ -73,9 +74,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        mHandlerDB = new FirebaseDatabaseHandler(mAuth);
-
         nav = findViewById(R.id.navigation);
         nav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         nav.setVisibility(View.INVISIBLE);
@@ -85,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser(); // null if not signed in
+//        FirebaseUser currentUser = mAuth.getCurrentUser(); // null if not signed in
     }
 
     @Override
@@ -106,7 +104,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+                            mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             FirebaseUser user = mAuth.getCurrentUser();
+                            fragmentHolder.setCurrentItem(1);
+                            nav.setVisibility(View.VISIBLE);
                             displayToast("Account created and logged in!");
                         } else {
                             // If sign in fails, display a message to the user.
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
 //                            FirebaseUser user = mAuth.getCurrentUser();
+                            mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             fragmentHolder.setCurrentItem(1);
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Logged in!");
@@ -142,6 +144,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     private void displayToast(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initFirebase(){
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
