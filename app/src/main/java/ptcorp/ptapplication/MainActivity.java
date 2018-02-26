@@ -84,6 +84,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         FirebaseUser currentUser = mAuth.getCurrentUser(); // null if not signed in
     }
 
+    @Override
+    protected void onDestroy() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null){
+            mAuth.signOut();
+        }
+
+        super.onDestroy();
+    }
+
     private void createUser(String email, String password){
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -93,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            displayToast("Account created and logged in!");
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -111,7 +122,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+//                            FirebaseUser user = mAuth.getCurrentUser();
+                            fragmentHolder.setCurrentItem(1);
+                            nav.setVisibility(View.VISIBLE);
+                            displayToast("Logged in!");
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -122,15 +136,18 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 });
     }
 
+    private void displayToast(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void login(String user, String pass) {
-        fragmentHolder.setCurrentItem(1);
-        nav.setVisibility(View.VISIBLE);
+        signInUser(user,pass);
     }
 
     @Override
     public void create(String user, String pass) {
-
+        createUser(user, pass);
     }
 
     private class FragmentPageAdapter extends FragmentPagerAdapter {
