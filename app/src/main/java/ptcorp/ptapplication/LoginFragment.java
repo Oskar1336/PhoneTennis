@@ -17,6 +17,8 @@ public class LoginFragment extends Fragment {
 
     private Button loginBtn, createBtn;
     private EditText username, password;
+    private com.github.florent37.materialtextfield.MaterialTextField mtf_username, mtf_password;
+
     private LoginListener listener;
 
     public LoginFragment() {
@@ -37,6 +39,9 @@ public class LoginFragment extends Fragment {
         createBtn = view.findViewById(R.id.createBtn);
         username = view.findViewById(R.id.username);
         password = view.findViewById(R.id.password);
+        mtf_username = view.findViewById(R.id.mtf_username);
+        mtf_password = view.findViewById(R.id.mtf_password);
+
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
