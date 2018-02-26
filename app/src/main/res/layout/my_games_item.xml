@@ -41,7 +41,7 @@
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/LogoVS" />
+                app:srcCompat="@drawable/logo_vs" />
 
             <TextView
                 android:id="@+id/tvPlayer1"
