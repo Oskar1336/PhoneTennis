@@ -10,7 +10,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Created by LinusHakansson on 2018-02-21.
@@ -21,7 +20,7 @@ public class FirebaseDatabaseHandler {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseRef;
     private FirebaseAuth mFirebaseAuth;
-    private ArrayList<Score> mScoreList;
+    private ArrayList<LeaderboardScore> mLeaderboardScoreList;
     private OnDatabaseUpdateListener mListener;
 
     public FirebaseDatabaseHandler(FirebaseAuth mFirebaseAuth) {
@@ -50,12 +49,12 @@ public class FirebaseDatabaseHandler {
         Log.d(TAG, "showData:" + dataSnapshot.toString());
 
         for (DataSnapshot dsScore : dataSnapshot.child("Leaderboard").child("Scores").getChildren()) {
-            Score score = new Score();
+            LeaderboardScore leaderboardScore = new LeaderboardScore();
             Log.d(TAG, "showData: " + dsScore.toString());
-            score.setUsername(dsScore.getValue(Score.class).getUsername());
-            score.setWonGames(dsScore.getValue(Score.class).getWonGames());
-            score.setLostGames(dsScore.getValue(Score.class).getLostGames());
-            mScoreList.add(score);
+            leaderboardScore.setUsername(dsScore.getValue(LeaderboardScore.class).getUsername());
+            leaderboardScore.setWonGames(dsScore.getValue(LeaderboardScore.class).getWonGames());
+            leaderboardScore.setLostGames(dsScore.getValue(LeaderboardScore.class).getLostGames());
+            mLeaderboardScoreList.add(leaderboardScore);
         }
     }
 
@@ -63,11 +62,11 @@ public class FirebaseDatabaseHandler {
         mListener = listener;
     }
 
-    public void saveScore(Score score){
+    public void saveScore(LeaderboardScore leaderboardScore){
         //TODO: implement this method
     }
 
     public interface OnDatabaseUpdateListener {
-        void updateAdapter(ArrayList<Score> list);
+        void updateAdapter(ArrayList<LeaderboardScore> list);
     }
 }

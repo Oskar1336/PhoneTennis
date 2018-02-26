@@ -19,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener{
     private static final String TAG = "MainActivity";
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         loginFragment = new LoginFragment();
         loginFragment.setListener(this);
         homeFragment = new HomeFragment();
-        myGameFragment = new MyGamesFragment();
+        myGameFragment = new GamesFragment();
         leaderboardFragment = new LeaderboardFragment();
 
         fragmentHolder = findViewById(R.id.vpPager);

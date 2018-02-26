@@ -36,7 +36,7 @@ public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHan
     }
 
     @Override
-    public void updateAdapter(ArrayList<Score> list) {
+    public void updateAdapter(ArrayList<LeaderboardScore> list) {
         //TODO: Update adapter
     }
 

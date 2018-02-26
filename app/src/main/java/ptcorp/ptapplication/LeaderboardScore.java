@@ -5,11 +5,11 @@ package ptcorp.ptapplication;
  * Carry information about a finished game
  */
 
-public class Score {
+public class LeaderboardScore {
     private String username;
     private long wonGames, lostGames;
 
-    public Score() {
+    public LeaderboardScore() {
 
     }
 
