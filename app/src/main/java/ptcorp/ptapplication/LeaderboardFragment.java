@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,14 +36,15 @@ public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHan
         return v;
     }
 
-    @Override
-    public void updateAdapter(ArrayList<LeaderboardScore> list) {
-        //TODO: Update adapter
-    }
 
     public void setAdapter(RecyclerView.Adapter adapter){
         rvLeaderboard.setHasFixedSize(true);
         rvLeaderboard.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvLeaderboard.setAdapter(adapter);
+    }
+
+    @Override
+    public void updateAdapter(List<LeaderboardScore> list) {
+
     }
 }
