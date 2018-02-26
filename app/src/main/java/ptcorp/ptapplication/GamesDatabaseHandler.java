@@ -70,14 +70,25 @@ public class GamesDatabaseHandler extends SQLiteOpenHelper {
     }
 
     public boolean addGame(GameScore game){
+        boolean created = false;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(CREATION_DATE, game.getDate());
-
+            values.put(PLAYER1, game.getPlayer1());
+            values.put(PLAYER2, game.getPlayer2());
+            values.put(SCORE1, game.getScore1());
+            values.put(SCORE2, game.getScore2());
+            long row = db.insert(TABLE_GAMES,
+                    null, values);
+            if (row != -1){
+                created = true;
+            }
+            db.close();
         } catch (Exception e){
-
+            e.printStackTrace();
         }
+        return created;
     }
 
 }

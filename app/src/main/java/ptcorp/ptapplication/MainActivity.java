@@ -26,8 +26,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
     private ViewPager fragmentHolder;
-    private Fragment homeFragment, myGameFragment, leaderboardFragment;
+    private Fragment homeFragment, leaderboardFragment;
     private LoginFragment loginFragment;
+    private GamesFragment myGameFragment;
+    private GamesDatabaseHandler gDB;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_myGames:
                     fragmentHolder.setCurrentItem(2);
+                    myGameFragment.setAdapter(new GamesAdapter(gDB.getGames()));
                     return true;
                 case R.id.navigation_leaderboard:
                     fragmentHolder.setCurrentItem(3);
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        gDB = new GamesDatabaseHandler(this);
         loginFragment = new LoginFragment();
         loginFragment.setListener(this);
         homeFragment = new HomeFragment();

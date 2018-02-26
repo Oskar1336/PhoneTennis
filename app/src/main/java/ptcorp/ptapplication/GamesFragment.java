@@ -38,4 +38,5 @@ public class GamesFragment extends Fragment {
         rvGames.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvGames.setAdapter(adapter);
     }
+
 }
