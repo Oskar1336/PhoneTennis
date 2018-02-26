@@ -12,11 +12,11 @@ import java.util.List;
  * Created by Pontus on 2018-02-22.
  */
 
-public class MyGamesAdapter extends RecyclerView.Adapter<MyGamesAdapter.GamesViewholder> {
+public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewholder> {
 
-    private List<MyGamesScore> games;
+    private List<GameScore> games;
 
-    public MyGamesAdapter(List<MyGamesScore> games){
+    public GamesAdapter(List<GameScore> games){
         this.games = games;
     }
 
@@ -29,7 +29,7 @@ public class MyGamesAdapter extends RecyclerView.Adapter<MyGamesAdapter.GamesVie
 
     @Override
     public void onBindViewHolder(GamesViewholder holder, int position) {
-        MyGamesScore game = games.get(position);
+        GameScore game = games.get(position);
 
         holder.tvPlayer1.setText(game.getPlayer1());
         holder.tvPlayer2.setText(game.getPlayer2());

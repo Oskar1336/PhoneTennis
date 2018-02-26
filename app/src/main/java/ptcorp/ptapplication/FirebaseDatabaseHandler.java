@@ -12,8 +12,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+
 
 /**
  * Created by LinusHakansson on 2018-02-21.
@@ -26,7 +26,8 @@ public class FirebaseDatabaseHandler {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser user;
     private String userID;
-    private HashMap<String,Score> mScoreList;
+    private HashMap<String,LeaderboardScore> mScoreList;
+
     private OnDatabaseUpdateListener mListener;
 
     public FirebaseDatabaseHandler(FirebaseAuth mFirebaseAuth) {
@@ -63,15 +64,15 @@ public class FirebaseDatabaseHandler {
         Log.d(TAG, "testSaveScore: called." );
         String [] split  = user.getEmail().split("@");
         String username = split[0];
-        Score score = new Score();
+        LeaderboardScore score = new LeaderboardScore();
         score.setUsername(username);
         score.setWonGames(3);
         score.setLostGames(4);
         saveScore(score);
     }
 
-    public void updateScoreForUser(Score newScore) {
-        Score score;
+    public void updateScoreForUser(LeaderboardScore newScore) {
+        LeaderboardScore score;
         if (mScoreList.containsKey(userID)) {
             score = mScoreList.get(userID);
             if (score.getWonGames() == newScore.getWonGames()) {
@@ -80,7 +81,7 @@ public class FirebaseDatabaseHandler {
                 score.setWonGames(score.getWonGames() + 1);
             }
         } else{
-            score = new Score();
+            score = new LeaderboardScore();
             if(newScore.getWonGames() == 1){
                 score.setWonGames(1);
             }else{
@@ -96,14 +97,15 @@ public class FirebaseDatabaseHandler {
 
         for (DataSnapshot dsScore : dataSnapshot.child("Leaderboard").child("Scores").getChildren()) {
             Log.d(TAG, "showData: "+ dsScore); // TODO: FIXA DETTA
-            Score score = new Score();
+            LeaderboardScore leaderboardScore = new LeaderboardScore();
             Log.d(TAG, "showData: " + dsScore.toString());
-            score.setUsername(dsScore.getValue(Score.class).getUsername());
-            score.setWonGames(dsScore.getValue(Score.class).getWonGames());
-            score.setLostGames(dsScore.getValue(Score.class).getLostGames());
-            mScoreList.put(userID, score);
+            leaderboardScore.setUsername(dsScore.getValue(LeaderboardScore.class).getUsername());
+            leaderboardScore.setWonGames(dsScore.getValue(LeaderboardScore.class).getWonGames());
+            leaderboardScore.setLostGames(dsScore.getValue(LeaderboardScore.class).getLostGames());
+            mScoreList.put( userID,leaderboardScore);
+
         }
-        List<Score> list = new ArrayList<>(mScoreList.values());
+        List<LeaderboardScore> list = new ArrayList<>(mScoreList.values());
 //            mListener.updateAdapter(list);
     }
 
@@ -111,11 +113,11 @@ public class FirebaseDatabaseHandler {
         mListener = listener;
     }
 
-    private void saveScore(Score score){
+    private void saveScore(LeaderboardScore score){
         mDatabaseRef.child("Leaderboard").child("Scores").child(userID).setValue(score);
     }
 
     public interface OnDatabaseUpdateListener {
-        void updateAdapter(List<Score> list);
+        void updateAdapter(List<LeaderboardScore> list);
     }
 }

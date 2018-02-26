@@ -4,12 +4,12 @@ package ptcorp.ptapplication;
  * Created by Pontus on 2018-02-22.
  */
 
-public class MyGamesScore {
+public class GameScore {
 
     private String player1, player2, date;
     private int score1, score2;
 
-    public MyGamesScore(String player1, String player2, String date, int score1, int score2) {
+    public GameScore(String player1, String player2, String date, int score1, int score2) {
         this.player1 = player1;
         this.player2 = player2;
         this.date = date;
