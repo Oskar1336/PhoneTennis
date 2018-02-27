@@ -51,3 +51,6 @@ freeline_project_description.json
 
 .DS_Store
 .externalNativeBuild
+.json
+.rawproto
+/taskHistory
