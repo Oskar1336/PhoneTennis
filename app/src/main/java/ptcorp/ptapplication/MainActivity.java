@@ -1,6 +1,7 @@
 package ptcorp.ptapplication;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            loginFragment.createBtn.setProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
@@ -110,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Account created and logged in!");
                         } else {
+                            loginFragment.createBtn.setProgress(-1);
+                            new ButtonHandler().execute();
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
@@ -125,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            loginFragment.loginBtn.setProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
 //                            FirebaseUser user = mAuth.getCurrentUser();
@@ -133,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Logged in!");
                         } else {
+                            loginFragment.loginBtn.setProgress(-1);
+                            new ButtonHandler().execute();
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
@@ -186,6 +193,26 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         @Override
         public int getCount() {
             return 4;
+        }
+    }
+
+    private class ButtonHandler extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            loginFragment.loginBtn.setProgress(0);
+            loginFragment.createBtn.setProgress(0);
         }
     }
 }

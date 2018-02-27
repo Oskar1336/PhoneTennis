@@ -1,6 +1,7 @@
 package ptcorp.ptapplication;
 
 
+import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,15 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.dd.processbutton.iml.ActionProcessButton;
+import com.github.florent37.materialtextfield.MaterialTextField;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class LoginFragment extends Fragment {
 
-    private Button loginBtn, createBtn;
+    public ActionProcessButton loginBtn, createBtn;
     private EditText username, password;
-    private com.github.florent37.materialtextfield.MaterialTextField mtf_username, mtf_password;
+    private MaterialTextField mtf_username, mtf_password;
 
     private LoginListener listener;
 
@@ -42,10 +46,11 @@ public class LoginFragment extends Fragment {
         mtf_username = view.findViewById(R.id.mtf_username);
         mtf_password = view.findViewById(R.id.mtf_password);
 
-
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                loginBtn.setMode(ActionProcessButton.Mode.ENDLESS);
+                loginBtn.setProgress(1);
                 listener.login(username.getText().toString(), password.getText().toString());
             }
         });
@@ -53,6 +58,8 @@ public class LoginFragment extends Fragment {
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                createBtn.setMode(ActionProcessButton.Mode.ENDLESS);
+                createBtn.setProgress(1);
                 listener.create(username.getText().toString(), password.getText().toString());
             }
         });
