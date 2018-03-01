@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Password"
-                android:inputType="textPersonName" />
+                android:inputType="textPassword" />
         </com.github.florent37.materialtextfield.MaterialTextField>
     </LinearLayout>
 
