@@ -2,6 +2,7 @@ package ptcorp.ptapplication.bluetooth.bluetoothConnection;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -22,9 +23,9 @@ import java.util.ArrayList;
  */
 
 public class BluetoothController implements BtServiceListener {
+    public static final int BLUETOOTH_ENABLE_REQUEST_CODE = 5;
+    public static final int BLUETOOTH_DISCOVERABLE_REQUEST_CODE = 6;
 
-    private static final int BLUETOOTH_ENABLE_REQUEST_CODE = 5;
-    private static final int BLUETOOTH_DISCOVERABLE_REQUEST_CODE = 6;
     private static final String TAG = "BluetoothController";
 
     private BluetoothAdapter mBtAdapter;
@@ -36,6 +37,7 @@ public class BluetoothController implements BtServiceListener {
     private boolean mBtServiceBound = false;
 
     private final BroadcastReceiver mBtSearchReciever;
+    private DeviceSearchListener mListener;
 
     private AppCompatActivity mActivity;
 
@@ -52,14 +54,14 @@ public class BluetoothController implements BtServiceListener {
         mActivity.startService(mBtServiceConnIntent);
     }
 
-    public void onResume() {
+    public void bindBluetoothService() {
         if (!mBtServiceBound) {
             mBtServiceConnection = new BtServiceConnection();
             mActivity.bindService(mBtServiceConnIntent, mBtServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
-    public void onPause() {
+    public void unBindBluetoothService() {
         if (mBtServiceBound) {
             mActivity.unbindService(mBtServiceConnection);
             mBtServiceBound = false;
@@ -75,8 +77,14 @@ public class BluetoothController implements BtServiceListener {
         mActivity.unregisterReceiver(mBtSearchReciever);
     }
 
+    public void setSearchListener(DeviceSearchListener listener) {
+        mListener = listener;
+    }
+
     /**
-     * Enables bluetooth on the device.
+     * Enables bluetooth on the device. If bluetooth is'nt turned on the activity
+     * BluetoothAdapter.ACTION_REQUEST_ENABLE will be called with the result code
+     * BluetoothController.BLUETOOTH_ENABLE_REQUEST_CODE
      * @return Returns false if bluetooth is'nt available, otherwise it returns true.
      */
     public boolean enableBluetooth() {
@@ -84,6 +92,8 @@ public class BluetoothController implements BtServiceListener {
             Log.d(TAG, "enableBT: Bluetooth not available on device");
             return false;
         }
+
+        checkBTPermissions();
 
         if (!mBtAdapter.isEnabled()) {
             Intent enableBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -98,6 +108,8 @@ public class BluetoothController implements BtServiceListener {
      * BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE
      */
     public void enableDiscoverable() {
+        checkBTPermissions();
+
         Intent discIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 500);
         mActivity.startActivityForResult(discIntent, BLUETOOTH_DISCOVERABLE_REQUEST_CODE);
@@ -110,20 +122,15 @@ public class BluetoothController implements BtServiceListener {
         if (mBtAdapter != null) {
             if (mBtAdapter.isDiscovering()) {
                 mBtAdapter.cancelDiscovery();
-                checkBTPermissions();
-
-                mBtAdapter.startDiscovery();
-                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-                mActivity.registerReceiver(mBtSearchReciever, filter);
             }
 
-            if (!mBtAdapter.isDiscovering()) {
-                checkBTPermissions();
+            checkBTPermissions();
 
-                mBtAdapter.startDiscovery();
-                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-                mActivity.registerReceiver(mBtSearchReciever, filter);
-            }
+            mBtAdapter.startDiscovery();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            mActivity.registerReceiver(mBtSearchReciever, filter);
         }
     }
 
@@ -137,12 +144,14 @@ public class BluetoothController implements BtServiceListener {
 
     @Override
     public void onBluetoothConnected() {
-
+        // TODO: 2018-03-01 Continue to gamescreen
+        Log.d(TAG, "onBluetoothConnected: Connected");
     }
 
     @Override
     public void onBluetoothDisconnected() {
-
+        // TODO: 2018-03-01 Notify user and give choise of either reconnect or just go back to MainActivity
+        Log.d(TAG, "onBluetoothDisconnected: Disconnected");
     }
 
     private class SearchReceiver extends BroadcastReceiver {
@@ -151,11 +160,14 @@ public class BluetoothController implements BtServiceListener {
             if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
                 BluetoothDevice dev = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
+                boolean isPhone = true;
                 if (dev.getBluetoothClass() != null) {
                     Log.d(TAG, "onReceive: " + dev.getBluetoothClass().getMajorDeviceClass());
+                    if (dev.getBluetoothClass().getMajorDeviceClass() != BluetoothClass.Device.Major.PHONE) {
+                        isPhone = false;
+                    }
                 }
-
-                if (dev.getBondState() != BluetoothDevice.BOND_BONDED) {
+                if (isPhone && dev.getBondState() != BluetoothDevice.BOND_BONDED) {
                     BTDevice btDevice = new BTDevice(
                             intent.getStringExtra(BluetoothDevice.EXTRA_NAME),
                             intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE),
@@ -165,9 +177,10 @@ public class BluetoothController implements BtServiceListener {
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
                 // TODO: 2018-03-01 Check UUID  https://stackoverflow.com/questions/14812326/android-bluetooth-get-uuids-of-discovered-devices/15373239
+                mListener.onSearchComplete(mBtDeviceList);
             }
         }
-    };
+    }
 
     private class BtServiceConnection implements ServiceConnection {
         @Override
