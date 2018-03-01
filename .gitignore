@@ -16,6 +16,8 @@ out/
 .lock
 
 .gradle/
+build/
+.idea/
 
 # Local configuration file (sdk path, etc)
 local.properties
