@@ -10,18 +10,27 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.dd.processbutton.iml.ActionProcessButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ptcorp.ptapplication.FButton;
 import ptcorp.ptapplication.R;
+import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ServerConnectFragment extends DialogFragment {
+    private ArrayList<BTDevice> mDevicesList;
     private ListView mServers;
     private ActionProcessButton mCancelBtn;
+    private PullRefreshLayout mPullRefresh;
+
     public ServerConnectFragment() {
         // Required empty public constructor
     }
@@ -47,7 +56,21 @@ public class ServerConnectFragment extends DialogFragment {
             }
         });
 
+        mPullRefresh = view.findViewById(R.id.swipeRefreshLayout);
+        mPullRefresh.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //TODO: Update adpater
+            }
+        });
+        mPullRefresh.setRefreshing(false);
+
         return view;
+    }
+
+    public void setServersForAdapter(ArrayList<BTDevice> btDeviceList){
+        this.mDevicesList = btDeviceList;
+        mServers.setAdapter(new ListAdapter());
     }
 
     private class ListAdapter extends BaseAdapter {
@@ -55,13 +78,12 @@ public class ServerConnectFragment extends DialogFragment {
         @Override
         public int getCount() {
 
-            return 0;
+            return mDevicesList.size();
         }
 
         @Override
         public Object getItem(int position) {
-
-            return 0;
+            return mDevicesList.get(position);
         }
 
         @Override
@@ -73,12 +95,14 @@ public class ServerConnectFragment extends DialogFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             if(convertView==null){
-
                 convertView = getLayoutInflater().inflate(R.layout.list_rows, parent, false);
             }
 
+            TextView tvDeviceName = convertView.findViewById(R.id.deviceName);
+            tvDeviceName.setText(mDevicesList.get(position).getDeviceName());
+            TextView tvMacAddress = convertView.findViewById(R.id.macAddress);
+            tvMacAddress.setText(mDevicesList.get(position).getBtDevice().getAddress());
             return convertView;
         }
     }
-
 }
