@@ -1,4 +1,4 @@
-package ptcorp.ptapplication.bluetooth;
+package ptcorp.ptapplication.bluetooth.bluetoothConnection;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -27,7 +27,7 @@ public class BluetoothConnectionService extends Service {
     public static final String BT_APP_NAME = "PhoneTennisBT";
 
     private static final String TAG = "BtServiceConnection";
-    private UUID mAppUUID = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    private static final UUID mAppUUID = UUID.fromString("030d51ce-ca04-4256-bce7-7b09dbc7d1ad");
 
     private BtHostThread mHostThread;
     private BtClientThread mClientThread;
@@ -43,7 +43,6 @@ public class BluetoothConnectionService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         return START_STICKY;
     }
 
@@ -58,6 +57,7 @@ public class BluetoothConnectionService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         return new BtBinder();
     }
 
@@ -239,7 +239,11 @@ public class BluetoothConnectionService extends Service {
             mBtOIS = tmpIn;
             mBtOOS = tmpOut;
 
-            mListener.onConnected();
+            // Dont notify if not connected to device.
+            if (mBtOIS != null && mBtOOS != null) {
+                mListener.onBluetoothConnected();
+                running = false;
+            }
         }
 
         @Override
@@ -277,7 +281,7 @@ public class BluetoothConnectionService extends Service {
             running = false;
             try {
                 mmBtSocket.close();
-                mListener.onDisconnected();
+                mListener.onBluetoothDisconnected();
                 mConnected = false;
             } catch (IOException e) {
                 Log.e(TAG, "disconnect: Error when closing connected socket", e);

@@ -29,7 +29,7 @@
             android:resource="@array/preloaded_fonts" />
 
 
-        <service android:name=".bluetooth.BluetoothConnectionService"/>
+        <service android:name=".bluetooth.bluetoothConnection.BluetoothConnectionService"/>
     </application>
 
 </manifest>

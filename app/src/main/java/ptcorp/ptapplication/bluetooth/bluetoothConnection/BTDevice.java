@@ -1,4 +1,4 @@
-package ptcorp.ptapplication.bluetooth;
+package ptcorp.ptapplication.bluetooth.bluetoothConnection;
 
 import android.bluetooth.BluetoothDevice;
 
