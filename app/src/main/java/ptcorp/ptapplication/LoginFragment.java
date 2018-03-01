@@ -1,6 +1,8 @@
 package ptcorp.ptapplication;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,8 +22,10 @@ import com.github.florent37.materialtextfield.MaterialTextField;
 public class LoginFragment extends Fragment {
 
     public ActionProcessButton loginBtn, createBtn;
+    private final static String PT_PREFS = "phoneTennisPrefs";
     private EditText username, password;
     private MaterialTextField mtf_username, mtf_password;
+    private SharedPreferences mSharedPrefs;
 
     private LoginListener listener;
 
@@ -38,6 +42,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+        mSharedPrefs = getActivity().getSharedPreferences(PT_PREFS ,Context.MODE_PRIVATE);
 
         loginBtn = view.findViewById(R.id.loginBtn);
         createBtn = view.findViewById(R.id.createBtn);
@@ -51,7 +56,12 @@ public class LoginFragment extends Fragment {
             public void onClick(View view) {
                 loginBtn.setMode(ActionProcessButton.Mode.ENDLESS);
                 loginBtn.setProgress(1);
-                listener.login(username.getText().toString(), password.getText().toString());
+                String email = username.getText().toString();
+                String pw = password.getText().toString();
+                if(!email.equals("") && !pw.equals("")){
+                    listener.login(email, pw);
+                    saveEmail();
+                }
             }
         });
 
@@ -60,11 +70,28 @@ public class LoginFragment extends Fragment {
             public void onClick(View view) {
                 createBtn.setMode(ActionProcessButton.Mode.ENDLESS);
                 createBtn.setProgress(1);
-                listener.create(username.getText().toString(), password.getText().toString());
+                String email = username.getText().toString();
+                String pw = password.getText().toString();
+                if(!email.equals("") && !pw.equals("")){
+                    listener.create(username.getText().toString(), password.getText().toString());
+                    saveEmail();
+                }
             }
         });
+        setEmail();
 
         return view;
+    }
+
+    private void saveEmail(){
+        SharedPreferences.Editor edit = mSharedPrefs.edit();
+        edit.putString("email", username.getText().toString());
+        edit.putString("password", password.getText().toString());
+        edit.commit();
+    }
+    private void setEmail(){
+        username.setText(mSharedPrefs.getString("email", ""));
+        password.setText(mSharedPrefs.getString("password", "")); // TODO: DELETE THIS LATER
     }
 
     public interface LoginListener {

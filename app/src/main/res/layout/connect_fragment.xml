@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ptcorp.ptapplication.game.ConnectFragment"
+    android:id="@+id/fragmentConnect">
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/fbHost"
+        android:layout_width="314dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="76dp"
+        android:fontFamily="@font/bungee_shade"
+        android:text="Host"
+        android:textColor="#fff"
+        android:textSize="50dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        fbutton:cornerRadius="20dp"
+        fbutton:fButtonColor="@color/fbutton_color_peter_river"
+        fbutton:layout_constraintLeft_toLeftOf="parent"
+        fbutton:layout_constraintRight_toRightOf="parent"
+        fbutton:layout_constraintTop_toTopOf="parent"
+        fbutton:shadowColor="@color/fbutton_color_belize_hole"
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="3dp" />
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/fbConnect"
+        android:layout_width="314dp"
+        android:layout_height="110dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/bungee_shade"
+        android:text="Connect"
+        android:textColor="#fff"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        fbutton:cornerRadius="20dp"
+        fbutton:fButtonColor="@color/fbutton_color_turquoise"
+        fbutton:layout_constraintBottom_toBottomOf="parent"
+        fbutton:layout_constraintLeft_toLeftOf="parent"
+        fbutton:layout_constraintRight_toRightOf="parent"
+        fbutton:layout_constraintTop_toBottomOf="@+id/fbHost"
+        fbutton:layout_constraintVertical_bias="0.206"
+        fbutton:shadowColor="@color/fbutton_color_green_sea"
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="3dp" />
+</android.support.constraint.ConstraintLayout>

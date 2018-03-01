@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                         if (task.isSuccessful()) {
                             loginFragment.createBtn.setProgress(100);
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             FirebaseUser user = mAuth.getCurrentUser();
                             fragmentHolder.setCurrentItem(1);
