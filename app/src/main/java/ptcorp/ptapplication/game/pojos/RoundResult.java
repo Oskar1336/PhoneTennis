@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.game.pojos;
 
 import android.os.Parcel;
 import android.os.Parcelable;

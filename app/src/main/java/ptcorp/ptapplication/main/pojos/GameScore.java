@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.main.pojos;
 
 /**
  * Created by Pontus on 2018-02-22.

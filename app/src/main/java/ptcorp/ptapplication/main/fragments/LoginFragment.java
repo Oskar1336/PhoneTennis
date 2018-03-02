@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.main.fragments;
 
 
 import android.content.Context;
@@ -14,6 +14,8 @@ import android.widget.EditText;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.github.florent37.materialtextfield.MaterialTextField;
+
+import ptcorp.ptapplication.R;
 
 
 /**

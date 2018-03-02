@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.main.fragments;
 
 
 import android.os.Bundle;
@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
+import ptcorp.ptapplication.main.pojos.LeaderboardScore;
+import ptcorp.ptapplication.R;
 
 
 /**

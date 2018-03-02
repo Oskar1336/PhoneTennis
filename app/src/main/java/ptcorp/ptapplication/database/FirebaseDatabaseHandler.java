@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.database;
 
 import android.util.Log;
 
@@ -13,6 +13,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 
 
 /**

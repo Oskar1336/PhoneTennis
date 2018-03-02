@@ -1,6 +1,7 @@
 package ptcorp.ptapplication.game;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,22 +9,38 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BluetoothController;
+import ptcorp.ptapplication.bluetooth.bluetoothConnection.BtServiceListener;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.DeviceSearchListener;
+import ptcorp.ptapplication.game.enums.GameState;
+import ptcorp.ptapplication.game.fragments.ConnectFragment;
+import ptcorp.ptapplication.game.fragments.GameFragment;
+import ptcorp.ptapplication.game.fragments.LoadingFragment;
+import ptcorp.ptapplication.game.fragments.ServerConnectFragment;
+import ptcorp.ptapplication.game.pojos.GameSettings;
 
-public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener {
+public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener {
     private static final String TAG = "GameActivity";
+
+
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
     private ServerConnectFragment serverConnectFragment;
     private ConnectFragment mConnectFragment;
+    private LoadingFragment loadingFragment;
 
     private BluetoothController mBtController;
+    private GameFragment mGameFragment;
+
+    private GameState mOtherDeviceState;
+    private GameState mThisDeviceState;
+    private boolean mIsHost = false;
+    private GameSettings mGameSettings;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +81,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE) {
             // TODO: 2018-03-01 Show hostloading fragment here maybe
-
+            mBtController.startHostThread();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -82,14 +99,17 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void host() {
-        HostLoadingFragment hostLoadingFragment = new HostLoadingFragment();
-        hostLoadingFragment.show(mFragmentManager, "hostLoadingFragment");
+        mIsHost = true;
+        loadingFragment = new LoadingFragment();
+        loadingFragment.setTitle("Waiting for opponent");
+        loadingFragment.show(mFragmentManager, "loadingFragment");
 
         mBtController.enableDiscoverable();
     }
 
     @Override
     public void connect() {
+        mIsHost = false;
         mBtController.startSearchingForDevices();
 
         serverConnectFragment = new ServerConnectFragment();
@@ -104,5 +124,61 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onSearchComplete() {
         serverConnectFragment.updateComplete();
+    }
+
+
+    @Override
+    public void onBluetoothConnected() {
+        // TODO: 2018-03-01 Continue to gamescreen
+        loadingFragment.dismiss();
+        mGameFragment = new GameFragment();
+        mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
+
+        Handler loadingTimer = new Handler();
+        loadingTimer.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mThisDeviceState = GameState.DEVICE_READY;
+                mBtController.write(GameState.DEVICE_READY);
+            }
+        }, 4000);
+
+        Log.d(TAG, "onBluetoothConnected: Connected");
+    }
+
+    @Override
+    public void onBluetoothDisconnected(Exception e) {
+        // TODO: 2018-03-01 Notify user and give choice of either reconnect or just go back to MainActivity
+        Log.d(TAG, "onBluetoothDisconnected: Disconnected");
+    }
+
+    @Override
+    public void onMessageReceived(Object obj) {
+        if (obj instanceof GameState) {
+            mOtherDeviceState = (GameState)obj;
+
+            if (GameState.DEVICE_READY.equals(mOtherDeviceState) &&
+                    GameState.DEVICE_READY.equals(mThisDeviceState)) {
+                if (mIsHost) {
+                    startGame();
+                    mGameFragment.hideInitGame();
+                }
+            }
+        } else if(obj instanceof GameSettings) {
+            mGameSettings = (GameSettings)obj;
+            mGameFragment.hideInitGame();
+
+
+        }
+    }
+
+    private void startGame() {
+        Random rnd = new Random();
+        if (rnd.nextInt(1) == GameSettings.HOST_STARTS) {
+            mGameSettings = new GameSettings(GameSettings.HOST_STARTS);
+        } else {
+            mGameSettings = new GameSettings(GameSettings.CLIENT_STARTS);
+        }
+        mBtController.write(mGameSettings);
     }
 }

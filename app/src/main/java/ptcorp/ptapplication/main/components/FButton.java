@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.main.components;
 
 /**
  * Created by Pontus on 2018-02-27.

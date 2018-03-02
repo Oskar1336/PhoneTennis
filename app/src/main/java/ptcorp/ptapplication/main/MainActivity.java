@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.main;
 
 
 import android.os.AsyncTask;
@@ -21,7 +21,16 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener{
+import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
+import ptcorp.ptapplication.main.adapters.GamesAdapter;
+import ptcorp.ptapplication.database.GamesDatabaseHandler;
+import ptcorp.ptapplication.main.fragments.GamesFragment;
+import ptcorp.ptapplication.main.fragments.HomeFragment;
+import ptcorp.ptapplication.main.fragments.LeaderboardFragment;
+import ptcorp.ptapplication.main.fragments.LoginFragment;
+import ptcorp.ptapplication.R;
+
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener {
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
@@ -179,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             switch (position){
                 case 0:
                     return loginFragment;
+//                    return new GameFragment();
                 case 1:
                     return homeFragment;
                 case 2:

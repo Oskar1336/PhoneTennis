@@ -72,6 +72,15 @@ public class BluetoothConnectionService extends Service {
     }
 
     /**
+     * Writes an object to the connected device.
+     * @param obj Any object
+     */
+    public void writeObject(Object obj) {
+        if (mConnected && mConnectedThread != null)
+            mConnectedThread.write(obj);
+    }
+
+    /**
      * Stops any attempt to connect to a Host as a client and start listening for incoming Bluetooth connections as a Host.
      */
     public void startBtServer() {
@@ -270,9 +279,7 @@ public class BluetoothConnectionService extends Service {
             while(running) {
                 try {
                     Log.d(TAG, "Listening for incoming bl");
-                    Object obj = mBtOIS.readObject();
-
-
+                    mListener.onMessageReceived(mBtOIS.readObject());
                 } catch (ClassNotFoundException | IOException e) {
                     Log.e(TAG, "Error when listening for incoming object.", e);
                     break;
@@ -281,7 +288,7 @@ public class BluetoothConnectionService extends Service {
             disconnect();
         }
 
-        public void write(Object obj) {
+        void write(Object obj) {
             try {
                 mBtOOS.writeObject(obj);
             } catch (IOException e) {

@@ -1,14 +1,15 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.icu.util.Calendar;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ptcorp.ptapplication.main.pojos.GameScore;
 
 /**
  * Created by Pontus on 2018-02-26.

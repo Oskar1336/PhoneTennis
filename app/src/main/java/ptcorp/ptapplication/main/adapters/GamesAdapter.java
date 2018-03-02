@@ -1,4 +1,4 @@
-package ptcorp.ptapplication;
+package ptcorp.ptapplication.main.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+
+import ptcorp.ptapplication.main.pojos.GameScore;
+import ptcorp.ptapplication.R;
 
 /**
  * Created by Pontus on 2018-02-22.
