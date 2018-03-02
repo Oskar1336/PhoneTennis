@@ -61,6 +61,8 @@ public class LoginFragment extends Fragment {
                 if(!email.equals("") && !pw.equals("")){
                     listener.login(email, pw);
                     saveEmail();
+                }else{
+                    createBtn.setProgress(-1);
                 }
             }
         });
@@ -75,6 +77,8 @@ public class LoginFragment extends Fragment {
                 if(!email.equals("") && !pw.equals("")){
                     listener.create(username.getText().toString(), password.getText().toString());
                     saveEmail();
+                }else{
+                    createBtn.setProgress(-1);
                 }
             }
         });

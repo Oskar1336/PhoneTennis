@@ -63,7 +63,7 @@ public class ServerConnectFragment extends DialogFragment {
                 //TODO: Update adpater
             }
         });
-        mPullRefresh.setRefreshing(false);
+//        mPullRefresh.setRefreshing(false);
 
         return view;
     }
@@ -71,6 +71,7 @@ public class ServerConnectFragment extends DialogFragment {
     public void setServersForAdapter(ArrayList<BTDevice> btDeviceList){
         this.mDevicesList = btDeviceList;
         mServers.setAdapter(new ListAdapter());
+        mPullRefresh.setRefreshing(false);
     }
 
     private class ListAdapter extends BaseAdapter {
