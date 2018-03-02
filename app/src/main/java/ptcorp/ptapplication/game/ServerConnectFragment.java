@@ -1,11 +1,9 @@
 package ptcorp.ptapplication.game;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +11,9 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.baoyz.widget.PullRefreshLayout;
 import com.dd.processbutton.iml.ActionProcessButton;
-import com.wang.avi.AVLoadingIndicatorView;
-
 import java.util.ArrayList;
-import java.util.List;
-
-import ptcorp.ptapplication.FButton;
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
 
@@ -29,13 +21,7 @@ import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
  * A simple {@link Fragment} subclass.
  */
 public class ServerConnectFragment extends DialogFragment {
-<<<<<<< HEAD
     private static final String TAG = "ServerConnectFragment";
-    private ArrayList<BTDevice> mDevicesList;
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog alertDialog;
-=======
->>>>>>> f1a805f2bca86b277e9b4e23bb14544a9b92fda8
     private ListView mServers;
     private ListAdapter mServersAdapter;
     private ActionProcessButton mCancelBtn;
@@ -60,17 +46,12 @@ public class ServerConnectFragment extends DialogFragment {
 
         mServersAdapter = new ListAdapter();
         mServers.setAdapter(mServersAdapter);
-        mPullRefresh.setRefreshing(true);
 
         mCancelBtn = view.findViewById(R.id.btnCancelServers);
         mCancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
-                if(alertDialog.isShowing()){
-                    alertDialog.dismiss();
-                }
-
             }
         });
 
@@ -81,9 +62,7 @@ public class ServerConnectFragment extends DialogFragment {
                 //TODO: Update adpater
             }
         });
-
-        showSearchingDialog();
-
+        mPullRefresh.setRefreshing(true);
         return view;
     }
 
@@ -93,23 +72,6 @@ public class ServerConnectFragment extends DialogFragment {
 
     public void updateComplete() {
         mPullRefresh.setRefreshing(false);
-//        alertDialog.dismiss();
-    }
-
-    private void showSearchingDialog(){
-        Log.d(TAG, "showSearchingDialog: called");
-        dialogBuilder = new AlertDialog.Builder(this.getActivity());
-// ...Irrelevant code for customizing the buttons and title
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.searching_hosts, null);
-        dialogBuilder.setView(dialogView);
-
-        AVLoadingIndicatorView avLoadingIndicatorView = dialogView.findViewById(R.id.loadingDots);
-        avLoadingIndicatorView.smoothToShow();
-        alertDialog = dialogBuilder.create();
-        alertDialog.show();
-
-        Log.d(TAG, "showSearchingDialog: Showing?: " + alertDialog.isShowing());
     }
 
     private class ListAdapter extends BaseAdapter {
@@ -126,7 +88,6 @@ public class ServerConnectFragment extends DialogFragment {
 
         @Override
         public int getCount() {
-
             return mDevicesList.size();
         }
 

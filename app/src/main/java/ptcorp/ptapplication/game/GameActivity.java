@@ -64,6 +64,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE) {
             // TODO: 2018-03-01 Show hostloading fragment here maybe
+            mBtController.startHostThread();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

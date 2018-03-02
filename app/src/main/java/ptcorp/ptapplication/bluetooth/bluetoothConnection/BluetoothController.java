@@ -154,6 +154,10 @@ public class BluetoothController implements BtServiceListener {
         Log.d(TAG, "onBluetoothDisconnected: Disconnected");
     }
 
+    public void startHostThread() {
+        mConnectionService.startBtServer();
+    }
+
     private class SearchReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
