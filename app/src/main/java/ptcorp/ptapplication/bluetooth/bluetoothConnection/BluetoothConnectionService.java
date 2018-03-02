@@ -40,6 +40,7 @@ public class BluetoothConnectionService extends Service {
 
     private int[] mRssiAverage = new int[5];
     private int mRssiTotal = 0;
+    private int mAverageRssi = 0;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -113,6 +114,14 @@ public class BluetoothConnectionService extends Service {
      */
     public void setListener(BtServiceListener listener) {
         mListener = listener;
+    }
+
+    /**
+     * Get the average rssi value. An estimate of the signal strength between two devices.
+     * @return int average rssi.
+     */
+    public int getAverageRssi() {
+        return mAverageRssi;
     }
 
     /**
@@ -192,29 +201,31 @@ public class BluetoothConnectionService extends Service {
 
         @Override
         public void run() {
-            mBtAdapter.cancelDiscovery();
+            if (!mConnected) {
+                mBtAdapter.cancelDiscovery();
 
-            try {
-                mmSocket.connect();
-            } catch (IOException e) {
-                Log.e(TAG, "Error occurred when trying to connect to bluetooth host", e);
                 try {
-                    mmSocket.close();
-                } catch (IOException e1) {
-                    Log.e(TAG, "Error occurred when trying to close socket in client thread", e);
+                    mmSocket.connect();
+                } catch (IOException e) {
+                    Log.e(TAG, "Error occurred when trying to connect to bluetooth host", e);
+                    try {
+                        mmSocket.close();
+                    } catch (IOException e1) {
+                        Log.e(TAG, "Error occurred when trying to close socket in client thread", e);
+                    }
+                    return;
                 }
-                return;
+                handleConnectedDevice(mmSocket);
             }
-            handleConnectedDevice(mmSocket);
         }
 
         void stopBtClient() {
             try {
                 mmSocket.close();
-                mConnected = false;
             } catch (IOException e) {
                 Log.e(TAG, "stopBtClient: Error occurred trying to close bluetooth socket", e);
             }
+            mConnected = false;
         }
     }
 
@@ -242,7 +253,10 @@ public class BluetoothConnectionService extends Service {
             // Dont notify if not connected to device.
             if (mBtOIS != null && mBtOOS != null) {
                 mListener.onBluetoothConnected();
+                running = true;
+            } else {
                 running = false;
+                disconnect();
             }
         }
 
@@ -270,7 +284,6 @@ public class BluetoothConnectionService extends Service {
         public void write(Object obj) {
             try {
                 mBtOOS.writeObject(obj);
-
             } catch (IOException e) {
                 Log.e(TAG, "write: Error when sending object", e);
             }
@@ -280,12 +293,15 @@ public class BluetoothConnectionService extends Service {
             Log.i(TAG, "Closing bluetooth connected socket");
             running = false;
             try {
+                mBtOOS.close();
+                mBtOIS.close();
                 mmBtSocket.close();
-                mListener.onBluetoothDisconnected();
-                mConnected = false;
+                mListener.onBluetoothDisconnected(null);
             } catch (IOException e) {
+                mListener.onBluetoothDisconnected(e);
                 Log.e(TAG, "disconnect: Error when closing connected socket", e);
             }
+            mConnected = false;
         }
     }
 
@@ -310,10 +326,10 @@ public class BluetoothConnectionService extends Service {
             for (int i = 0; i < mRssiAverage.length - 1; i++) {
                 mRssiAverage[i+1] = mRssiAverage[i];
             }
-            mRssiAverage[0] = rssi;
+            mRssiAverage[0] = Math.abs(rssi);
             mRssiTotal += rssi;
 
-            // TODO: 2018-03-01 Calculate distance
+            mAverageRssi = mRssiTotal / mRssiAverage.length;
         }
     }
 }

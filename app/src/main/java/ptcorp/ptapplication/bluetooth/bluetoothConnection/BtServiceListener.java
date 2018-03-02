@@ -6,5 +6,5 @@ package ptcorp.ptapplication.bluetooth.bluetoothConnection;
 
 public interface BtServiceListener {
     void onBluetoothConnected();
-    void onBluetoothDisconnected();
+    void onBluetoothDisconnected(Exception e);
 }
