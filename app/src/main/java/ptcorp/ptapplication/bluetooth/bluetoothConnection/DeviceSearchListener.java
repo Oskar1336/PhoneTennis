@@ -1,5 +1,6 @@
 package ptcorp.ptapplication.bluetooth.bluetoothConnection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,4 +9,5 @@ import java.util.List;
 
 public interface DeviceSearchListener {
     void onSearchComplete(List<BTDevice> devices);
+    void onDeviceFound(ArrayList<BTDevice> devices);
 }
