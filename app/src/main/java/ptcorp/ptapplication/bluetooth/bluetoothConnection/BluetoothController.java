@@ -77,7 +77,7 @@ public class BluetoothController implements BtServiceListener {
         mActivity.unregisterReceiver(mBtSearchReciever);
     }
 
-    
+
 
     public void setSearchListener(DeviceSearchListener listener) {
         mListener = listener;
