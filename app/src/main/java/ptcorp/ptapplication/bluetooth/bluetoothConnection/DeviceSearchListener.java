@@ -8,6 +8,6 @@ import java.util.List;
  */
 
 public interface DeviceSearchListener {
-    void onSearchComplete(List<BTDevice> devices);
     void onDeviceFound(ArrayList<BTDevice> devices);
+    void onSearchComplete(ArrayList<BTDevice> devices);
 }

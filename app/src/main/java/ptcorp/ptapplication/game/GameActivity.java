@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ptcorp.ptapplication.R;
@@ -18,6 +19,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private static final String TAG = "GameActivity";
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
+    private ServerConnectFragment serverConnectFragment;
 
     private BluetoothController mBtController;
 
@@ -82,12 +84,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public void connect() {
         mBtController.startSearchingForDevices();
 
-        ServerConnectFragment serverConnectFragment = new ServerConnectFragment();
+        serverConnectFragment = new ServerConnectFragment();
         serverConnectFragment.show(mFragmentManager, "serverConnectFragment");
     }
 
     @Override
-    public void onSearchComplete(List<BTDevice> devices) {
-
+    public void onSearchComplete(ArrayList<BTDevice> devices) {
+        serverConnectFragment.setServersForAdapter(devices);
     }
 }
