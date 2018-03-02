@@ -12,17 +12,18 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import java.util.ArrayList;
+
+import ptcorp.ptapplication.game.GameActivity;
 
 /**
  * Created by oskarg on 2018-03-01.
  *
  */
 
-public class BluetoothController implements BtServiceListener {
+public class BluetoothController{
     public static final int BLUETOOTH_ENABLE_REQUEST_CODE = 5;
     public static final int BLUETOOTH_DISCOVERABLE_REQUEST_CODE = 6;
 
@@ -39,9 +40,9 @@ public class BluetoothController implements BtServiceListener {
     private final BroadcastReceiver mBtSearchReciever;
     private DeviceSearchListener mListener;
 
-    private AppCompatActivity mActivity;
+    private GameActivity mActivity;
 
-    public BluetoothController(AppCompatActivity activity) {
+    public BluetoothController(GameActivity activity) {
         this.mActivity = activity;
 
         checkBTPermissions();
@@ -144,20 +145,12 @@ public class BluetoothController implements BtServiceListener {
         }
     }
 
-    @Override
-    public void onBluetoothConnected() {
-        // TODO: 2018-03-01 Continue to gamescreen
-        Log.d(TAG, "onBluetoothConnected: Connected");
-    }
-
-    @Override
-    public void onBluetoothDisconnected(Exception e) {
-        // TODO: 2018-03-01 Notify user and give choise of either reconnect or just go back to MainActivity
-        Log.d(TAG, "onBluetoothDisconnected: Disconnected");
-    }
-
     public void startHostThread() {
         mConnectionService.startBtServer();
+    }
+
+    public void write(Object obj) {
+        mConnectionService.writeObject(obj);
     }
 
     private class SearchReceiver extends BroadcastReceiver {
@@ -193,7 +186,7 @@ public class BluetoothController implements BtServiceListener {
         public void onServiceConnected(ComponentName name, IBinder service) {
             mConnectionService = ((BluetoothConnectionService.BtBinder)service).getService();
             mBtServiceBound = true;
-            mConnectionService.setListener(BluetoothController.this);
+            mConnectionService.setListener(mActivity);
         }
 
         @Override
