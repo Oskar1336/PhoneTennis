@@ -42,6 +42,16 @@ public class ConnectFragment extends Fragment {
         return view;
     }
 
+    public void disableButtons() {
+        mHostButton.setEnabled(false);
+        mConnectButton.setEnabled(false);
+    }
+
+    public void enableButtons() {
+        mHostButton.setEnabled(true);
+        mConnectButton.setEnabled(true);
+    }
+
     public interface ConnectFragmentListener{
         void host();
         void connect();

@@ -1,6 +1,7 @@
 package ptcorp.ptapplication.game;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
     private ServerConnectFragment serverConnectFragment;
+    private ConnectFragment mConnectFragment;
 
     private BluetoothController mBtController;
 
@@ -41,7 +43,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         if (!mBtController.enableBluetooth()) {
             Log.w(TAG, "onResume: No bluetooth module available");
-            // TODO: 2018-03-01 Show no bluetooth available error.
+            mConnectFragment.disableButtons();
+            Snackbar.make(findViewById(R.id.gameContainer), R.string.bluetooth_not_available, Snackbar.LENGTH_INDEFINITE);
         }
     }
 
@@ -67,8 +70,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void setConnectFragment(){
+        if (mConnectFragment == null) {
+            mConnectFragment = new ConnectFragment();
+        }
+
         mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.gameContainer, new ConnectFragment(), "connectFragment");
+        mFragmentTransaction.replace(R.id.gameContainer, mConnectFragment, "connectFragment");
         mFragmentTransaction.commit();
     }
 
@@ -89,7 +96,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     @Override
-    public void onSearchComplete(ArrayList<BTDevice> devices) {
-        serverConnectFragment.setServersForAdapter(devices);
+    public void onDeviceFound(BTDevice device) {
+        serverConnectFragment.addItemToList(device);
+    }
+
+    @Override
+    public void onSearchComplete() {
+        serverConnectFragment.updateComplete();
     }
 }
