@@ -26,8 +26,8 @@ import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
  * A simple {@link Fragment} subclass.
  */
 public class ServerConnectFragment extends DialogFragment {
-    private ArrayList<BTDevice> mDevicesList;
     private ListView mServers;
+    private ListAdapter mServersAdapter;
     private ActionProcessButton mCancelBtn;
     private PullRefreshLayout mPullRefresh;
 
@@ -47,6 +47,10 @@ public class ServerConnectFragment extends DialogFragment {
 
             }
         });
+
+        mServersAdapter = new ListAdapter();
+        mServers.setAdapter(mServersAdapter);
+        mPullRefresh.setRefreshing(true);
 
         mCancelBtn = view.findViewById(R.id.btnCancelServers);
         mCancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -68,13 +72,25 @@ public class ServerConnectFragment extends DialogFragment {
         return view;
     }
 
-    public void setServersForAdapter(ArrayList<BTDevice> btDeviceList){
-        this.mDevicesList = btDeviceList;
-        mServers.setAdapter(new ListAdapter());
+    public void addItemToList(BTDevice btDevice){
+        mServersAdapter.addItem(btDevice);
+    }
+
+    public void updateComplete() {
         mPullRefresh.setRefreshing(false);
     }
 
     private class ListAdapter extends BaseAdapter {
+        private ArrayList<BTDevice> mDevicesList;
+
+        ListAdapter() {
+            mDevicesList = new ArrayList<>();
+        }
+
+        private void addItem(BTDevice btDevice) {
+            mDevicesList.add(btDevice);
+            this.notifyDataSetChanged();
+        }
 
         @Override
         public int getCount() {

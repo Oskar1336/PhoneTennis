@@ -162,7 +162,6 @@ public class BluetoothController implements BtServiceListener {
 
                 boolean isPhone = true;
                 if (dev.getBluetoothClass() != null) {
-                    Log.d(TAG, "onReceive: " + dev.getBluetoothClass().getMajorDeviceClass());
                     if (dev.getBluetoothClass().getMajorDeviceClass() != BluetoothClass.Device.Major.PHONE) {
                         isPhone = false;
                     }
@@ -173,11 +172,12 @@ public class BluetoothController implements BtServiceListener {
                             intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE),
                             dev
                     );
-                    mBtDeviceList.add(btDevice);
+                    mBtDeviceList.add(btDevice); // TODO: 2018-03-02 Probably wont be needed
+                    mListener.onDeviceFound(btDevice);
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
                 // TODO: 2018-03-01 Check UUID  https://stackoverflow.com/questions/14812326/android-bluetooth-get-uuids-of-discovered-devices/15373239
-                mListener.onSearchComplete(mBtDeviceList);
+                mListener.onSearchComplete();
             }
         }
     }
