@@ -77,6 +77,8 @@ public class BluetoothController implements BtServiceListener {
         mActivity.unregisterReceiver(mBtSearchReciever);
     }
 
+    
+
     public void setSearchListener(DeviceSearchListener listener) {
         mListener = listener;
     }
@@ -149,7 +151,7 @@ public class BluetoothController implements BtServiceListener {
     }
 
     @Override
-    public void onBluetoothDisconnected() {
+    public void onBluetoothDisconnected(Exception e) {
         // TODO: 2018-03-01 Notify user and give choise of either reconnect or just go back to MainActivity
         Log.d(TAG, "onBluetoothDisconnected: Disconnected");
     }
