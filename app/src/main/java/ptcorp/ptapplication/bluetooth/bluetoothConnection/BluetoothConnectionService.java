@@ -266,7 +266,7 @@ public class BluetoothConnectionService extends Service {
             mBtOOS = tmpOut;
 
             // Dont notify if not connected to device.
-            if (mBtOIS != null && mBtOOS != null) {
+            if (mBtOOS != null && mBtOIS != null ) {
                 Log.d(TAG, "BtConnectedThread:------------------------------ CONNECTED---------------------------------" );
                 mListener.onBluetoothConnected();
                 running = true;
