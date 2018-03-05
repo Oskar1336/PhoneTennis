@@ -44,20 +44,23 @@ public class BluetoothConnectionService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand: Starting service");
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mConnectedThread != null) mConnectedThread.disconnect();
         if (mHostThread != null) mHostThread.stopBtHost();
         if (mClientThread != null) mClientThread.stopBtClient();
+
+        super.onDestroy();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind: BluetoothConnectionService");
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         return new BtBinder();
     }

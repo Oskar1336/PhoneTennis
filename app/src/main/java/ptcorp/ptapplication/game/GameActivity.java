@@ -51,13 +51,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         mBtController = new BluetoothController(this);
         mBtController.setSearchListener(this);
+
+        mBtController.bindBluetoothService();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mBtController.bindBluetoothService();
-
         if (!mBtController.enableBluetooth()) {
             Log.w(TAG, "onResume: No bluetooth module available");
             mConnectFragment.disableButtons();

@@ -51,12 +51,13 @@ public class BluetoothController{
 
         mBtSearchReciever = new SearchReceiver();
 
-        mBtServiceConnIntent = new Intent(mActivity, BtServiceConnection.class);
+        mBtServiceConnIntent = new Intent(mActivity, BluetoothConnectionService.class);
         mActivity.startService(mBtServiceConnIntent);
     }
 
     public void bindBluetoothService() {
         if (!mBtServiceBound) {
+            Log.d(TAG, "bindBluetoothService: Binding bluetooth");
             mBtServiceConnection = new BtServiceConnection();
             mActivity.bindService(mBtServiceConnIntent, mBtServiceConnection, Context.BIND_AUTO_CREATE);
         }
@@ -77,8 +78,6 @@ public class BluetoothController{
         }
         mActivity.unregisterReceiver(mBtSearchReciever);
     }
-
-
 
     public void setSearchListener(DeviceSearchListener listener) {
         mListener = listener;
@@ -184,6 +183,7 @@ public class BluetoothController{
     private class BtServiceConnection implements ServiceConnection {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "onServiceConnected: Service connected/bound");
             mConnectionService = ((BluetoothConnectionService.BtBinder)service).getService();
             mBtServiceBound = true;
             mConnectionService.setListener(mActivity);
@@ -191,6 +191,7 @@ public class BluetoothController{
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "onServiceDisconnected: Service unbound");
             mBtServiceBound = false;
         }
     }
