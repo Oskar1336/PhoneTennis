@@ -106,7 +106,7 @@ public class BluetoothConnectionService extends Service {
         if (!mConnected) {
             mBtDevice = device;
 
-            mBtGatt = mBtDevice.connectGatt(getApplicationContext(), true, new RssiListener());
+            mBtGatt = mBtDevice.connectGatt(getApplicationContext(), true, new GattListener());
 
             mClientThread = new BtClientThread(mBtDevice);
             mClientThread.start();
@@ -306,6 +306,7 @@ public class BluetoothConnectionService extends Service {
                 mBtOOS.close();
                 mBtOIS.close();
                 mmBtSocket.close();
+                if (mBtGatt != null) mBtGatt.disconnect();
                 mListener.onBluetoothDisconnected(null);
             } catch (IOException e) {
                 mListener.onBluetoothDisconnected(e);
@@ -329,7 +330,19 @@ public class BluetoothConnectionService extends Service {
         }
     }
 
-    private class RssiListener extends BluetoothGattCallback {
+    private class GattListener extends BluetoothGattCallback {
+
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            Log.d(TAG, "onConnectionStateChange: " + status + " -> " + newState);
+
+            if (status != BluetoothGatt.GATT_SUCCESS) {
+                gatt.disconnect();
+            } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+                Log.d(TAG, "onConnectionStateChange: Disconnected from device");
+            }
+        }
+
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             mRssiTotal -= mRssiAverage[mRssiAverage.length - 1];
