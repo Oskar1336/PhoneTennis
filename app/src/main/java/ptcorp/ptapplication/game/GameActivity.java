@@ -102,6 +102,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mIsHost = true;
         loadingFragment = new LoadingFragment();
         loadingFragment.setTitle("Waiting for opponent");
+        loadingFragment.setCancelable(false);
         loadingFragment.show(mFragmentManager, "loadingFragment");
 
         mBtController.enableDiscoverable();
@@ -152,18 +153,33 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         if (obj instanceof GameState) {
             mOtherDeviceState = (GameState)obj;
 
+            if(mOtherDeviceState == null){
+                Log.d(TAG, "onMessageReceived: otherdeivce null");
+            }
+
+            if(mThisDeviceState == null){
+                Log.d(TAG, "onMessageReceived:this= null");
+            }
+
+//            Log.d(TAG, "onMessageReceived: " + mOtherDeviceState.name() + " THIS: " + mThisDeviceState.name());
+            Log.d(TAG, "onMessageReceived: -------------------First IF----------------");
+
+
             if (GameState.DEVICE_READY.equals(mOtherDeviceState) &&
                     GameState.DEVICE_READY.equals(mThisDeviceState)) {
+                Log.d(TAG, "onMessageReceived: -------------------Second IF----------------");
                 if (mIsHost) {
+                    Log.d(TAG, "onMessageReceived: -------------------Third IF----------------");
                     startGame();
                     mGameFragment.hideInitGame();
                 }
             }
         } else if(obj instanceof GameSettings) {
+            Log.d(TAG, "onMessageReceived: -------------------First ELSE-IF----------------");
             mGameSettings = (GameSettings)obj;
             mGameFragment.hideInitGame();
-
-
+        } else{
+            Log.d(TAG, "onMessageReceived: -------------------NONE----------------");
         }
     }
 
@@ -183,15 +199,19 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             mFragmentTransaction = mFragmentManager.beginTransaction();
             if(mIsHost){
                 loadingFragment.dismiss();
+            } else{
+                serverConnectFragment.dismiss();
             }
             mGameFragment = new GameFragment();
             mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
+
+            mThisDeviceState = GameState.DEVICE_READY;
 
             Handler loadingTimer = new Handler();
             loadingTimer.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mThisDeviceState = GameState.DEVICE_READY;
+                    Log.d(TAG, "run: " + mThisDeviceState.name());
                     mBtController.write(GameState.DEVICE_READY);
                 }
             }, 4000);

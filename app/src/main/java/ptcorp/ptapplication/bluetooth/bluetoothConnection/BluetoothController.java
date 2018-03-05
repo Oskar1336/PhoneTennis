@@ -189,6 +189,7 @@ public class BluetoothController{
                 BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    Log.d(TAG, "onReceive: connecting to device");
                     mConnectionService.connectToDevice(btDevice);
                 } else if (btDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                     Log.d(TAG, "onReceive: Bonding device");
