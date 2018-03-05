@@ -76,7 +76,11 @@ public class BluetoothController{
         if (mBtAdapter != null) {
             mBtAdapter.cancelDiscovery();
         }
-        mActivity.unregisterReceiver(mBtSearchReciever);
+        try {
+            mActivity.unregisterReceiver(mBtSearchReciever);
+        } catch (Exception e) {
+            Log.i(TAG, "onDestroy: SearchReciever not registered before");
+        }
     }
 
     public void setSearchListener(DeviceSearchListener listener) {
