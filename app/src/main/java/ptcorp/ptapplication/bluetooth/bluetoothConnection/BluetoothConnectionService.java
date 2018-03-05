@@ -142,7 +142,7 @@ public class BluetoothConnectionService extends Service {
      */
     private void handleConnectedDevice(BluetoothSocket mmSocket) {
         mConnected = true;
-
+        Log.d(TAG, "handleConnectedDevice:-------------------------HandleConnectedDevice------------------------ ");
         mConnectedThread = new BtConnectedThread(mmSocket);
         mConnectedThread.start();
     }
@@ -252,10 +252,10 @@ public class BluetoothConnectionService extends Service {
             this.mmBtSocket = mmBtSocket;
             ObjectInputStream tmpIn = null;
             ObjectOutputStream tmpOut = null;
-
+            Log.d(TAG, "BtConnectedThread: ---------------CONSTRUCTOR-------------------------------");
             try {
-                tmpIn = new ObjectInputStream(mmBtSocket.getInputStream());
                 tmpOut = new ObjectOutputStream(mmBtSocket.getOutputStream());
+                tmpIn = new ObjectInputStream(mmBtSocket.getInputStream());
             } catch (IOException e) {
                 Log.e(TAG, "BtConnectedThread: Error occurred trying to create output/input streams", e);
             }
