@@ -181,7 +181,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         @Override
         public void run() {
             mFragmentTransaction = mFragmentManager.beginTransaction();
-            loadingFragment.dismiss();
+            if(mIsHost){
+                loadingFragment.dismiss();
+            }
             mGameFragment = new GameFragment();
             mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
 
