@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 
 public class GameSettings implements Parcelable, Serializable {
-    private int mPlayerStarting;
+    private final int mPlayerStarting;
     private int mGameBalls = 7;
 
     public GameSettings(int mPlayerStarting) {

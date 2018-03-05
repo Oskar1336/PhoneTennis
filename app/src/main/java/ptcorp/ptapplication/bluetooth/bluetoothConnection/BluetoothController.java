@@ -165,7 +165,12 @@ public class BluetoothController{
         if (mBtAdapter.isDiscovering())
             mBtAdapter.cancelDiscovery();
 
-        mConnectionService.pairDevice(device);
+        // Check if device is already bound.
+        if (mBtAdapter.getBondedDevices().contains(device)) {
+            mConnectionService.connectToDevice(device);
+        } else {
+            mConnectionService.pairDevice(device);
+        }
     }
 
     private class SearchReceiver extends BroadcastReceiver {
