@@ -26,7 +26,8 @@ import ptcorp.ptapplication.game.pojos.GameSettings;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener, ServerConnectFragment.DeviceListListener {
     private static final String TAG = "GameActivity";
-
+    public static final int HOST_STARTS = 1;
+    public static final int CLIENT_STARTS = 0;
 
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
@@ -186,10 +187,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     private void startGame() {
         Random rnd = new Random();
-        if (rnd.nextInt(1) == GameSettings.HOST_STARTS) {
-            mGameSettings = new GameSettings(GameSettings.HOST_STARTS);
+        if (rnd.nextInt(1) == GameActivity.HOST_STARTS) {
+            mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
         } else {
-            mGameSettings = new GameSettings(GameSettings.CLIENT_STARTS);
+            mGameSettings = new GameSettings(GameActivity.CLIENT_STARTS);
         }
         mBtController.write(mGameSettings);
     }

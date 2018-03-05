@@ -8,9 +8,6 @@ import android.os.Parcelable;
  */
 
 public class GameSettings implements Parcelable {
-    public static final int HOST_STARTS = 1;
-    public static final int CLIENT_STARTS = 0;
-
     private final int mPlayerStarting;
     private int mGameBalls = 7;
 
