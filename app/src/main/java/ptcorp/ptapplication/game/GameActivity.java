@@ -173,13 +173,23 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 if (mIsHost) {
                     Log.d(TAG, "onMessageReceived: -------------------Third IF----------------");
                     startGame();
-                    mGameFragment.hideInitGame();
+                    runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           mGameFragment.hideInitGame();
+                       }
+                   });
                 }
             }
         } else if(obj instanceof GameSettings) {
             Log.d(TAG, "onMessageReceived: -------------------First ELSE-IF----------------");
             mGameSettings = (GameSettings)obj;
-            mGameFragment.hideInitGame();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mGameFragment.hideInitGame();
+                }
+            });
         } else{
             Log.d(TAG, "onMessageReceived: -------------------NONE----------------");
         }
@@ -199,6 +209,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public void onDeviceClick(BluetoothDevice btDevice) {
         mBtController.pairDevice(btDevice);
     }
+
 
     private class RunOnUI implements Runnable{
         @Override

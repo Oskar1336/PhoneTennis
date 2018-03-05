@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 public class GameSettings implements Parcelable {
-    private final int mPlayerStarting;
+    private int mPlayerStarting;
     private int mGameBalls = 7;
 
     public GameSettings(int mPlayerStarting) {
