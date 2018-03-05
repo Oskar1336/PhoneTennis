@@ -187,6 +187,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private class RunOnUI implements Runnable{
         @Override
         public void run() {
+            mFragmentTransaction = mFragmentManager.beginTransaction();
             loadingFragment.dismiss();
             mGameFragment = new GameFragment();
             mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
