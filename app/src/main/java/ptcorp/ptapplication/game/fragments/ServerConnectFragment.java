@@ -16,6 +16,8 @@ import com.dd.processbutton.iml.ActionProcessButton;
 import java.util.ArrayList;
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
+import ptcorp.ptapplication.bluetooth.bluetoothConnection.BluetoothConnectionService;
+import ptcorp.ptapplication.bluetooth.bluetoothConnection.BluetoothController;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +28,9 @@ public class ServerConnectFragment extends DialogFragment {
     private ListAdapter mServersAdapter;
     private ActionProcessButton mCancelBtn;
     private PullRefreshLayout mPullRefresh;
+    private BluetoothController mBtController;
+    private BluetoothConnectionService mConnectionService;
+    private ArrayList<BTDevice> mDevicesList;
 
     public ServerConnectFragment() {
         // Required empty public constructor
@@ -37,9 +42,11 @@ public class ServerConnectFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_servers, container, false);
         mServers = view.findViewById(R.id.lvServers);
+        mConnectionService = mBtController.getmConnectionService();
         mServers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mConnectionService.connectToDevice(mDevicesList.get(position).getBtDevice());
 
             }
         });
@@ -74,8 +81,11 @@ public class ServerConnectFragment extends DialogFragment {
         mPullRefresh.setRefreshing(false);
     }
 
+    public void setBluetoothController(BluetoothController mBtController) {
+        this.mBtController = mBtController;
+    }
+
     private class ListAdapter extends BaseAdapter {
-        private ArrayList<BTDevice> mDevicesList;
 
         ListAdapter() {
             mDevicesList = new ArrayList<>();
