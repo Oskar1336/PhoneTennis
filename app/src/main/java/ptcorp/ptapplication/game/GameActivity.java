@@ -131,9 +131,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onBluetoothConnected() {
         // TODO: 2018-03-01 Continue to gamescreen
-        loadingFragment.dismiss();
-        mGameFragment = new GameFragment();
-        mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
+//        loadingFragment.dismiss();
+//        mGameFragment = new GameFragment();
+//        mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
+        this.runOnUiThread(new RunOnUI());
 
         Handler loadingTimer = new Handler();
         loadingTimer.postDelayed(new Runnable() {
@@ -181,5 +182,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             mGameSettings = new GameSettings(GameSettings.CLIENT_STARTS);
         }
         mBtController.write(mGameSettings);
+    }
+
+    private class RunOnUI implements Runnable{
+        @Override
+        public void run() {
+            loadingFragment.dismiss();
+            mGameFragment = new GameFragment();
+            mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
+        }
     }
 }
