@@ -102,15 +102,18 @@ public class BluetoothConnectionService extends Service {
      * Connect to a found Bluetooth Host device as a client.
      * @param device BluetoothDevice
      */
-    public void connectToDevice(BluetoothDevice device) {
+    public void pairDevice(BluetoothDevice device) {
         if (!mConnected) {
-            mBtDevice = device;
-
-            mBtGatt = mBtDevice.connectGatt(getApplicationContext(), true, new GattListener());
-
-            mClientThread = new BtClientThread(mBtDevice);
-            mClientThread.start();
+            device.createBond();
         }
+    }
+
+    public void connectToDevice(BluetoothDevice device) {
+        mBtDevice = device;
+        mBtGatt = mBtDevice.connectGatt(getApplicationContext(), true, new GattListener());
+
+        mClientThread = new BtClientThread(mBtDevice);
+        mClientThread.start();
     }
 
     /**

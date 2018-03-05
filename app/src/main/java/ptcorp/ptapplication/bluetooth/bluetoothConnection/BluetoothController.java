@@ -140,6 +140,7 @@ public class BluetoothController{
             IntentFilter filter = new IntentFilter();
             filter.addAction(BluetoothDevice.ACTION_FOUND);
             filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
             mActivity.registerReceiver(mBtSearchReciever, filter);
         }
     }
@@ -184,6 +185,16 @@ public class BluetoothController{
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
                 // TODO: 2018-03-01 Check UUID  https://stackoverflow.com/questions/14812326/android-bluetooth-get-uuids-of-discovered-devices/15373239
                 mListener.onSearchComplete();
+            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent.getAction())) {
+                BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    mConnectionService.connectToDevice(btDevice);
+                } else if (btDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    Log.d(TAG, "onReceive: Bonding device");
+                } else if (btDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                    Log.d(TAG, "onReceive: Bond none");
+                }
             }
         }
     }
