@@ -1,5 +1,6 @@
 package ptcorp.ptapplication.game;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -23,7 +24,7 @@ import ptcorp.ptapplication.game.fragments.LoadingFragment;
 import ptcorp.ptapplication.game.fragments.ServerConnectFragment;
 import ptcorp.ptapplication.game.pojos.GameSettings;
 
-public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener {
+public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener, ServerConnectFragment.DeviceListListener {
     private static final String TAG = "GameActivity";
 
 
@@ -115,7 +116,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         serverConnectFragment = new ServerConnectFragment();
         serverConnectFragment.show(mFragmentManager, "serverConnectFragment");
-        serverConnectFragment.setBluetoothController(mBtController);
+        serverConnectFragment.setListener(GameActivity.this);
     }
 
     @Override
@@ -191,6 +192,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             mGameSettings = new GameSettings(GameSettings.CLIENT_STARTS);
         }
         mBtController.write(mGameSettings);
+    }
+
+    @Override
+    public void onDeviceClick(BluetoothDevice btDevice) {
+        mBtController.pairDevice(btDevice);
     }
 
     private class RunOnUI implements Runnable{

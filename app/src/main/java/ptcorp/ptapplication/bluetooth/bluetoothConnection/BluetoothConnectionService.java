@@ -340,7 +340,6 @@ public class BluetoothConnectionService extends Service {
     }
 
     private class GattListener extends BluetoothGattCallback {
-
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             Log.d(TAG, "onConnectionStateChange: " + status + " -> " + newState);

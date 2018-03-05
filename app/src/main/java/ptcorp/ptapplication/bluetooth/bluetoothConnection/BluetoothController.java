@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import ptcorp.ptapplication.game.GameActivity;
 
@@ -87,9 +88,9 @@ public class BluetoothController{
         mListener = listener;
     }
 
-    public BluetoothConnectionService getmConnectionService() {
-        return mConnectionService;
-    }
+//    public BluetoothConnectionService getmConnectionService() {
+//        return mConnectionService;
+//    }
 
     /**
      * Enables bluetooth on the device. If bluetooth is'nt turned on the activity
@@ -130,9 +131,8 @@ public class BluetoothController{
      */
     public void startSearchingForDevices() {
         if (mBtAdapter != null) {
-            if (mBtAdapter.isDiscovering()) {
+            if (mBtAdapter.isDiscovering())
                 mBtAdapter.cancelDiscovery();
-            }
 
             checkBTPermissions();
 
@@ -161,6 +161,13 @@ public class BluetoothController{
         mConnectionService.writeObject(obj);
     }
 
+    public void pairDevice(BluetoothDevice device) {
+        if (mBtAdapter.isDiscovering())
+            mBtAdapter.cancelDiscovery();
+
+        mConnectionService.pairDevice(device);
+    }
+
     private class SearchReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -173,7 +180,7 @@ public class BluetoothController{
                         isPhone = false;
                     }
                 }
-                if (isPhone && dev.getBondState() != BluetoothDevice.BOND_BONDED) {
+                if (isPhone) {
                     BTDevice btDevice = new BTDevice(
                             intent.getStringExtra(BluetoothDevice.EXTRA_NAME),
                             intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE),
