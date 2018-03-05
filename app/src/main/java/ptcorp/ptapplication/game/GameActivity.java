@@ -114,6 +114,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         serverConnectFragment = new ServerConnectFragment();
         serverConnectFragment.show(mFragmentManager, "serverConnectFragment");
+        serverConnectFragment.setBluetoothController(mBtController);
     }
 
     @Override

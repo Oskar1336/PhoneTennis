@@ -83,6 +83,10 @@ public class BluetoothController{
         mListener = listener;
     }
 
+    public BluetoothConnectionService getmConnectionService() {
+        return mConnectionService;
+    }
+
     /**
      * Enables bluetooth on the device. If bluetooth is'nt turned on the activity
      * BluetoothAdapter.ACTION_REQUEST_ENABLE will be called with the result code
