@@ -99,7 +99,7 @@ public class BluetoothConnectionService extends Service {
     }
 
     /**
-     * Connect to a found Bluetooth Host device as a client.
+     * Pair to a found Bluetooth device.
      * @param device BluetoothDevice
      */
     public void pairDevice(BluetoothDevice device) {
@@ -108,6 +108,10 @@ public class BluetoothConnectionService extends Service {
         }
     }
 
+    /**
+     * Connect to a paired Bluetooth host device. Call method {@link #pairDevice(BluetoothDevice), pairDevice} before trying to connect to the device.
+     * @param device BluetoothDevice
+     */
     public void connectToDevice(BluetoothDevice device) {
         mBtDevice = device;
         mBtGatt = mBtDevice.connectGatt(getApplicationContext(), true, new GattListener());
