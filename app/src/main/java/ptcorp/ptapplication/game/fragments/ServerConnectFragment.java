@@ -47,6 +47,7 @@ public class ServerConnectFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mConnectionService.connectToDevice(mDevicesList.get(position).getBtDevice());
+
             }
         });
 

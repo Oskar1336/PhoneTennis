@@ -264,10 +264,12 @@ public class BluetoothConnectionService extends Service {
 
             // Dont notify if not connected to device.
             if (mBtOIS != null && mBtOOS != null) {
+                Log.d(TAG, "BtConnectedThread:------------------------------ CONNECTED---------------------------------" );
                 mListener.onBluetoothConnected();
                 running = true;
             } else {
                 running = false;
+                Log.d(TAG, "BtConnectedThread:------------------------------ DISCONNECTED---------------------------------" );
                 disconnect();
             }
         }
