@@ -56,7 +56,6 @@ public class BluetoothController{
 
     public void bindBluetoothService() {
         if (!mBtServiceBound) {
-            Log.d(TAG, "bindBluetoothService: Binding bluetooth");
             mBtServiceConnection = new BtServiceConnection();
             mActivity.bindService(mBtServiceConnIntent, mBtServiceConnection, Context.BIND_AUTO_CREATE);
         }
@@ -78,7 +77,7 @@ public class BluetoothController{
         try {
             mActivity.unregisterReceiver(mBtSearchReciever);
         } catch (Exception e) {
-            Log.i(TAG, "onDestroy: SearchReciever not registered before");
+            Log.i(TAG, "onDestroy: SearchReceiver not registered before");
         }
     }
 
@@ -94,7 +93,7 @@ public class BluetoothController{
      */
     public boolean enableBluetooth() {
         if (mBtAdapter == null) {
-            Log.d(TAG, "enableBT: Bluetooth not available on device");
+            Log.w(TAG, "Bluetooth not available on device");
             return false;
         }
 
