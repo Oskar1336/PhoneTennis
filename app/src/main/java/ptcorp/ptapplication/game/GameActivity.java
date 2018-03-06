@@ -260,6 +260,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             decideServer((GameSettings) obj);
         } else if(obj instanceof PlayerPositions){
                 if(mIsHost){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadingFragment.dismiss();
+                        }
+                    });
                     startGame();
                 } else{
                     runOnUiThread(new Runnable() {

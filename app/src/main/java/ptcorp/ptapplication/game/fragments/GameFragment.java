@@ -58,7 +58,7 @@ public class GameFragment extends Fragment{
         btnLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO: 2018-03-07 Implement this next
             }
         });
         alertDialog = builder.create();
@@ -80,6 +80,8 @@ public class GameFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 mLockOpponentDirection.onLock();
+                loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
+                loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
                 alertDialog.dismiss();
             }
         });
