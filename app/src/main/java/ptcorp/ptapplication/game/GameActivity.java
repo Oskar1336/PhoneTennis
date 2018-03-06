@@ -236,6 +236,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void startGame() {
+        Log.d(TAG, "startGame: HEJ");
         Random rnd = new Random();
         int whoStarts = rnd.nextInt(2);
         Log.d(TAG, "startGame: VALUE:--------------" + whoStarts);
