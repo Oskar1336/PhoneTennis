@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 
@@ -19,6 +21,7 @@ public class GameFragment extends Fragment{
     private static final String TAG = "GameFragment";
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialog;
+    private ImageView mCompass;
 
 
     public GameFragment() {
@@ -48,6 +51,7 @@ public class GameFragment extends Fragment{
         View v = inflater.inflate(R.layout.compass_dialog, null);
         builder.setView(v);
         ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
+        mCompass = v.findViewById(R.id.ivCompass);
         btnLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,5 +62,9 @@ public class GameFragment extends Fragment{
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
         alertDialog.show();
+    }
+
+    public void rotateCompass(RotateAnimation animation){
+        mCompass.startAnimation(animation);
     }
 }

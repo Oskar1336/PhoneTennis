@@ -78,8 +78,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mBtController.setSearchListener(this);
 
         mBtController.bindBluetoothService();
-        setupSensors();
         mCompass = findViewById(R.id.ivCompass);
+        setupSensors();
     }
 
     private void setupSensors(){
@@ -278,7 +278,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     Animation.RELATIVE_TO_SELF, 0.5f);
             mRotateAnimation.setDuration(250);
             mRotateAnimation.setFillAfter(true);
-            mCompass.startAnimation(mRotateAnimation);
+//            mCompass.startAnimation(mRotateAnimation);
+            mGameFragment.rotateCompass(mRotateAnimation);
             mCurrentDegree = -azimuthInDegress;
             lastUpdateTime = System.currentTimeMillis();
         }
