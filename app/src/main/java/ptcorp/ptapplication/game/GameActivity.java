@@ -184,7 +184,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     private void startGame() {
         Random rnd = new Random();
-        if (rnd.nextInt(1) == GameActivity.HOST_STARTS) {
+        int whoStarts = rnd.nextInt(2);
+        Log.d(TAG, "startGame: VALUE:--------------" + whoStarts);
+        if (whoStarts == GameActivity.HOST_STARTS) {
             mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
         } else {
             mGameSettings = new GameSettings(GameActivity.CLIENT_STARTS);
