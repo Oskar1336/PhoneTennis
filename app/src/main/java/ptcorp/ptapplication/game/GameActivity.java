@@ -262,7 +262,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 if(mIsHost){
                     startGame();
                 } else{
-                    mGameFragment.lockOpponentDirectionDialog();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mGameFragment.lockOpponentDirectionDialog();
+                        }
+                    });
                 }
         }
     }
