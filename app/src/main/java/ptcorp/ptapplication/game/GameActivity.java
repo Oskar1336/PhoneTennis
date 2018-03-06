@@ -82,6 +82,66 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         setupSensors();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mBtController.enableBluetooth()) {
+            Log.w(TAG, "onResume: No bluetooth module available");
+            mConnectFragment.disableButtons();
+            Snackbar.make(findViewById(R.id.gameContainer), R.string.bluetooth_not_available, Snackbar.LENGTH_INDEFINITE);
+        }
+        if(hasMagneticSensor && hasAccelerometerSensor){
+            mSensorManager.registerListener(mSensorListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(mSensorListener, mMagneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        mBtController.unBindBluetoothService();
+        if(hasAccelerometerSensor && hasMagneticSensor){
+            mSensorManager.unregisterListener(mSensorListener);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mBtController.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE) {
+            mBtController.startHostThread();
+
+            loadingFragment = new LoadingFragment();
+            loadingFragment.setTitle("Waiting for opponent");
+            loadingFragment.setCancelable(false);
+            loadingFragment.show(mFragmentManager, "loadingFragment");
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
+    private void decideServer(GameSettings gameSettings){
+        mGameSettings = gameSettings;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mGameFragment.hideInitGame();
+                Log.d(TAG, "run: " + mGameSettings.getmPlayerStarting());
+                if (mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.HOST_STARTS) {
+                    mGameFragment.serveDialog();
+                } else if (!mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS) {
+                    mGameFragment.serveDialog();
+                }
+            }
+        });
+    }
+
     private void setupSensors(){
         mSensorListener = new SensorListener(this);
         mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
@@ -100,21 +160,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE) {
-            mBtController.startHostThread();
-
-            loadingFragment = new LoadingFragment();
-            loadingFragment.setTitle("Waiting for opponent");
-            loadingFragment.setCancelable(false);
-            loadingFragment.show(mFragmentManager, "loadingFragment");
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-
     private void setConnectFragment(){
         if (mConnectFragment == null) {
             mConnectFragment = new ConnectFragment();
@@ -124,6 +169,20 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mFragmentTransaction.replace(R.id.gameContainer, mConnectFragment, "connectFragment");
         mFragmentTransaction.commit();
     }
+
+    private void startGame() {
+        Random rnd = new Random();
+        int whoStarts = rnd.nextInt(2);
+        Log.d(TAG, "startGame: VALUE:--------------" + whoStarts);
+        if (whoStarts == GameActivity.HOST_STARTS) {
+            mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
+        } else {
+            mGameSettings = new GameSettings(GameActivity.CLIENT_STARTS);
+        }
+        mBtController.write(mGameSettings);
+        decideServer(mGameSettings);
+    }
+
 
     @Override
     public void host() {
@@ -196,22 +255,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
     }
 
-    private void decideServer(GameSettings gameSettings){
-        mGameSettings = gameSettings;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mGameFragment.hideInitGame();
-                Log.d(TAG, "run: " + mGameSettings.getmPlayerStarting());
-                if (mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.HOST_STARTS) {
-                    mGameFragment.serveDialog();
-                } else if (!mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS) {
-                    mGameFragment.serveDialog();
-                }
-            }
-        });
-    }
-
     @Override
     public void onHostError() {
         runOnUiThread(new Runnable() {
@@ -237,19 +280,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
             }
         });
-    }
-
-    private void startGame() {
-        Random rnd = new Random();
-        int whoStarts = rnd.nextInt(2);
-        Log.d(TAG, "startGame: VALUE:--------------" + whoStarts);
-        if (whoStarts == GameActivity.HOST_STARTS) {
-            mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
-        } else {
-            mGameSettings = new GameSettings(GameActivity.CLIENT_STARTS);
-        }
-        mBtController.write(mGameSettings);
-        decideServer(mGameSettings);
     }
 
     @Override
@@ -315,34 +345,5 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
             }, 4000);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!mBtController.enableBluetooth()) {
-            Log.w(TAG, "onResume: No bluetooth module available");
-            mConnectFragment.disableButtons();
-            Snackbar.make(findViewById(R.id.gameContainer), R.string.bluetooth_not_available, Snackbar.LENGTH_INDEFINITE);
-        }
-        if(hasMagneticSensor && hasAccelerometerSensor){
-            mSensorManager.registerListener(mSensorListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            mSensorManager.registerListener(mSensorListener, mMagneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        mBtController.unBindBluetoothService();
-        if(hasAccelerometerSensor && hasMagneticSensor){
-            mSensorManager.unregisterListener(mSensorListener);
-        }
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mBtController.onDestroy();
-        super.onDestroy();
     }
 }

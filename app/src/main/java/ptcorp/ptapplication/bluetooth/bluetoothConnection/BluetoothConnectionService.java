@@ -206,8 +206,8 @@ public class BluetoothConnectionService extends Service {
         private void stopBtHost() {
             try {
                 mmRunning = false;
+                mHostThread = null;
                 if (mmBtServerSocket != null) mmBtServerSocket.close();
-                mConnected = false;
             } catch (IOException e) {
                 Log.e(TAG, "Could'nt close bluetooth socket", e);
             }
@@ -259,7 +259,7 @@ public class BluetoothConnectionService extends Service {
             } catch (IOException e) {
                 Log.e(TAG, "stopBtClient: Error occurred trying to close bluetooth socket", e);
             }
-            mConnected = false;
+            mClientThread = null;
         }
     }
 
