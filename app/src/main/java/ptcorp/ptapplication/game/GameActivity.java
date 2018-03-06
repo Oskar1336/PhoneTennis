@@ -154,9 +154,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public void onMessageReceived(Object obj) {
         if (obj instanceof GameState) {
             mOtherDeviceState = (GameState)obj;
+            Log.d(TAG, "onMessageReceived: FIRST IF -------------------------");
             if (GameState.DEVICE_READY.equals(mOtherDeviceState) &&
                     GameState.DEVICE_READY.equals(mThisDeviceState)) {
+                Log.d(TAG, "onMessageReceived: SECOND IF---------------------- ");
                 if (mIsHost) {
+                    Log.d(TAG, "onMessageReceived: Start gmae about to be called-..........................------------------");
                     startGame();
                     runOnUiThread(new Runnable() {
                        @Override
