@@ -196,7 +196,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
     }
 
-<<<<<<< HEAD
     private void decideServer(GameSettings gameSettings){
         mGameSettings = gameSettings;
         runOnUiThread(new Runnable() {
@@ -204,12 +203,15 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             public void run() {
                 mGameFragment.hideInitGame();
                 Log.d(TAG, "run: " + mGameSettings.getmPlayerStarting());
-                if(mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.HOST_STARTS){
+                if (mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.HOST_STARTS) {
                     mGameFragment.serveDialog();
-                }else if(mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS){
+                } else if (mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS) {
                     mGameFragment.serveDialog();
                 }
-=======
+            }
+        });
+    }
+
     @Override
     public void onHostError() {
         runOnUiThread(new Runnable() {
@@ -229,7 +231,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     mConnectFragment.showHostNotStartedError();
                 else
                     mConnectFragment.showNotConnectedError();
->>>>>>> 37038f10633df4e4a755275c4225273253ed9ad7
             }
         });
     }
