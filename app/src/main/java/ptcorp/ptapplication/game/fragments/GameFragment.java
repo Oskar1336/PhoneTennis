@@ -80,6 +80,7 @@ public class GameFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 mLockOpponentDirection.onLock();
+                loadingFragment = new LoadingFragment();
                 loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
                 loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
                 alertDialogLock.dismiss();
