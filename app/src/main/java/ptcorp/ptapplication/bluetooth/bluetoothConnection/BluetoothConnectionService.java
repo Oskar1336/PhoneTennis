@@ -220,6 +220,7 @@ public class BluetoothConnectionService extends Service {
     private class BtClientThread extends Thread {
         private final BluetoothDevice mmDevice;
         private final BluetoothSocket mmSocket;
+        private boolean closing;
 
         BtClientThread(BluetoothDevice bTDevice) {
             mmDevice = bTDevice;
@@ -230,6 +231,7 @@ public class BluetoothConnectionService extends Service {
                 e.printStackTrace();
             }
             mmSocket = tmpSocket;
+            closing = false;
         }
 
         @Override
@@ -240,8 +242,10 @@ public class BluetoothConnectionService extends Service {
                 try {
                     mmSocket.connect();
                 } catch (IOException e) {
-                    Log.e(TAG, "Error occurred when trying to connect to bluetooth host", e);
-                    mListener.onHostError();
+                    Log.w(TAG, "Error occurred when trying to connect to bluetooth host", e);
+                    if (!closing) {
+                        mListener.onHostError();
+                    }
                     try {
                         mmSocket.close();
                     } catch (IOException e1) {
@@ -255,10 +259,11 @@ public class BluetoothConnectionService extends Service {
 
         void stopBtClient() {
             try {
+                closing = true;
                 mClientThread = null;
                 mmSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "stopBtClient: Error occurred trying to close bluetooth socket", e);
+                Log.w(TAG, "Error occurred trying to close bluetooth socket in client thread", e);
             }
         }
     }
@@ -308,8 +313,10 @@ public class BluetoothConnectionService extends Service {
                     Log.d(TAG, "Listening for incoming bl");
                     mListener.onMessageReceived(mBtOIS.readObject());
                 } catch (ClassNotFoundException | IOException e) {
-                    mListener.onBluetoothError();
-                    Log.e(TAG, "Error when listening for incoming object.", e);
+                    if (!running) {
+                        mListener.onBluetoothError();
+                        Log.e(TAG, "Error when listening for incoming object.", e);
+                    }
                     break;
                 }
             }
