@@ -80,6 +80,7 @@ public class GameFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 mLockOpponentDirection.onLock();
+                alertDialog.dismiss();
             }
         });
         alertDialog = builder.create();
