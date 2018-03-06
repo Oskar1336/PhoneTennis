@@ -65,6 +65,12 @@ public class GameFragment extends Fragment{
     }
 
     public void rotateCompass(RotateAnimation animation){
-        mCompass.startAnimation(animation);
+        if(mCompass != null)
+            mCompass.startAnimation(animation);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }
