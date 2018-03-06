@@ -31,7 +31,6 @@ public class BluetoothController{
     private static final String TAG = "BluetoothController";
 
     private BluetoothAdapter mBtAdapter;
-    private ArrayList<BTDevice> mBtDeviceList;
 
     private BluetoothConnectionService mConnectionService;
     private Intent mBtServiceConnIntent;
@@ -48,7 +47,6 @@ public class BluetoothController{
 
         checkBTPermissions();
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBtDeviceList = new ArrayList<>();
 
         mBtSearchReciever = new SearchReceiver();
 
@@ -87,10 +85,6 @@ public class BluetoothController{
     public void setSearchListener(DeviceSearchListener listener) {
         mListener = listener;
     }
-
-//    public BluetoothConnectionService getmConnectionService() {
-//        return mConnectionService;
-//    }
 
     /**
      * Enables bluetooth on the device. If bluetooth is'nt turned on the activity
@@ -179,6 +173,8 @@ public class BluetoothController{
             if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
                 BluetoothDevice dev = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
+                Log.d(TAG, "onReceive: " + dev.getName() + " / " + dev.getAddress());
+
                 boolean isPhone = true;
                 if (dev.getBluetoothClass() != null) {
                     if (dev.getBluetoothClass().getMajorDeviceClass() != BluetoothClass.Device.Major.PHONE) {
@@ -191,7 +187,6 @@ public class BluetoothController{
                             intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE),
                             dev
                     );
-                    mBtDeviceList.add(btDevice); // TODO: 2018-03-02 Probably wont be needed
                     mListener.onDeviceFound(btDevice);
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {

@@ -227,6 +227,7 @@ public class BluetoothConnectionService extends Service {
                     mmSocket.connect();
                 } catch (IOException e) {
                     Log.e(TAG, "Error occurred when trying to connect to bluetooth host", e);
+                    mListener.onHostError();
                     try {
                         mmSocket.close();
                     } catch (IOException e1) {
@@ -293,6 +294,7 @@ public class BluetoothConnectionService extends Service {
                     Log.d(TAG, "Listening for incoming bl");
                     mListener.onMessageReceived(mBtOIS.readObject());
                 } catch (ClassNotFoundException | IOException e) {
+                    mListener.onBluetoothError();
                     Log.e(TAG, "Error when listening for incoming object.", e);
                     break;
                 }

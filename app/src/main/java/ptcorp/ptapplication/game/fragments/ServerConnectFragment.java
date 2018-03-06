@@ -76,7 +76,7 @@ public class ServerConnectFragment extends DialogFragment {
     }
 
     public void updateComplete() {
-        mPullRefresh.setRefreshing(false);
+        if (mPullRefresh != null) mPullRefresh.setRefreshing(false);
     }
 
     public void setListener(DeviceListListener listener) {

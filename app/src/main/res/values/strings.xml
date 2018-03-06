@@ -8,4 +8,9 @@
     <string name="leaderboard">Leaderboard</string>
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="bluetooth_not_available">Bluetooth is not available on this device!</string>
+    <string name="host_error">Host error</string>
+    <string name="host_error_explanation">A host server has not been started on the device you are trying to connect to!</string>
+    <string name="close">Close</string>
+    <string name="bluetooth_error">Bluetooth error</string>
+    <string name="bluetooth_error_explination">Can not connect to selected bluetooth device. Please try to restart the host server and try to connect again.</string>
 </resources>

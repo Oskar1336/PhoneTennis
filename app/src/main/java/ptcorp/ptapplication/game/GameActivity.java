@@ -182,6 +182,29 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
     }
 
+    @Override
+    public void onHostError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mConnectFragment.showHostNotStartedError();
+            }
+        });
+    }
+
+    @Override
+    public void onBluetoothError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!mIsHost)
+                    mConnectFragment.showHostNotStartedError();
+                else
+                    mConnectFragment.showNotConnectedError();
+            }
+        });
+    }
+
     private void startGame() {
         Random rnd = new Random();
         int whoStarts = rnd.nextInt(2);
