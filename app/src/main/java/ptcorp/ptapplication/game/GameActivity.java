@@ -205,7 +205,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 Log.d(TAG, "run: " + mGameSettings.getmPlayerStarting());
                 if (mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.HOST_STARTS) {
                     mGameFragment.serveDialog();
-                } else if (mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS) {
+                } else if (!mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS) {
                     mGameFragment.serveDialog();
                 }
             }
