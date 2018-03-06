@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 
@@ -51,6 +52,27 @@ public class GameFragment extends Fragment{
         View v = inflater.inflate(R.layout.compass_dialog, null);
         builder.setView(v);
         ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
+        mCompass = v.findViewById(R.id.ivCompass);
+        btnLock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+    }
+
+    public void lockOpponentDirectionDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.compass_dialog, null);
+        builder.setView(v);
+        ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
+        TextView tvCompassTitle  = v.findViewById(R.id.tvCompassTitle);
+        tvCompassTitle.setText(R.string.point_to_opponent_message);
         mCompass = v.findViewById(R.id.ivCompass);
         btnLock.setOnClickListener(new View.OnClickListener() {
             @Override

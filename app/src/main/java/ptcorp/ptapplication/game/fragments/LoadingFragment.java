@@ -27,7 +27,7 @@ public class LoadingFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.host_loading_fragment, container, false);
+        View view = inflater.inflate(R.layout.loading_fragment, container, false);
         mLoading = view.findViewById(R.id.rotateloading);
         tvTitle = view.findViewById(R.id.tvTitle);
         tvTitle.setText(this.title);
