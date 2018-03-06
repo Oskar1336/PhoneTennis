@@ -2,6 +2,7 @@ package ptcorp.ptapplication.game.fragments;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialog;
     private ImageView mCompass;
+    private LockOpponentDirection mLockOpponentDirection;
 
 
     public GameFragment() {
@@ -77,7 +79,7 @@ public class GameFragment extends Fragment{
         btnLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mLockOpponentDirection.onLock();
             }
         });
         alertDialog = builder.create();
@@ -92,7 +94,17 @@ public class GameFragment extends Fragment{
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mLockOpponentDirection = (LockOpponentDirection) getActivity();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+    }
+
+    public interface LockOpponentDirection{
+        void onLock();
     }
 }
