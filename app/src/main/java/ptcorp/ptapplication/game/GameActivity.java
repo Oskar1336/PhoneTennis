@@ -154,24 +154,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public void onMessageReceived(Object obj) {
         if (obj instanceof GameState) {
             mOtherDeviceState = (GameState)obj;
-
-            if(mOtherDeviceState == null){
-                Log.d(TAG, "onMessageReceived: otherdeivce null");
-            }
-
-            if(mThisDeviceState == null){
-                Log.d(TAG, "onMessageReceived:this= null");
-            }
-
-//            Log.d(TAG, "onMessageReceived: " + mOtherDeviceState.name() + " THIS: " + mThisDeviceState.name());
-            Log.d(TAG, "onMessageReceived: -------------------First IF----------------");
-
-
             if (GameState.DEVICE_READY.equals(mOtherDeviceState) &&
                     GameState.DEVICE_READY.equals(mThisDeviceState)) {
-                Log.d(TAG, "onMessageReceived: -------------------Second IF----------------");
                 if (mIsHost) {
-                    Log.d(TAG, "onMessageReceived: -------------------Third IF----------------");
                     startGame();
                     runOnUiThread(new Runnable() {
                        @Override
@@ -182,16 +167,18 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
             }
         } else if(obj instanceof GameSettings) {
-            Log.d(TAG, "onMessageReceived: -------------------First ELSE-IF----------------");
             mGameSettings = (GameSettings)obj;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mGameFragment.hideInitGame();
+                    if(mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.HOST_STARTS){
+                        mGameFragment.serveDialog();
+                    }else if(mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS){
+                        mGameFragment.serveDialog();
+                    }
                 }
             });
-        } else{
-            Log.d(TAG, "onMessageReceived: -------------------NONE----------------");
         }
     }
 

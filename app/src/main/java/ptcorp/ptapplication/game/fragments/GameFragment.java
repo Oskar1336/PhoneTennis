@@ -42,7 +42,7 @@ public class GameFragment extends Fragment{
         loadingFragment.dismiss();
     }
 
-    public void showAlertDialog(){
+    public void serveDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = this.getLayoutInflater();
         View v = inflater.inflate(R.layout.compass_dialog, null);
