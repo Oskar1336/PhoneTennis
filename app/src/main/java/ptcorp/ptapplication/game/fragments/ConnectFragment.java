@@ -1,6 +1,8 @@
 package ptcorp.ptapplication.game.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -49,6 +51,32 @@ public class ConnectFragment extends Fragment {
     public void enableButtons() {
         mHostButton.setEnabled(true);
         mConnectButton.setEnabled(true);
+    }
+
+    public void showHostNotStartedError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.host_error);
+        builder.setMessage(R.string.host_error_explanation);
+        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    public void showNotConnectedError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.bluetooth_error);
+        builder.setMessage(R.string.bluetooth_error_explination);
+        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     public interface ConnectFragmentListener{

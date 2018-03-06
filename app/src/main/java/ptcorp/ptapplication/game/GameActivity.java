@@ -196,6 +196,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
     }
 
+<<<<<<< HEAD
     private void decideServer(GameSettings gameSettings){
         mGameSettings = gameSettings;
         runOnUiThread(new Runnable() {
@@ -208,6 +209,27 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }else if(mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS){
                     mGameFragment.serveDialog();
                 }
+=======
+    @Override
+    public void onHostError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mConnectFragment.showHostNotStartedError();
+            }
+        });
+    }
+
+    @Override
+    public void onBluetoothError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!mIsHost)
+                    mConnectFragment.showHostNotStartedError();
+                else
+                    mConnectFragment.showNotConnectedError();
+>>>>>>> 37038f10633df4e4a755275c4225273253ed9ad7
             }
         });
     }
