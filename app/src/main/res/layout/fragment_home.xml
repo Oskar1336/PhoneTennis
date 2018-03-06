@@ -6,9 +6,6 @@
     android:layout_height="match_parent"
     tools:context="ptcorp.ptapplication.main.fragments.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-
     <info.hoang8f.widget.FButton
         android:id="@+id/btnPlay"
         android:layout_width="232dp"

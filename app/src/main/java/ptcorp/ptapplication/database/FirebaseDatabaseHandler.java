@@ -98,7 +98,7 @@ public class FirebaseDatabaseHandler {
         Log.d(TAG, "showData:" + dataSnapshot.toString());
 
         for (DataSnapshot dsScore : dataSnapshot.child("Leaderboard").child("Scores").getChildren()) {
-            Log.d(TAG, "showData: "+ dsScore); // TODO: FIXA DETTA
+            Log.d(TAG, "showData: "+ dsScore);
             LeaderboardScore leaderboardScore = new LeaderboardScore();
             Log.d(TAG, "showData: " + dsScore.toString());
             leaderboardScore.setUsername(dsScore.getValue(LeaderboardScore.class).getUsername());

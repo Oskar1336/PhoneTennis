@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context="ptcorp.ptapplication.main.fragments.GamesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvGames"
         android:layout_width="0dp"
