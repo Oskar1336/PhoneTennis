@@ -31,9 +31,10 @@ import ptcorp.ptapplication.game.fragments.GameFragment;
 import ptcorp.ptapplication.game.fragments.LoadingFragment;
 import ptcorp.ptapplication.game.fragments.ServerConnectFragment;
 import ptcorp.ptapplication.game.pojos.GameSettings;
+import ptcorp.ptapplication.game.pojos.PlayerPositions;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
-        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult {
+        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.LockOpponentDirection {
     private static final String TAG = "GameActivity";
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
@@ -64,6 +65,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float[] mRotationMatrix = new float[16];
     private float[] mOrientation = new float[3];
     private float mCurrentDegree;
+
+    private PlayerPositions playerPositions;
+    private float degree;
     private ImageView mCompass;
 
 
@@ -252,17 +256,29 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 Log.d(TAG, "onMessageReceived: SECOND IF---------------------- ");
                 if (mIsHost) {
                     Log.d(TAG, "onMessageReceived: Start gmae about to be called-..........................------------------");
-                    startGame();
+//                    startGame();
                     runOnUiThread(new Runnable() {
                        @Override
                        public void run() {
                            mGameFragment.hideInitGame();
+                           mGameFragment.lockOpponentDirectionDialog();
                        }
                    });
                 }
             }
         } else if(obj instanceof GameSettings) {
             decideServer((GameSettings) obj);
+        } else if(obj instanceof PlayerPositions){
+                if(mIsHost){
+                    startGame();
+                } else{
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mGameFragment.lockOpponentDirectionDialog();
+                        }
+                    });
+                }
         }
     }
 
@@ -337,6 +353,23 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
     }
 
+    @Override
+    public void onLock() {
+        playerPositions = new PlayerPositions();
+        degree = 0;
+        for(int i = 0; i<5; i++){
+            degree += mCurrentDegree;
+        }
+        degree = degree / 5;
+
+        if(mIsHost){
+            playerPositions.setmHostPosition(degree);
+        } else{
+            playerPositions.setmClientPosition(degree);
+        }
+        mBtController.write(playerPositions);
+        
+    }
 
     private class RunOnUI implements Runnable{
         @Override
