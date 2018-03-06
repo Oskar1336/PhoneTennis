@@ -1,6 +1,8 @@
 package ptcorp.ptapplication.game.fragments;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ public class LoadingFragment extends DialogFragment {
     private TextView tvTitle;
     private String title;
     private boolean btnVisibility = true;
+    private LoadingDialogListener mListener;
 
     @Nullable
     @Override
@@ -52,9 +55,18 @@ public class LoadingFragment extends DialogFragment {
        this.btnVisibility = shouldBeVisible;
     }
 
+    public void setListener(LoadingDialogListener listener) {
+        mListener = listener;
+    }
+
     @Override
     public void dismiss() {
         mLoading.stop();
+        if (mListener != null) mListener.onLoadingCancel();
         super.dismiss();
+    }
+
+    public interface LoadingDialogListener {
+        void onLoadingCancel();
     }
 }

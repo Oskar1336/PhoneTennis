@@ -1,10 +1,13 @@
 package ptcorp.ptapplication.game.fragments;
 
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,18 @@ public class ServerConnectFragment extends DialogFragment {
 
     public ServerConnectFragment() {
         // Required empty public constructor
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        return new Dialog(getActivity(), getTheme()) {
+            @Override
+            public void onBackPressed() {
+                super.onBackPressed();
+                mListener.onDeviceSearchCancel();
+            }
+        };
     }
 
     @Override
@@ -69,6 +84,12 @@ public class ServerConnectFragment extends DialogFragment {
         });
         mPullRefresh.setRefreshing(true);
         return view;
+    }
+
+    @Override
+    public void dismiss() {
+        mListener.onDeviceSearchCancel();
+        super.dismiss();
     }
 
     public void addItemToList(BTDevice btDevice){
@@ -126,5 +147,6 @@ public class ServerConnectFragment extends DialogFragment {
 
     public interface DeviceListListener{
         void onDeviceClick(BluetoothDevice btDevice);
+        void onDeviceSearchCancel();
     }
 }

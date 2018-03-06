@@ -86,7 +86,7 @@ public class BluetoothConnectionService extends Service {
     /**
      * Stops any attempt to connect to a Host as a client and start listening for incoming Bluetooth connections as a Host.
      */
-    public void startBtServer() {
+    public void startBtHost() {
         if (mClientThread != null) {
             mClientThread.stopBtClient();
             mClientThread = null;
@@ -96,6 +96,13 @@ public class BluetoothConnectionService extends Service {
             mHostThread = new BtHostThread();
             mHostThread.start();
         }
+    }
+
+    /**
+     * Stop hosting a Bluetooth server.
+     */
+    public void stopBtHost() {
+        if (mHostThread != null) mHostThread.stopBtHost();
     }
 
     /**
@@ -121,24 +128,17 @@ public class BluetoothConnectionService extends Service {
     }
 
     /**
-     * Disconnect from the Bluetooth connection.
-     */
-    public void disconnectFromDevice() {
-        mConnectedThread.disconnect();
-    }
-
-    /**
-     * Stop hosting a Bluetooth server.
-     */
-    public void stopHost() {
-        if (mHostThread != null) mHostThread.stopBtHost();
-    }
-
-    /**
      * Stop connecting to a device.
      */
     public void stopClient() {
         if (mClientThread != null) mClientThread.stopBtClient();
+    }
+
+    /**
+     * Disconnect from the Bluetooth connection.
+     */
+    public void disconnectFromDevice() {
+        mConnectedThread.disconnect();
     }
 
     /**
@@ -197,7 +197,7 @@ public class BluetoothConnectionService extends Service {
                         handleConnectedDevice(socket);
                     }
                 } catch (IOException e) {
-                    Log.e(TAG, "Error occurred when trying to accept client.", e);
+                    Log.w(TAG, "Error occurred when trying to accept client.", e);
                     break;
                 }
             }
@@ -255,11 +255,11 @@ public class BluetoothConnectionService extends Service {
 
         void stopBtClient() {
             try {
+                mClientThread = null;
                 mmSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "stopBtClient: Error occurred trying to close bluetooth socket", e);
             }
-            mClientThread = null;
         }
     }
 

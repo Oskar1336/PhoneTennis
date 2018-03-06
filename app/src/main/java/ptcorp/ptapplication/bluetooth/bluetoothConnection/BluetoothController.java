@@ -14,9 +14,6 @@ import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 import ptcorp.ptapplication.game.GameActivity;
 
 /**
@@ -38,6 +35,8 @@ public class BluetoothController{
     private boolean mBtServiceBound = false;
 
     private final BroadcastReceiver mBtSearchReciever;
+    private boolean mIsSearchingForDevices;
+
     private DeviceSearchListener mListener;
 
     private GameActivity mActivity;
@@ -54,31 +53,23 @@ public class BluetoothController{
         mActivity.startService(mBtServiceConnIntent);
     }
 
-    public void bindBluetoothService() {
+    public void onResume() {
         if (!mBtServiceBound) {
             mBtServiceConnection = new BtServiceConnection();
             mActivity.bindService(mBtServiceConnIntent, mBtServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
-    public void unBindBluetoothService() {
+    public void onPause() {
         if (mBtServiceBound) {
             mActivity.unbindService(mBtServiceConnection);
             mBtServiceBound = false;
         }
+        stopSearchingForDevices();
     }
 
     public void onDestroy() {
         mActivity.stopService(mBtServiceConnIntent);
-
-        if (mBtAdapter != null) {
-            mBtAdapter.cancelDiscovery();
-        }
-        try {
-            mActivity.unregisterReceiver(mBtSearchReciever);
-        } catch (Exception e) {
-            Log.i(TAG, "onDestroy: SearchReceiver not registered before");
-        }
     }
 
     public void setSearchListener(DeviceSearchListener listener) {
@@ -107,7 +98,7 @@ public class BluetoothController{
     }
 
     /**
-     * The host device must be discoverable. Make the host device discoverable for 500s.
+     * The host device must be discoverable. Make the host device discoverable for 200s.
      * starts BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE activity for result with request code
      * BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE
      */
@@ -115,7 +106,7 @@ public class BluetoothController{
         checkBTPermissions();
 
         Intent discIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 500);
+        discIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 200);
         mActivity.startActivityForResult(discIntent, BLUETOOTH_DISCOVERABLE_REQUEST_CODE);
     }
 
@@ -124,8 +115,7 @@ public class BluetoothController{
      */
     public void startSearchingForDevices() {
         if (mBtAdapter != null) {
-            if (mBtAdapter.isDiscovering())
-                mBtAdapter.cancelDiscovery();
+            stopSearchingForDevices();
 
             checkBTPermissions();
 
@@ -135,7 +125,24 @@ public class BluetoothController{
             filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
             filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
             mActivity.registerReceiver(mBtSearchReciever, filter);
+
+            mIsSearchingForDevices = true;
         }
+    }
+
+    public void stopSearchingForDevices() {
+        Log.i(TAG, "stopSearchingForDevices: Stopped to search for bluetooth devices");
+        if (mBtAdapter != null) {
+            if (mBtAdapter.isDiscovering())
+                mBtAdapter.cancelDiscovery();
+        }
+
+        try {
+            mActivity.unregisterReceiver(mBtSearchReciever);
+        } catch (Exception e) {
+            Log.i(TAG, "onDestroy: SearchReceiver not registered before");
+        }
+        mIsSearchingForDevices = false;
     }
 
     private void checkBTPermissions() {
@@ -147,7 +154,11 @@ public class BluetoothController{
     }
 
     public void startHostThread() {
-        mConnectionService.startBtServer();
+        mConnectionService.startBtHost();
+    }
+
+    public void stopHostThread() {
+        mConnectionService.stopBtHost();
     }
 
     public void write(Object obj) {
@@ -155,8 +166,7 @@ public class BluetoothController{
     }
 
     public void pairDevice(BluetoothDevice device) {
-        if (mBtAdapter.isDiscovering())
-            mBtAdapter.cancelDiscovery();
+        stopSearchingForDevices();
 
         // Check if device is already bound.
         if (mBtAdapter.getBondedDevices().contains(device)) {

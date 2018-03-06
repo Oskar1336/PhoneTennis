@@ -2,6 +2,7 @@ package ptcorp.ptapplication.game;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -70,7 +71,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private ImageView mCompass;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +81,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mBtController = new BluetoothController(this);
         mBtController.setSearchListener(this);
 
-        mBtController.bindBluetoothService();
         mCompass = findViewById(R.id.ivCompass);
         setupSensors();
     }
@@ -89,6 +88,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     protected void onResume() {
         super.onResume();
+        mBtController.onResume();
+
         if (!mBtController.enableBluetooth()) {
             Log.w(TAG, "onResume: No bluetooth module available");
             mConnectFragment.disableButtons();
@@ -102,7 +103,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     protected void onPause() {
-        mBtController.unBindBluetoothService();
+        mBtController.onPause();
+        if (serverConnectFragment != null) serverConnectFragment.dismiss();
+
         if(hasAccelerometerSensor && hasMagneticSensor){
             mSensorManager.unregisterListener(mSensorListener);
         }
@@ -117,10 +120,17 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE) {
+        if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE &&
+                resultCode == 200) {
             mBtController.startHostThread();
 
             loadingFragment = new LoadingFragment();
+            loadingFragment.setListener(new LoadingFragment.LoadingDialogListener() {
+                @Override
+                public void onLoadingCancel() {
+                    mBtController.stopHostThread();
+                }
+            });
             loadingFragment.setTitle("Waiting for opponent");
             loadingFragment.setCancelable(false);
             loadingFragment.show(mFragmentManager, "loadingFragment");
@@ -128,7 +138,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
 
     private void decideServer(GameSettings gameSettings){
         mGameSettings = gameSettings;
@@ -198,11 +207,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void connect() {
         mIsHost = false;
-        mBtController.startSearchingForDevices();
 
         serverConnectFragment = new ServerConnectFragment();
         serverConnectFragment.show(mFragmentManager, "serverConnectFragment");
         serverConnectFragment.setListener(GameActivity.this);
+
+        mBtController.startSearchingForDevices();
     }
 
     @Override
@@ -308,6 +318,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onDeviceClick(BluetoothDevice btDevice) {
         mBtController.pairDevice(btDevice);
+    }
+
+    @Override
+    public void onDeviceSearchCancel() {
+        mBtController.stopSearchingForDevices();
     }
 
     @Override
