@@ -82,12 +82,17 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE) {
-            // TODO: 2018-03-01 Show hostloading fragment here maybe
             mBtController.startHostThread();
+
+            loadingFragment = new LoadingFragment();
+            loadingFragment.setTitle("Waiting for opponent");
+            loadingFragment.setCancelable(false);
+            loadingFragment.show(mFragmentManager, "loadingFragment");
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
 
     private void setConnectFragment(){
         if (mConnectFragment == null) {
@@ -102,11 +107,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void host() {
         mIsHost = true;
-        loadingFragment = new LoadingFragment();
-        loadingFragment.setTitle("Waiting for opponent");
-        loadingFragment.setCancelable(false);
-        loadingFragment.show(mFragmentManager, "loadingFragment");
-
         mBtController.enableDiscoverable();
     }
 

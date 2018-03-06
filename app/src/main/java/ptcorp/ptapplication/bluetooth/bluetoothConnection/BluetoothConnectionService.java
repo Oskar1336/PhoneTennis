@@ -128,6 +128,20 @@ public class BluetoothConnectionService extends Service {
     }
 
     /**
+     * Stop hosting a Bluetooth server.
+     */
+    public void stopHost() {
+        if (mHostThread != null) mHostThread.stopBtHost();
+    }
+
+    /**
+     * Stop connecting to a device.
+     */
+    public void stopClient() {
+        if (mClientThread != null) mClientThread.stopBtClient();
+    }
+
+    /**
      * Set a listener for listening to Bluetooth events.
      * @param listener BtServiceListener
      */
