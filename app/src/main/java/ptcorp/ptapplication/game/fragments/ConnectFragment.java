@@ -54,7 +54,7 @@ public class ConnectFragment extends Fragment {
     }
 
     public void showHostNotStartedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.host_error);
         builder.setMessage(R.string.host_error_explanation);
         builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -67,7 +67,7 @@ public class ConnectFragment extends Fragment {
     }
 
     public void showNotConnectedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.bluetooth_error);
         builder.setMessage(R.string.bluetooth_error_explination);
         builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
