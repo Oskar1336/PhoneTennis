@@ -217,7 +217,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mConnectFragment.showHostNotStartedError();
+                if (mConnectFragment != null) mConnectFragment.showHostNotStartedError();
             }
         });
     }
@@ -227,10 +227,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (!mIsHost)
-                    mConnectFragment.showHostNotStartedError();
-                else
-                    mConnectFragment.showNotConnectedError();
+                if (!mIsHost) {
+                    if (mConnectFragment != null)
+                        mConnectFragment.showHostNotStartedError();
+                }
+                else {
+                    if (mConnectFragment != null)
+                        mConnectFragment.showNotConnectedError();
+                }
             }
         });
     }
