@@ -22,7 +22,7 @@ import ptcorp.ptapplication.R;
 public class GameFragment extends Fragment{
     private static final String TAG = "GameFragment";
     private LoadingFragment loadingFragment;
-    private AlertDialog alertDialog;
+    private AlertDialog alertDialogServe, alertDialogLock;
     private ImageView mCompass;
     private LockOpponentDirection mLockOpponentDirection;
 
@@ -61,10 +61,10 @@ public class GameFragment extends Fragment{
                 // TODO: 2018-03-07 Implement this next
             }
         });
-        alertDialog = builder.create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setCancelable(false);
-        alertDialog.show();
+        alertDialogServe = builder.create();
+        alertDialogServe.setCanceledOnTouchOutside(false);
+        alertDialogServe.setCancelable(false);
+        alertDialogServe.show();
     }
 
     public void lockOpponentDirectionDialog(){
@@ -80,15 +80,16 @@ public class GameFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 mLockOpponentDirection.onLock();
+                loadingFragment = new LoadingFragment();
                 loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
                 loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
-                alertDialog.dismiss();
+                alertDialogLock.dismiss();
             }
         });
-        alertDialog = builder.create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setCancelable(false);
-        alertDialog.show();
+        alertDialogLock = builder.create();
+        alertDialogLock.setCanceledOnTouchOutside(false);
+        alertDialogLock.setCancelable(false);
+        alertDialogLock.show();
     }
 
     public void rotateCompass(RotateAnimation animation){
