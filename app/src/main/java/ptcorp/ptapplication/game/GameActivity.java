@@ -2,7 +2,6 @@ package ptcorp.ptapplication.game;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -32,9 +31,10 @@ import ptcorp.ptapplication.game.fragments.LoadingFragment;
 import ptcorp.ptapplication.game.fragments.ServerConnectFragment;
 import ptcorp.ptapplication.game.pojos.GameSettings;
 import ptcorp.ptapplication.game.pojos.PlayerPositions;
+import ptcorp.ptapplication.game.pojos.StrikeInformation;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
-        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.LockOpponentDirection {
+        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.LockDirection {
     private static final String TAG = "GameActivity";
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
@@ -186,7 +186,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private void startGame() {
         Log.d(TAG, "startGame: HEJ");
         Random rnd = new Random();
-        int whoStarts = rnd.nextInt(2);
+//        int whoStarts = rnd.nextInt(2);
+        int whoStarts = 1;
         Log.d(TAG, "startGame: VALUE:--------------" + whoStarts);
         if (whoStarts == GameActivity.HOST_STARTS) {
             mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
@@ -286,6 +287,19 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         }
                     });
                 }
+        } else if(obj instanceof StrikeInformation){
+            StrikeInformation strikeInformation = (StrikeInformation)obj;
+            float opponentStrike = strikeInformation.getDirection();
+            float moveToPosition = degree;
+            moveToPosition -= opponentStrike;
+            if(opponentStrike < 0){
+                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
+            } else if(opponentStrike > 0){
+                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
+            } else{
+
+            }
+
         }
     }
 
@@ -376,6 +390,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
         mBtController.write(playerPositions);
         
+    }
+
+    @Override
+    public void onStrike() {
+        float strikeDirection = mCurrentDegree;
+        strikeDirection = strikeDirection - degree;
+        // TODO: 2018-03-07 Set a delay here depending on distance.
+        mBtController.write(new StrikeInformation(0f,0f, strikeDirection));
     }
 
     private class RunOnUI implements Runnable{

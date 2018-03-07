@@ -4,6 +4,7 @@ package ptcorp.ptapplication.game.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 
@@ -24,7 +26,7 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialogServe, alertDialogLock;
     private ImageView mCompass;
-    private LockOpponentDirection mLockOpponentDirection;
+    private LockDirection mLockDirection;
 
 
     public GameFragment() {
@@ -46,6 +48,12 @@ public class GameFragment extends Fragment{
 
     public void hideInitGame() {
         loadingFragment.dismiss();
+    }
+
+    public void showNewDegree(String message){
+        Toast toast = Toast.makeText(getActivity(), "message", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
     }
 
     public void serveDialog(){
@@ -79,7 +87,7 @@ public class GameFragment extends Fragment{
         btnLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLockOpponentDirection.onLock();
+                mLockDirection.onLock();
                 loadingFragment = new LoadingFragment();
                 loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
                 loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
@@ -100,7 +108,7 @@ public class GameFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mLockOpponentDirection = (LockOpponentDirection) getActivity();
+        mLockDirection = (LockDirection) getActivity();
     }
 
     @Override
@@ -108,7 +116,9 @@ public class GameFragment extends Fragment{
         super.onResume();
     }
 
-    public interface LockOpponentDirection{
+    public interface LockDirection {
         void onLock();
+        void onStrike();
     }
+
 }

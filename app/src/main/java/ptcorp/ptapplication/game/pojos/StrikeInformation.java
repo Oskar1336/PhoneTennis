@@ -3,34 +3,36 @@ package ptcorp.ptapplication.game.pojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by LinusHakansson on 2018-03-01.
  */
 
-public class StrikeInformation implements Parcelable {
-    private int acceleration, strength, direction;
+public class StrikeInformation implements Parcelable, Serializable {
+    private float acceleration, strength, direction;
 
-    public StrikeInformation(int acceleration, int strength, int direction) {
+    public StrikeInformation(float acceleration, float strength, float direction) {
         this.acceleration = acceleration;
         this.strength = strength;
         this.direction = direction;
     }
 
-    public int getAcceleration() {
+    public float getAcceleration() {
         return this.acceleration;
     }
 
-    public int getStrength() {
+    public float getStrength() {
         return this.strength;
     }
 
-    public int getDirection() {
+    public float getDirection() {
         return this.direction;
     }
 
     protected StrikeInformation(Parcel in) {
-        int [] data = new int[3];
-        in.readIntArray(data);
+        float [] data = new float[3];
+        in.readFloatArray(data);
         this.acceleration = data[0];
         this.strength = data[1];
         this.direction = data[2];
@@ -55,6 +57,6 @@ public class StrikeInformation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeIntArray(new int[]{this.acceleration, this.strength, this.direction});
+        dest.writeFloatArray(new float[]{this.acceleration, this.strength, this.direction});
     }
 }
