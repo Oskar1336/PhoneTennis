@@ -3,12 +3,15 @@ package ptcorp.ptapplication.game.pojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by LinusHakansson on 2018-03-01.
  */
 
-public class RoundResult implements Parcelable {
-    private int hostPoints, clientPoints;
+public class RoundResult implements Parcelable, Serializable {
+    private int hostPoints=0, clientPoints=0;
+    private final static int GAME_POINTS = 7;
     private RoundStatus roundStatus;
     private boolean isGameOver;
 
@@ -25,12 +28,17 @@ public class RoundResult implements Parcelable {
         this.isGameOver = gameOver;
     }
 
-    public void setHostPoints(int hostPoints) {
-        this.hostPoints = hostPoints;
+    public void setHostPoints() {
+        this.hostPoints++;
+        if (hostPoints==GAME_POINTS)
+            isGameOver = true;
     }
 
-    public void setClientPoints(int clientPoints) {
-        this.clientPoints = clientPoints;
+    public void setClientPoints() {
+        this.clientPoints++;
+        if (clientPoints==GAME_POINTS){
+            isGameOver = true;
+        }
     }
 
     public void setRoundStatus(RoundStatus roundStatus) {

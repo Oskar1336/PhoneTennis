@@ -33,6 +33,7 @@ import ptcorp.ptapplication.game.fragments.LoadingFragment;
 import ptcorp.ptapplication.game.fragments.ServerConnectFragment;
 import ptcorp.ptapplication.game.pojos.GameSettings;
 import ptcorp.ptapplication.game.pojos.PlayerPositions;
+import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
@@ -40,6 +41,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private static final String TAG = "GameActivity";
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
+    private final static float ERROR_MARGIN = 20;
 
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
@@ -69,6 +71,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float mCurrentDegree;
 
     private PlayerPositions playerPositions;
+    private RoundResult mRoundResult = new RoundResult();
     private float degree;
     private ImageView mCompass;
     private boolean mTimeToStrike;
@@ -328,13 +331,45 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             float moveToPosition = degree;
             moveToPosition -= opponentStrike;
             if(opponentStrike < 0){
-                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
-            } else if(opponentStrike > 0){
                 mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
+            } else if(opponentStrike > 0){
+                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
             } else{
-
+                mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
 
+            if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) && mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameFragment.strikeDialog();
+                    }
+                });
+            } else{
+                if(mIsHost){
+                    mRoundResult.setClientPoints();
+                } else{
+                    mRoundResult.setHostPoints();
+                }
+
+                if (mRoundResult.isGameOver()){
+
+                }
+
+                mBtController.write(mRoundResult);
+            }
+        } else if (obj instanceof RoundResult){
+            mRoundResult = (RoundResult)obj;
+            
+            if(mIsHost){
+                mRoundResult.setClientPoints();
+            } else{
+                mRoundResult.setHostPoints();
+            }
+
+            if (mRoundResult.isGameOver()){
+
+            }
         }
     }
 
