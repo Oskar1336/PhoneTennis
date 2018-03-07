@@ -33,6 +33,7 @@ import ptcorp.ptapplication.game.fragments.LoadingFragment;
 import ptcorp.ptapplication.game.fragments.ServerConnectFragment;
 import ptcorp.ptapplication.game.pojos.GameSettings;
 import ptcorp.ptapplication.game.pojos.PlayerPositions;
+import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
@@ -70,6 +71,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float mCurrentDegree;
 
     private PlayerPositions playerPositions;
+    private RoundResult mRoundResult = new RoundResult();
     private float degree;
     private ImageView mCompass;
 
@@ -337,6 +339,30 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         mGameFragment.strikeDialog();
                     }
                 });
+            } else{
+                if(mIsHost){
+                    mRoundResult.setClientPoints();
+                } else{
+                    mRoundResult.setHostPoints();
+                }
+
+                if (mRoundResult.isGameOver()){
+
+                }
+
+                mBtController.write(mRoundResult);
+            }
+        } else if (obj instanceof RoundResult){
+            mRoundResult = (RoundResult)obj;
+            
+            if(mIsHost){
+                mRoundResult.setClientPoints();
+            } else{
+                mRoundResult.setHostPoints();
+            }
+
+            if (mRoundResult.isGameOver()){
+
             }
         }
     }
