@@ -53,32 +53,6 @@ public class ConnectFragment extends Fragment {
         mConnectButton.setEnabled(true);
     }
 
-    public void showHostNotStartedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.host_error);
-        builder.setMessage(R.string.host_error_explanation);
-        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
-    public void showNotConnectedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.bluetooth_error);
-        builder.setMessage(R.string.bluetooth_error_explination);
-        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
-
     public interface ConnectFragmentListener{
         void host();
         void connect();

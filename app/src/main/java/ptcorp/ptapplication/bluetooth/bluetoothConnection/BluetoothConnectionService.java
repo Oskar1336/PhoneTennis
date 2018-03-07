@@ -241,6 +241,7 @@ public class BluetoothConnectionService extends Service {
 
                 try {
                     mmSocket.connect();
+                    handleConnectedDevice(mmSocket);
                 } catch (IOException e) {
                     Log.w(TAG, "Error occurred when trying to connect to bluetooth host", e);
                     if (!closing) {
@@ -251,9 +252,7 @@ public class BluetoothConnectionService extends Service {
                     } catch (IOException e1) {
                         Log.e(TAG, "Error occurred when trying to close socket in client thread", e);
                     }
-                    return;
                 }
-                handleConnectedDevice(mmSocket);
             }
         }
 

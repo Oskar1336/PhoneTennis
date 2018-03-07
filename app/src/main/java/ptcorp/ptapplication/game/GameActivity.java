@@ -1,6 +1,8 @@
 package ptcorp.ptapplication.game;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -199,6 +201,33 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
 
+
+    private void showHostNotStartedError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.host_error);
+        builder.setMessage(R.string.host_error_explanation);
+        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showNotConnectedError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.bluetooth_error);
+        builder.setMessage(R.string.bluetooth_error_explination);
+        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
     @Override
     public void host() {
         mIsHost = true;
@@ -308,7 +337,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mConnectFragment != null) mConnectFragment.showHostNotStartedError();
+                showHostNotStartedError();
             }
         });
     }
@@ -319,12 +348,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             @Override
             public void run() {
                 if (!mIsHost) {
-                    if (mConnectFragment != null)
-                        mConnectFragment.showHostNotStartedError();
-                }
-                else {
-                    if (mConnectFragment != null)
-                        mConnectFragment.showNotConnectedError();
+                    showHostNotStartedError();
+                } else {
+                    showNotConnectedError();
                 }
             }
         });
