@@ -50,10 +50,15 @@ public class GameFragment extends Fragment{
         loadingFragment.dismiss();
     }
 
-    public void showNewDegree(String message){
-        Toast toast = Toast.makeText(getActivity(), "message", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
+    public void showNewDegree(final String message){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+            }
+        });
     }
 
     public void serveDialog(){
