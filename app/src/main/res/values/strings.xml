@@ -16,4 +16,5 @@
     <string name="bluetooth_error_explination">Can not connect to selected bluetooth device. Please try to restart the host server and try to connect again.</string>
     <string name="start_degree">Start degree</string>
     <string name="current_degree">Current degree</string>
+    <string name="choose_your_serve_direction">Choose your serve direction</string>
 </resources>

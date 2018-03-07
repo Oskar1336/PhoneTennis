@@ -26,6 +26,7 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike;
     private ImageView mCompass;
+    private TextView hostPoints, clientPoints;
     private LockDirection mLockDirection;
 
 
@@ -43,92 +44,132 @@ public class GameFragment extends Fragment{
         loadingFragment.setTitle("Setting up game..");
         loadingFragment.enableButton(false);
         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
+        hostPoints = view.findViewById(R.id.tvHostPoints);
+        clientPoints = view.findViewById(R.id.tvClintPoints);
         return view;
     }
 
     public void hideInitGame() {
-        loadingFragment.dismiss();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingFragment.dismiss();
+            }
+        });
     }
 
     public void showNewDegree(final String message){
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+                Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
                 toast.show();
             }
         });
     }
 
     public void serveDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.serve_dialog, null);
-        builder.setView(v);
-        ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
-        mCompass = v.findViewById(R.id.ivCompass);
-        btnLock.setOnClickListener(new View.OnClickListener() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-               mLockDirection.onStrike();
-               alertDialogServe.dismiss();
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = GameFragment.this.getLayoutInflater();
+                View v = inflater.inflate(R.layout.serve_dialog, null);
+                builder.setView(v);
+                ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
+                mCompass = v.findViewById(R.id.ivCompass);
+                btnLock.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mLockDirection.onStrike();
+                        alertDialogServe.dismiss();
+                    }
+                });
+                alertDialogServe = builder.create();
+                alertDialogServe.setCanceledOnTouchOutside(false);
+                alertDialogServe.setCancelable(false);
+                alertDialogServe.show();
             }
         });
-        alertDialogServe = builder.create();
-        alertDialogServe.setCanceledOnTouchOutside(false);
-        alertDialogServe.setCancelable(false);
-        alertDialogServe.show();
     }
 
     public void strikeDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.strike_dialog, null);
-        builder.setView(v);
-        ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirectionStrike);
-        mCompass = v.findViewById(R.id.ivCompassStrike);
-        btnLock.setOnClickListener(new View.OnClickListener() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                mLockDirection.onStrike();
-                alertDialogStrike.dismiss();
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = GameFragment.this.getLayoutInflater();
+                View v = inflater.inflate(R.layout.strike_dialog, null);
+                builder.setView(v);
+                ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirectionStrike);
+                mCompass = v.findViewById(R.id.ivCompassStrike);
+                btnLock.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mLockDirection.onStrike();
+                        alertDialogStrike.dismiss();
+                    }
+                });
+                alertDialogStrike = builder.create();
+                alertDialogStrike.setCanceledOnTouchOutside(false);
+                alertDialogStrike.setCancelable(false);
+                alertDialogStrike.show();
             }
         });
-        alertDialogStrike = builder.create();
-        alertDialogStrike.setCanceledOnTouchOutside(false);
-        alertDialogStrike.setCancelable(false);
-        alertDialogStrike.show();
     }
 
     public void lockOpponentDirectionDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.serve_dialog, null);
-        builder.setView(v);
-        ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
-        TextView tvCompassTitle  = v.findViewById(R.id.tvCompassTitle);
-        tvCompassTitle.setText(R.string.point_to_opponent_message);
-        mCompass = v.findViewById(R.id.ivCompass);
-        btnLock.setOnClickListener(new View.OnClickListener() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                mLockDirection.onLock();
-                loadingFragment = new LoadingFragment();
-                loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
-                loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
-                alertDialogLock.dismiss();
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater = GameFragment.this.getLayoutInflater();
+                View v = inflater.inflate(R.layout.serve_dialog, null);
+                builder.setView(v);
+                ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
+                TextView tvCompassTitle  = v.findViewById(R.id.tvCompassTitle);
+                tvCompassTitle.setText(R.string.point_to_opponent_message);
+                mCompass = v.findViewById(R.id.ivCompass);
+                btnLock.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mLockDirection.onLock();
+                        loadingFragment = new LoadingFragment();
+                        loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
+                        loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
+                        alertDialogLock.dismiss();
+                    }
+                });
+                alertDialogLock = builder.create();
+                alertDialogLock.setCanceledOnTouchOutside(false);
+                alertDialogLock.setCancelable(false);
+                alertDialogLock.show();
             }
         });
-        alertDialogLock = builder.create();
-        alertDialogLock.setCanceledOnTouchOutside(false);
-        alertDialogLock.setCancelable(false);
-        alertDialogLock.show();
     }
 
     public void rotateCompass(RotateAnimation animation){
         if(mCompass != null)
             mCompass.startAnimation(animation);
+    }
+
+    public void updateHostPoints(final int points){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hostPoints.setText(String.valueOf(points));
+            }
+        });
+    }
+
+    public void updateClientPoints(final int points){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                clientPoints.setText(String.valueOf(points));
+            }
+        });
     }
 
     @Override

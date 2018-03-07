@@ -321,13 +321,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 if (mIsHost) {
                     Log.d(TAG, "onMessageReceived: Start gmae about to be called-..........................------------------");
 //                    startGame();
-                    runOnUiThread(new Runnable() {
-                       @Override
-                       public void run() {
-                           mGameFragment.hideInitGame();
-                           mGameFragment.lockOpponentDirectionDialog();
-                       }
-                   });
+                       mGameFragment.hideInitGame();
+                       mGameFragment.lockOpponentDirectionDialog();
                 }
             }
         } else if(obj instanceof GameSettings) {
@@ -342,13 +337,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     });
                     startGame();
                 } else{
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mGameFragment.hideInitGame();
-                            mGameFragment.lockOpponentDirectionDialog();
-                        }
-                    });
+                    mGameFragment.hideInitGame();
+                    mGameFragment.lockOpponentDirectionDialog();
                 }
         } else if(obj instanceof StrikeInformation){
             StrikeInformation strikeInformation = (StrikeInformation)obj;
@@ -364,33 +354,31 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
 
             if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) && mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mGameFragment.strikeDialog();
-                    }
-                });
+
+                mGameFragment.strikeDialog();
             } else{
                 if(mIsHost){
                     mRoundResult.setClientPoints();
                 } else{
                     mRoundResult.setHostPoints();
                 }
+                mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+                mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
+
+
 
                 if (mRoundResult.isGameOver()){
 
                 }
 
                 mBtController.write(mRoundResult);
+
+                mGameFragment.serveDialog();
             }
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
-            
-            if(mIsHost){
-                mRoundResult.setClientPoints();
-            } else{
-                mRoundResult.setHostPoints();
-            }
+            mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+            mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
             if (mRoundResult.isGameOver()){
 
@@ -420,6 +408,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
             }
         });
+        // TODO: 2018-03-07 update scores before quitting
+        onBackPressed();
     }
 
     @Override
