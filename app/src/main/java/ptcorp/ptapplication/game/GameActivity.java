@@ -345,6 +345,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 } else{
                     mRoundResult.setHostPoints();
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+                        mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
+                    }
+                });
+
 
                 if (mRoundResult.isGameOver()){
 
@@ -360,6 +368,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             } else{
                 mRoundResult.setHostPoints();
             }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+                    mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
+                }
+            });
 
             if (mRoundResult.isGameOver()){
 

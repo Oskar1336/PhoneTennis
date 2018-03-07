@@ -26,6 +26,7 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike;
     private ImageView mCompass;
+    private TextView hostPoints, clientPoints;
     private LockDirection mLockDirection;
 
 
@@ -43,6 +44,8 @@ public class GameFragment extends Fragment{
         loadingFragment.setTitle("Setting up game..");
         loadingFragment.enableButton(false);
         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
+        hostPoints = view.findViewById(R.id.tvHostPoints);
+        clientPoints = view.findViewById(R.id.tvClintPoints);
         return view;
     }
 
@@ -129,6 +132,14 @@ public class GameFragment extends Fragment{
     public void rotateCompass(RotateAnimation animation){
         if(mCompass != null)
             mCompass.startAnimation(animation);
+    }
+
+    public void updateHostPoints(int points){
+        hostPoints.setText(String.valueOf(points));
+    }
+
+    public void updateClientPoints(int points){
+        clientPoints.setText(String.valueOf(points));
     }
 
     @Override
