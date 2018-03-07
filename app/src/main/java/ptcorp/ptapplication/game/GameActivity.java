@@ -377,6 +377,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
             }
         });
+        // TODO: 2018-03-07 update scores before quitting
+        onBackPressed();
     }
 
     @Override
