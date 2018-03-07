@@ -43,6 +43,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public static final int CLIENT_STARTS = 0;
     private final static float ERROR_MARGIN = 20;
 
+    private final static short STRIKE_FORWARD_LIMIT = 15;
+    private final static short STRIKE_TILT_LIMIT = 5;
+    private final static short STRIKE_BACKWARDS_LIMIT = -5;
+    private final static short STRIKE_STRENGTH_LIMIT = 31;
+
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
     private ServerConnectFragment serverConnectFragment;
@@ -190,10 +195,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void startGame() {
-        Log.d(TAG, "startGame: HEJ");
         Random rnd = new Random();
 //        int whoStarts = rnd.nextInt(2);
-        int whoStarts = 1;
+        int whoStarts = 1; // TODO: 2018-03-07 Change to random serve
         Log.d(TAG, "startGame: VALUE:--------------" + whoStarts);
         if (whoStarts == GameActivity.HOST_STARTS) {
             mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
@@ -205,8 +209,29 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private boolean performStrike(SensorEvent event) {
-        if (event.values[0] > 15 && (event.values[1] < 5 && event.values[1] > -5) && (event.values[2] < -5)) {
+        float xVal = event.values[0];
+        float yVal = event.values[1];
+        float zVal = event.values[2];
+
+        if (xVal > STRIKE_FORWARD_LIMIT &&
+                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
+                (zVal < STRIKE_BACKWARDS_LIMIT)) {
+            // TODO: 2018-03-07 Todo if distance is 0 show error message that they need to move further apart.
+
+            if (xVal > STRIKE_STRENGTH_LIMIT) {
+                // TODO: 2018-03-07 Out of bounds
+                Log.d(TAG, "performStrike: Too hard");
+
+            } else {
+                Log.d(TAG, "performStrike: Sending data");
+                mBtController.write(new StrikeInformation(
+                        ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10),
+                        mCurrentDegree - degree));
+            }
             return true;
+        } else if (xVal < STRIKE_STRENGTH_LIMIT) {
+            // TODO: 2018-03-07 Display to loose message toast maybe
+            Log.d(TAG, "performStrike: Too loose");
         }
         return false;
     }
@@ -464,10 +489,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void onStrike() {
-        float strikeDirection = mCurrentDegree;
-        strikeDirection = strikeDirection - degree;
+
         // TODO: 2018-03-07 Set a delay here depending on distance.
-        mBtController.write(new StrikeInformation(0f,0f, strikeDirection));
+        mTimeToStrike = true;
+//        mBtController.write(new StrikeInformation(0f,0f, strikeDirection));
     }
 
     private class RunOnUI implements Runnable{

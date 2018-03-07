@@ -10,32 +10,27 @@ import java.io.Serializable;
  */
 
 public class StrikeInformation implements Parcelable, Serializable {
-    private float acceleration, strength, direction;
+    private float timeInAir, direction;
 
-    public StrikeInformation(float acceleration, float strength, float direction) {
-        this.acceleration = acceleration;
-        this.strength = strength;
+    public StrikeInformation(float timeInAir, float direction) {
+        this.timeInAir = timeInAir;
         this.direction = direction;
     }
 
-    public float getAcceleration() {
-        return this.acceleration;
+    public float getTimeInAir() {
+        return this.timeInAir;
     }
 
-    public float getStrength() {
-        return this.strength;
-    }
 
     public float getDirection() {
         return this.direction;
     }
 
     protected StrikeInformation(Parcel in) {
-        float [] data = new float[3];
+        float [] data = new float[2];
         in.readFloatArray(data);
-        this.acceleration = data[0];
-        this.strength = data[1];
-        this.direction = data[2];
+        this.timeInAir = data[0];
+        this.direction = data[1];
     }
 
     public static final Creator<StrikeInformation> CREATOR = new Creator<StrikeInformation>() {
@@ -57,6 +52,6 @@ public class StrikeInformation implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloatArray(new float[]{this.acceleration, this.strength, this.direction});
+        dest.writeFloatArray(new float[]{this.timeInAir, this.direction});
     }
 }

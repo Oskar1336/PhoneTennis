@@ -184,8 +184,6 @@ public class BluetoothController{
         int rssi = mConnectionService.getAverageRssi();
         if (rssi == 0) {
             return 0;
-        } else if (rssi < 5) {
-            return 2;
         } else if (rssi < 15) {
             return 5;
         } else if (rssi < 25) {
