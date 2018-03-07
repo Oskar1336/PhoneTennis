@@ -331,7 +331,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
 
             if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) || mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
-                mGameFragment.strikeDialog();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameFragment.strikeDialog();
+                    }
+                });
             }
         }
     }
