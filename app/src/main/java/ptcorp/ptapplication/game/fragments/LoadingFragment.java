@@ -61,13 +61,8 @@ public class LoadingFragment extends DialogFragment {
 
     @Override
     public void dismiss() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mLoading.stop();
-                if (mListener != null) mListener.onLoadingCancel();
-            }
-        });
+        mLoading.stop();
+        if (mListener != null) mListener.onLoadingCancel();
         super.dismiss();
     }
 
