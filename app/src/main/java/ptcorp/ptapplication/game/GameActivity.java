@@ -281,6 +281,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mGameFragment.hideInitGame();
                             mGameFragment.lockOpponentDirectionDialog();
                         }
                     });

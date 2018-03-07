@@ -68,8 +68,8 @@ public class BluetoothConnectionService extends Service {
     /**
      * BtServiceConnection binder class. It contains an method called getService used to get an instance of the started service.
      */
-    public class BtBinder extends Binder {
-        public BluetoothConnectionService getService() {
+    class BtBinder extends Binder {
+        BluetoothConnectionService getService() {
             return BluetoothConnectionService.this;
         }
     }
@@ -335,6 +335,7 @@ public class BluetoothConnectionService extends Service {
 
         void disconnect() {
             Log.i(TAG, "Closing bluetooth connected socket");
+
             if (running) {
                 running = false;
                 try {
