@@ -24,7 +24,7 @@ import ptcorp.ptapplication.R;
 public class GameFragment extends Fragment{
     private static final String TAG = "GameFragment";
     private LoadingFragment loadingFragment;
-    private AlertDialog alertDialogServe, alertDialogLock;
+    private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike;
     private ImageView mCompass;
     private LockDirection mLockDirection;
 
@@ -64,7 +64,7 @@ public class GameFragment extends Fragment{
     public void serveDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.compass_dialog, null);
+        View v = inflater.inflate(R.layout.serve_dialog, null);
         builder.setView(v);
         ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
         mCompass = v.findViewById(R.id.ivCompass);
@@ -72,6 +72,7 @@ public class GameFragment extends Fragment{
             @Override
             public void onClick(View v) {
                mLockDirection.onStrike();
+               alertDialogServe.dismiss();
             }
         });
         alertDialogServe = builder.create();
@@ -80,10 +81,30 @@ public class GameFragment extends Fragment{
         alertDialogServe.show();
     }
 
+    public void strikeDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.strike_dialog, null);
+        builder.setView(v);
+        ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirectionStrike);
+        mCompass = v.findViewById(R.id.ivCompassStrike);
+        btnLock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLockDirection.onStrike();
+                alertDialogStrike.dismiss();
+            }
+        });
+        alertDialogStrike = builder.create();
+        alertDialogStrike.setCanceledOnTouchOutside(false);
+        alertDialogStrike.setCancelable(false);
+        alertDialogStrike.show();
+    }
+
     public void lockOpponentDirectionDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.compass_dialog, null);
+        View v = inflater.inflate(R.layout.serve_dialog, null);
         builder.setView(v);
         ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirection);
         TextView tvCompassTitle  = v.findViewById(R.id.tvCompassTitle);

@@ -40,6 +40,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private static final String TAG = "GameActivity";
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
+    private final static float ERROR_MARGIN = 20;
 
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
@@ -329,6 +330,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
 
+            if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) || mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
+
+            }
         }
     }
 
