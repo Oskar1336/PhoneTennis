@@ -43,7 +43,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public static final int CLIENT_STARTS = 0;
     private final static float ERROR_MARGIN = 20;
 
-    private final static short STRIKE_FORWARD_LIMIT = 15;
+    private final static short STRIKE_FORWARD_LIMIT = 10;
     private final static short STRIKE_TILT_LIMIT = 5;
     private final static short STRIKE_BACKWARDS_LIMIT = -5;
     private final static short STRIKE_STRENGTH_LIMIT = 31;
@@ -222,7 +222,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             if (xVal > STRIKE_STRENGTH_LIMIT) {
                 // TODO: 2018-03-07 Out of bounds
                 Log.d(TAG, "performStrike: Too hard");
-
+                sendLost();
             } else {
                 Log.d(TAG, "performStrike: Sending data");
                 mBtController.write(new StrikeInformation(
@@ -261,6 +261,26 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
         });
         builder.create().show();
+    }
+
+    private void sendLost() {
+        if(mIsHost){
+            mRoundResult.setClientPoints();
+        } else{
+            mRoundResult.setHostPoints();
+        }
+        mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+        mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
+
+
+
+        if (mRoundResult.isGameOver()){
+
+        }
+
+        mBtController.write(mRoundResult);
+
+        mGameFragment.serveDialog();
     }
 
     @Override
@@ -358,23 +378,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
                 mGameFragment.strikeDialog();
             } else{
-                if(mIsHost){
-                    mRoundResult.setClientPoints();
-                } else{
-                    mRoundResult.setHostPoints();
-                }
-                mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
-                mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
-
-
-
-                if (mRoundResult.isGameOver()){
-
-                }
-
-                mBtController.write(mRoundResult);
-
-                mGameFragment.serveDialog();
+                sendLost();
             }
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
