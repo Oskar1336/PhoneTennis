@@ -322,11 +322,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             float moveToPosition = degree;
             moveToPosition -= opponentStrike;
             if(opponentStrike < 0){
-                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
-            } else if(opponentStrike > 0){
                 mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
+            } else if(opponentStrike > 0){
+                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
             } else{
-
+                mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
 
         }

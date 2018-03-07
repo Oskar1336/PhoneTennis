@@ -71,7 +71,7 @@ public class GameFragment extends Fragment{
         btnLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2018-03-07 Implement this next
+               mLockDirection.onStrike();
             }
         });
         alertDialogServe = builder.create();
