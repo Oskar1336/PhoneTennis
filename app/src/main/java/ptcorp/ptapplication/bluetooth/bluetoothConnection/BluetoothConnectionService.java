@@ -327,7 +327,7 @@ public class BluetoothConnectionService extends Service {
             try {
                 mBtOOS.writeObject(obj);
             } catch (IOException e) {
-                Log.e(TAG, "write: Error when sending object", e);
+                Log.e(TAG, "Error when sending object", e);
             }
         }
 
@@ -342,7 +342,7 @@ public class BluetoothConnectionService extends Service {
                 mListener.onBluetoothDisconnected(null);
             } catch (IOException e) {
                 mListener.onBluetoothDisconnected(e);
-                Log.e(TAG, "disconnect: Error when closing connected socket", e);
+                Log.w(TAG, "Error when closing connected socket", e);
             }
             mConnected = false;
         }
