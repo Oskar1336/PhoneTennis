@@ -312,12 +312,14 @@ public class BluetoothConnectionService extends Service {
                 try {
                     Log.d(TAG, "Listening for incoming bl");
                     mListener.onMessageReceived(mBtOIS.readObject());
-                } catch (ClassNotFoundException | IOException e) {
-                    if (!running) {
+                } catch (IOException e) {
+                    if (running) {
                         mListener.onBluetoothError();
                         Log.e(TAG, "Error when listening for incoming object.", e);
                     }
                     break;
+                } catch (ClassNotFoundException e) {
+                    Log.e(TAG, "Error when receiving object, wrong class", e);
                 }
             }
             disconnect();
@@ -333,18 +335,20 @@ public class BluetoothConnectionService extends Service {
 
         void disconnect() {
             Log.i(TAG, "Closing bluetooth connected socket");
-            running = false;
-            try {
-                mBtOOS.close();
-                mBtOIS.close();
-                mmBtSocket.close();
-                if (mBtGatt != null) mBtGatt.disconnect();
-                mListener.onBluetoothDisconnected(null);
-            } catch (IOException e) {
-                mListener.onBluetoothDisconnected(e);
-                Log.w(TAG, "Error when closing connected socket", e);
+            if (running) {
+                running = false;
+                try {
+                    mBtOOS.close();
+                    mBtOIS.close();
+                    mmBtSocket.close();
+                    if (mBtGatt != null) mBtGatt.disconnect();
+                    mListener.onBluetoothDisconnected(null);
+                } catch (IOException e) {
+                    mListener.onBluetoothDisconnected(e);
+                    Log.w(TAG, "Error when closing connected socket", e);
+                }
+                mConnected = false;
             }
-            mConnected = false;
         }
     }
 
