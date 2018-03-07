@@ -229,12 +229,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10),
                         mCurrentDegree - degree));
             }
-            return true;
+            return false;
         } else if (xVal < STRIKE_STRENGTH_LIMIT) {
             // TODO: 2018-03-07 Display to loose message toast maybe
             Log.d(TAG, "performStrike: Too loose");
         }
-        return false;
+        return true;
     }
 
     private void showHostNotStartedError() {
