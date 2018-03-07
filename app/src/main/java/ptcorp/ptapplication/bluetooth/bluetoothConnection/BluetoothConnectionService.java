@@ -272,10 +272,12 @@ public class BluetoothConnectionService extends Service {
         private final BluetoothSocket mmBtSocket;
         private final ObjectInputStream mBtOIS;
         private final ObjectOutputStream mBtOOS;
+        private boolean closing;
 
         private boolean running = true;
 
         BtConnectedThread(BluetoothSocket mmBtSocket) {
+            closing = false;
             this.mmBtSocket = mmBtSocket;
             ObjectInputStream tmpIn = null;
             ObjectOutputStream tmpOut = null;
@@ -313,7 +315,7 @@ public class BluetoothConnectionService extends Service {
                     Log.d(TAG, "Listening for incoming bl");
                     mListener.onMessageReceived(mBtOIS.readObject());
                 } catch (ClassNotFoundException | IOException e) {
-                    if (!running) {
+                    if (closing) {
                         mListener.onBluetoothError();
                         Log.e(TAG, "Error when listening for incoming object.", e);
                     }
@@ -335,6 +337,7 @@ public class BluetoothConnectionService extends Service {
             Log.i(TAG, "Closing bluetooth connected socket");
             running = false;
             try {
+                closing = true;
                 mBtOOS.close();
                 mBtOIS.close();
                 mmBtSocket.close();
