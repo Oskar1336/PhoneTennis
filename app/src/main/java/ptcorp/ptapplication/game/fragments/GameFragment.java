@@ -50,7 +50,12 @@ public class GameFragment extends Fragment{
     }
 
     public void hideInitGame() {
-        loadingFragment.dismiss();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingFragment.dismiss();
+            }
+        });
     }
 
     public void showNewDegree(final String message){
@@ -149,12 +154,22 @@ public class GameFragment extends Fragment{
             mCompass.startAnimation(animation);
     }
 
-    public void updateHostPoints(int points){
-        hostPoints.setText(String.valueOf(points));
+    public void updateHostPoints(final int points){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hostPoints.setText(String.valueOf(points));
+            }
+        });
     }
 
-    public void updateClientPoints(int points){
-        clientPoints.setText(String.valueOf(points));
+    public void updateClientPoints(final int points){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                clientPoints.setText(String.valueOf(points));
+            }
+        });
     }
 
     @Override

@@ -290,34 +290,19 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 if (mIsHost) {
                     Log.d(TAG, "onMessageReceived: Start gmae about to be called-..........................------------------");
 //                    startGame();
-                    runOnUiThread(new Runnable() {
-                       @Override
-                       public void run() {
-                           mGameFragment.hideInitGame();
-                           mGameFragment.lockOpponentDirectionDialog();
-                       }
-                   });
+                       mGameFragment.hideInitGame();
+                       mGameFragment.lockOpponentDirectionDialog();
                 }
             }
         } else if(obj instanceof GameSettings) {
             decideServer((GameSettings) obj);
         } else if(obj instanceof PlayerPositions){
                 if(mIsHost){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadingFragment.dismiss();
-                        }
-                    });
+                    loadingFragment.dismiss();
                     startGame();
                 } else{
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mGameFragment.hideInitGame();
-                            mGameFragment.lockOpponentDirectionDialog();
-                        }
-                    });
+                    mGameFragment.hideInitGame();
+                    mGameFragment.lockOpponentDirectionDialog();
                 }
         } else if(obj instanceof StrikeInformation){
             StrikeInformation strikeInformation = (StrikeInformation)obj;
@@ -333,25 +318,17 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
 
             if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) && mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mGameFragment.strikeDialog();
-                    }
-                });
+
+                mGameFragment.strikeDialog();
             } else{
                 if(mIsHost){
                     mRoundResult.setClientPoints();
                 } else{
                     mRoundResult.setHostPoints();
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
-                        mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
-                    }
-                });
+                mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+                mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
+
 
 
                 if (mRoundResult.isGameOver()){
@@ -364,14 +341,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
-                    mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
-                }
-            });
+            mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+            mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
             if (mRoundResult.isGameOver()){
 
