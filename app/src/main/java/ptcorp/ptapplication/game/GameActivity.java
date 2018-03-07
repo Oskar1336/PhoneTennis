@@ -359,10 +359,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
 
                 mBtController.write(mRoundResult);
+
+                mGameFragment.serveDialog();
             }
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
-            
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
