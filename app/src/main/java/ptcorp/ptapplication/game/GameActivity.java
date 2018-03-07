@@ -48,6 +48,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private final static short STRIKE_BACKWARDS_LIMIT = -5;
     private final static short STRIKE_STRENGTH_LIMIT = 31;
 
+
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
     private ServerConnectFragment serverConnectFragment;
