@@ -330,7 +330,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
 
-            if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) || mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
+            if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) && mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
