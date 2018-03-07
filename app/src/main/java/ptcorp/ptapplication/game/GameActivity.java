@@ -363,10 +363,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
             
-
-            mRoundResult.setClientPoints();
-            mRoundResult.setHostPoints();
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
