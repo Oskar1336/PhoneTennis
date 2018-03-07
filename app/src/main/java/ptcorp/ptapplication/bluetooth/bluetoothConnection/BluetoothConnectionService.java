@@ -37,10 +37,7 @@ public class BluetoothConnectionService extends Service {
     private BluetoothGatt mBtGatt;
     private BtServiceListener mListener;
     private boolean mConnected = false;
-
-    private int[] mRssiAverage = new int[5];
-    private int mRssiTotal = 0;
-    private int mAverageRssi = 0;
+    private GattListener mRssiListener;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -53,6 +50,7 @@ public class BluetoothConnectionService extends Service {
         if (mConnectedThread != null) mConnectedThread.disconnect();
         if (mHostThread != null) mHostThread.stopBtHost();
         if (mClientThread != null) mClientThread.stopBtClient();
+        if (mBtGatt != null) mBtGatt.close();
 
         super.onDestroy();
     }
@@ -121,7 +119,8 @@ public class BluetoothConnectionService extends Service {
      */
     public void connectToDevice(BluetoothDevice device) {
         mBtDevice = device;
-        mBtGatt = mBtDevice.connectGatt(getApplicationContext(), true, new GattListener());
+        mRssiListener = new GattListener();
+        mBtGatt = mBtDevice.connectGatt(getApplicationContext(), true, mRssiListener);
 
         mClientThread = new BtClientThread(mBtDevice);
         mClientThread.start();
@@ -154,7 +153,7 @@ public class BluetoothConnectionService extends Service {
      * @return int average rssi.
      */
     public int getAverageRssi() {
-        return mAverageRssi;
+        return mRssiListener != null ? mRssiListener.getAverageRssi() : 0;
     }
 
     /**
@@ -367,27 +366,37 @@ public class BluetoothConnectionService extends Service {
     }
 
     private class GattListener extends BluetoothGattCallback {
+        private final int AMOUNT_OF_AVERAGE = 5;
+
+        private int mRssiPos = 0;
+        private int[] mRssiAverage = new int[AMOUNT_OF_AVERAGE];
+        private int mAverageRssi = 0;
+
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            Log.d(TAG, "onConnectionStateChange: " + status + " -> " + newState);
-
             if (status != BluetoothGatt.GATT_SUCCESS) {
                 gatt.disconnect();
             } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-                Log.d(TAG, "onConnectionStateChange: Disconnected from device");
+                Log.i(TAG, "Disconnected from device Gatt");
             }
         }
 
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-            mRssiTotal -= mRssiAverage[mRssiAverage.length - 1];
-            for (int i = 0; i < mRssiAverage.length - 1; i++) {
-                mRssiAverage[i+1] = mRssiAverage[i];
-            }
-            mRssiAverage[0] = Math.abs(rssi);
-            mRssiTotal += rssi;
+            mRssiAverage[mRssiPos % AMOUNT_OF_AVERAGE] = Math.abs(rssi);
+            int rssiTotal = 0;
 
-            mAverageRssi = mRssiTotal / mRssiAverage.length;
+            for (int i = 0; i < AMOUNT_OF_AVERAGE; i++) {
+                rssiTotal += mRssiAverage[mRssiPos];
+            }
+            Log.d(TAG, "onReadRemoteRssi: first total: " + (mAverageRssi = rssiTotal / AMOUNT_OF_AVERAGE));
+        }
+
+        int getAverageRssi() {
+            if (mRssiPos > AMOUNT_OF_AVERAGE) {
+                return mAverageRssi;
+            }
+            return 0;
         }
     }
 }

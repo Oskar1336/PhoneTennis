@@ -176,6 +176,26 @@ public class BluetoothController{
         }
     }
 
+    /**
+     * Get a relative distance to the connected bluetooth device.
+     * @return Returns the distance between two bluetooth devices in meters.
+     */
+    public short getDistanceFromConnectedDevice() {
+        int rssi = mConnectionService.getAverageRssi();
+        if (rssi == 0) {
+            return 0;
+        } else if (rssi < 5) {
+            return 2;
+        } else if (rssi < 15) {
+            return 5;
+        } else if (rssi < 25) {
+            return 10;
+        } else if (rssi < 35) {
+            return 15;
+        }
+        return 20;
+    }
+
     private class SearchReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
