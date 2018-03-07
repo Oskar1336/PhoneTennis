@@ -25,7 +25,7 @@ import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BluetoothController;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BtServiceListener;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.DeviceSearchListener;
-import ptcorp.ptapplication.game.Sensors.SensorListener;
+import ptcorp.ptapplication.game.sensors.SensorListener;
 import ptcorp.ptapplication.game.enums.GameState;
 import ptcorp.ptapplication.game.fragments.ConnectFragment;
 import ptcorp.ptapplication.game.fragments.GameFragment;
@@ -71,6 +71,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private PlayerPositions playerPositions;
     private float degree;
     private ImageView mCompass;
+    private boolean mTimeToStrike;
 
 
     @Override
@@ -200,7 +201,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         decideServer(mGameSettings);
     }
 
-
+    private boolean performStrike(SensorEvent event) {
+        if (event.values[0] > 15 && (event.values[1] < 5 && event.values[1] > -5) && (event.values[2] < -5)) {
+            return true;
+        }
+        return false;
+    }
 
     private void showHostNotStartedError() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -372,6 +378,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             System.arraycopy(event.values, 0, mLastAccelerometer, 0,
                     event.values.length);
             mLastAccelerometerSet = true;
+
+            if (mTimeToStrike) {
+                mTimeToStrike = performStrike(event);
+            }
         } else if (event.sensor == mMagneticSensor) {
             System.arraycopy(event.values, 0, mLastMagnetometer, 0,
                     event.values.length);
@@ -415,7 +425,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             playerPositions.setmClientPosition(degree);
         }
         mBtController.write(playerPositions);
-        
     }
 
     @Override

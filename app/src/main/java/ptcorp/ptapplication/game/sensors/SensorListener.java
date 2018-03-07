@@ -1,11 +1,8 @@
-package ptcorp.ptapplication.game.Sensors;
+package ptcorp.ptapplication.game.sensors;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-
-import ptcorp.ptapplication.game.GameActivity;
 
 /**
  * Created by LinusHakansson on 2018-03-06.
