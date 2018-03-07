@@ -25,7 +25,7 @@ import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BluetoothController;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BtServiceListener;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.DeviceSearchListener;
-import ptcorp.ptapplication.game.sensors.SensorListener;
+import ptcorp.ptapplication.game.Sensors.SensorListener;
 import ptcorp.ptapplication.game.enums.GameState;
 import ptcorp.ptapplication.game.fragments.ConnectFragment;
 import ptcorp.ptapplication.game.fragments.GameFragment;

@@ -1,4 +1,4 @@
-package ptcorp.ptapplication.game.sensors;
+package ptcorp.ptapplication.game.Sensors;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
