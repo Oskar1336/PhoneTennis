@@ -14,4 +14,6 @@
     <string name="waiting_for_position">Waiting for opponent to lock your position</string>
     <string name="bluetooth_error">Bluetooth error</string>
     <string name="bluetooth_error_explination">Can not connect to selected bluetooth device. Please try to restart the host server and try to connect again.</string>
+    <string name="start_degree">Start degree</string>
+    <string name="current_degree">Current degree</string>
 </resources>
