@@ -381,6 +381,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 sendLost();
             }
         } else if (obj instanceof RoundResult){
+            Handler showWin = new Handler();
+            showWin.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    
+                }
+            },2000);
             mRoundResult = (RoundResult)obj;
             mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
             mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
