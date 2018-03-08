@@ -121,7 +121,7 @@ public class GameFragment extends Fragment{
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mProgressUpdater.onCancelled();
+                        mProgressUpdater.cancel(true);
                         mGameListener.onStrike();
                         alertDialogStrike.dismiss();
 
