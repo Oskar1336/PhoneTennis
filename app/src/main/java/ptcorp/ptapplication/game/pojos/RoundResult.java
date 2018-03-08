@@ -14,6 +14,13 @@ public class RoundResult implements Parcelable, Serializable {
     private final static int GAME_POINTS = 7;
     private RoundStatus roundStatus;
     private boolean isGameOver;
+    private RoundLostReason roundLostReason;
+
+    public enum RoundLostReason {
+        SHOT_OUT_OF_BOUNDS,
+        MISSED_BALL,
+        TOOK_TOO_LONG
+    }
 
     public RoundResult() {
         // Default
@@ -41,6 +48,14 @@ public class RoundResult implements Parcelable, Serializable {
         }
     }
 
+    public RoundLostReason getRoundLostReason() {
+        return roundLostReason;
+    }
+
+    public void setRoundLostReason(RoundLostReason roundLostReason) {
+        this.roundLostReason = roundLostReason;
+    }
+
     public void setRoundStatus(RoundStatus roundStatus) {
         this.roundStatus = roundStatus;
     }
@@ -66,7 +81,8 @@ public class RoundResult implements Parcelable, Serializable {
         String roundStats = in.readString(); // enum parceled as String
         this.roundStatus = RoundStatus.valueOf(roundStats);
         this.isGameOver = in.readByte() != 0x00; // boolean...
-
+        String roundLostReason = in.readString();
+        this.roundLostReason = RoundLostReason.valueOf(roundLostReason);
     }
 
     public static final Creator<RoundResult> CREATOR = new Creator<RoundResult>() {
@@ -92,5 +108,6 @@ public class RoundResult implements Parcelable, Serializable {
         dest.writeInt(clientPoints);
         dest.writeString(roundStatus.name()); // send enum as string
         dest.writeByte((byte) (isGameOver ? 0x01 : 0x00)); // true or false
+        dest.writeString(roundLostReason.name());
     }
 }

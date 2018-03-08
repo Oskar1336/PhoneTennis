@@ -171,17 +171,19 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mSensorListener = new SensorListener(this);
         mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
 
-        if(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
-            mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            hasAccelerometerSensor = true;
-        } else{
-            hasAccelerometerSensor = false;
-        }
-        if(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null){
-            mMagneticSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-            hasMagneticSensor = true;
-        } else{
-            hasMagneticSensor = false;
+        if (mSensorManager != null) {
+            if(mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+                mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                hasAccelerometerSensor = true;
+            } else{
+                hasAccelerometerSensor = false;
+            }
+            if(mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null){
+                mMagneticSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+                hasMagneticSensor = true;
+            } else{
+                hasMagneticSensor = false;
+            }
         }
     }
 
@@ -217,22 +219,20 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         if (xVal > STRIKE_FORWARD_LIMIT &&
                 (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
                 (zVal < STRIKE_BACKWARDS_LIMIT)) {
-            // TODO: 2018-03-07 Todo if distance is 0 show error message that they need to move further apart.
+
+            Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
 
             if (xVal > STRIKE_STRENGTH_LIMIT) {
-                // TODO: 2018-03-07 Out of bounds
-                Log.d(TAG, "performStrike: Too hard");
-                sendLost();
+                sendLost(RoundResult.RoundLostReason.SHOT_OUT_OF_BOUNDS);
             } else {
-                Log.d(TAG, "performStrike: Sending data");
                 mBtController.write(new StrikeInformation(
                         ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10),
                         mCurrentDegree - degree));
             }
             return false;
-        } else if (xVal < STRIKE_STRENGTH_LIMIT) {
+        } else if ((yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
+                (zVal < STRIKE_BACKWARDS_LIMIT)) {
             // TODO: 2018-03-07 Display to loose message toast maybe
-            Log.d(TAG, "performStrike: Too loose");
         }
         return true;
     }
@@ -263,7 +263,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         builder.create().show();
     }
 
-    private void sendLost() {
+    private void sendLost(RoundResult.RoundLostReason roundLostReason) {
+        mRoundResult.setRoundLostReason(roundLostReason);
         if(mIsHost){
             mRoundResult.setClientPoints();
         } else{
@@ -377,8 +378,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) && mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
 
                 mGameFragment.strikeDialog();
-            } else{
-                sendLost();
+            } else {
+                sendLost(RoundResult.RoundLostReason.MISSED_BALL);
             }
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;

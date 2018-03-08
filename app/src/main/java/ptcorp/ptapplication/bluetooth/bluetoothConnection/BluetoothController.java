@@ -182,9 +182,7 @@ public class BluetoothController{
      */
     public short getDistanceFromConnectedDevice() {
         int rssi = mConnectionService.getAverageRssi();
-        if (rssi == 0) {
-            return 0;
-        } else if (rssi < 15) {
+        if (rssi < 15) {
             return 5;
         } else if (rssi < 25) {
             return 10;

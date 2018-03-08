@@ -52,6 +52,8 @@ public class BluetoothConnectionService extends Service {
         if (mClientThread != null) mClientThread.stopBtClient();
         if (mBtGatt != null) mBtGatt.close();
 
+        Log.d(TAG, "onDestroy: On destroy");
+
         super.onDestroy();
     }
 
@@ -162,7 +164,6 @@ public class BluetoothConnectionService extends Service {
      */
     private void handleConnectedDevice(BluetoothSocket mmSocket) {
         mConnected = true;
-        Log.d(TAG, "handleConnectedDevice:-------------------------HandleConnectedDevice------------------------ ");
         mConnectedThread = new BtConnectedThread(mmSocket);
         mConnectedThread.start();
     }
@@ -208,7 +209,7 @@ public class BluetoothConnectionService extends Service {
                 mHostThread = null;
                 if (mmBtServerSocket != null) mmBtServerSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "Could'nt close bluetooth socket", e);
+                Log.w(TAG, "Could'nt close bluetooth socket", e);
             }
         }
     }
@@ -249,7 +250,7 @@ public class BluetoothConnectionService extends Service {
                     try {
                         mmSocket.close();
                     } catch (IOException e1) {
-                        Log.e(TAG, "Error occurred when trying to close socket in client thread", e);
+                        Log.w(TAG, "Error occurred when trying to close socket in client thread", e);
                     }
                 }
             }
@@ -277,24 +278,21 @@ public class BluetoothConnectionService extends Service {
             this.mmBtSocket = mmBtSocket;
             ObjectInputStream tmpIn = null;
             ObjectOutputStream tmpOut = null;
-            Log.d(TAG, "BtConnectedThread: ---------------CONSTRUCTOR-------------------------------");
             try {
                 tmpOut = new ObjectOutputStream(mmBtSocket.getOutputStream());
                 tmpIn = new ObjectInputStream(mmBtSocket.getInputStream());
             } catch (IOException e) {
-                Log.e(TAG, "BtConnectedThread: Error occurred trying to create output/input streams", e);
+                Log.w(TAG, "BtConnectedThread: Error occurred trying to create output/input streams", e);
             }
             mBtOIS = tmpIn;
             mBtOOS = tmpOut;
 
             // Dont notify if not connected to device.
             if (mBtOOS != null && mBtOIS != null ) {
-                Log.d(TAG, "BtConnectedThread:------------------------------ CONNECTED---------------------------------" );
                 mListener.onBluetoothConnected();
                 running = true;
             } else {
                 running = false;
-                Log.d(TAG, "BtConnectedThread:------------------------------ DISCONNECTED---------------------------------" );
                 disconnect();
             }
         }
@@ -308,7 +306,7 @@ public class BluetoothConnectionService extends Service {
 
             while(running) {
                 try {
-                    Log.d(TAG, "Listening for incoming bl");
+                    Log.i(TAG, "Listening for incoming bl");
                     mListener.onMessageReceived(mBtOIS.readObject());
                 } catch (IOException e) {
                     if (running) {
@@ -389,7 +387,6 @@ public class BluetoothConnectionService extends Service {
             for (int i = 0; i < AMOUNT_OF_AVERAGE; i++) {
                 rssiTotal += mRssiAverage[mRssiPos];
             }
-            Log.d(TAG, "onReadRemoteRssi: first total: " + (mAverageRssi = rssiTotal / AMOUNT_OF_AVERAGE));
         }
 
         int getAverageRssi() {
