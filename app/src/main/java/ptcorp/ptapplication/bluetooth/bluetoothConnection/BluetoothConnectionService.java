@@ -311,11 +311,11 @@ public class BluetoothConnectionService extends Service {
                 } catch (IOException e) {
                     if (running) {
                         mListener.onBluetoothError();
-                        Log.e(TAG, "Error when listening for incoming object.", e);
+                        Log.w(TAG, "Error when listening for incoming object.", e);
                     }
                     break;
                 } catch (ClassNotFoundException e) {
-                    Log.e(TAG, "Error when receiving object, wrong class", e);
+                    Log.w(TAG, "Error when receiving object, wrong class", e);
                 }
             }
             disconnect();

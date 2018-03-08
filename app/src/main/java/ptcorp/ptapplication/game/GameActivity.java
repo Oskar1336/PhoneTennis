@@ -45,7 +45,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     private final static short STRIKE_FORWARD_LIMIT = 10;
     private final static short STRIKE_TILT_LIMIT = 5;
-    private final static short STRIKE_BACKWARDS_LIMIT = -5;
+    private final static short STRIKE_BACKWARDS_LIMIT = -2;
     private final static short STRIKE_STRENGTH_LIMIT = 31;
 
 
@@ -217,9 +217,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         float yVal = event.values[1];
         float zVal = event.values[2];
 
+        if (xVal > 5)
+            Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
+
         if (xVal > STRIKE_FORWARD_LIMIT &&
-                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
-                (zVal < STRIKE_BACKWARDS_LIMIT)) {
+                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
 
             Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
 
