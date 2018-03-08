@@ -37,7 +37,7 @@ import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
-        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.LockDirection {
+        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.GameListener {
     private static final String TAG = "GameActivity";
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
@@ -507,6 +507,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public void onStrike() {
         mTimeToStrike = true;
         strikeDirection = mCurrentDegree - degree;
+    }
+
+    @Override
+    public void onOutOfTime() {
+        sendLost(RoundResult.RoundLostReason.TOOK_TOO_LONG);
     }
 
     private class RunOnUI implements Runnable{

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +34,7 @@ public class GameFragment extends Fragment{
     private TextView hostPoints, clientPoints;
     private ProgressBar mProgressBar;
     private CountDownTimer mCountDownTimer;
-    private LockDirection mLockDirection;
+    private GameListener mGameListener;
     private Timer timer;
 
 
@@ -91,7 +90,7 @@ public class GameFragment extends Fragment{
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLockDirection.onStrike();
+                        mGameListener.onStrike();
                         alertDialogServe.dismiss();
                     }
                 });
@@ -120,7 +119,7 @@ public class GameFragment extends Fragment{
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLockDirection.onStrike();
+                        mGameListener.onStrike();
                         alertDialogStrike.dismiss();
                     }
                 });
@@ -143,7 +142,8 @@ public class GameFragment extends Fragment{
                     mProgressBar.setProgress(timeCurrent);
                 } else {
                     mProgressBar.setProgress(0);
-                    // TODO: 2018-03-08 prompt user that he/she lost 
+                    // TODO: 2018-03-08 prompt user that he/she lost
+                    mGameListener.onOutOfTime();
                 }
             }
         };
@@ -165,7 +165,7 @@ public class GameFragment extends Fragment{
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLockDirection.onLock();
+                        mGameListener.onLock();
                         loadingFragment = new LoadingFragment();
                         loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
                         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
@@ -229,7 +229,7 @@ public class GameFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mLockDirection = (LockDirection) getActivity();
+        mGameListener = (GameListener) getActivity();
     }
 
     @Override
@@ -237,9 +237,10 @@ public class GameFragment extends Fragment{
         super.onResume();
     }
 
-    public interface LockDirection {
+    public interface GameListener {
         void onLock();
         void onStrike();
+        void onOutOfTime();
     }
 
 }
