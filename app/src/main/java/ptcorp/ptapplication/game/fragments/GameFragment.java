@@ -73,7 +73,7 @@ public class GameFragment extends Fragment{
             @Override
             public void run() {
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 20);
                 toast.show();
             }
         });
