@@ -115,7 +115,7 @@ public class GameFragment extends Fragment{
                 mProgressBar = v.findViewById(R.id.pbStrikeTime);
                 mProgressBar.setMax(5);
                 mProgressBar.setProgress(5);
-                startCountDown();
+//                startCountDown();
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -133,7 +133,7 @@ public class GameFragment extends Fragment{
 
     public void startCountDown(){
         timer = new Timer();
-        TimerTask task = new TimerTask() {
+        final TimerTask task = new TimerTask() {
         int timeCurrent = 5;
             @Override
             public void run() {
@@ -143,7 +143,9 @@ public class GameFragment extends Fragment{
                 } else {
                     mProgressBar.setProgress(0);
                     // TODO: 2018-03-08 prompt user that he/she lost
-                    mGameListener.onOutOfTime();
+//                    mGameListener.onOutOfTime();
+//                    timer.cancel();
+//                    task.cancel();
                 }
             }
         };
