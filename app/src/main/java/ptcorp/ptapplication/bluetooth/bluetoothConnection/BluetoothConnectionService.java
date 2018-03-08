@@ -387,6 +387,7 @@ public class BluetoothConnectionService extends Service {
             for (int i = 0; i < AMOUNT_OF_AVERAGE; i++) {
                 rssiTotal += mRssiAverage[mRssiPos];
             }
+            mAverageRssi = rssiTotal / AMOUNT_OF_AVERAGE;
         }
 
         int getAverageRssi() {
