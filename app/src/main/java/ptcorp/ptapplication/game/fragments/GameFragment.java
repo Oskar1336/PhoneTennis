@@ -4,6 +4,7 @@ package ptcorp.ptapplication.game.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,8 @@ public class GameFragment extends Fragment{
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike, alertDialogRoundMessage;
     private ImageView mCompass;
     private TextView hostPoints, clientPoints;
+    private ProgressBar mProgressBar;
+    private CountDownTimer mCountDownTimer;
     private LockDirection mLockDirection;
 
 
@@ -98,12 +102,32 @@ public class GameFragment extends Fragment{
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LayoutInflater inflater = GameFragment.this.getLayoutInflater();
                 View v = inflater.inflate(R.layout.strike_dialog, null);
                 builder.setView(v);
                 ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirectionStrike);
                 mCompass = v.findViewById(R.id.ivCompassStrike);
+                mProgressBar = v.findViewById(R.id.pbStrikeTime);
+                mProgressBar.setMax(100);
+                mCountDownTimer = new CountDownTimer(5000,1000) {
+                    int i = 0;
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        i++;
+                        mProgressBar.setProgress((int)i*100/(5000/1000));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        i++;
+                        mProgressBar.setProgress(100);
+                        // TODO: 2018-03-08 User lost
+                    }
+                };
+
+
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -115,6 +139,7 @@ public class GameFragment extends Fragment{
                 alertDialogStrike.setCanceledOnTouchOutside(false);
                 alertDialogStrike.setCancelable(false);
                 alertDialogStrike.show();
+                mCountDownTimer.start();
             }
         });
     }
