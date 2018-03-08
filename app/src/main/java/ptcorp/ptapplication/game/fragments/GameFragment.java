@@ -258,6 +258,7 @@ public class GameFragment extends Fragment{
         protected void onPostExecute(Integer integer) {
             mProgressBar.setProgress(integer);
             mGameListener.onOutOfTime();
+            alertDialogStrike.dismiss();
             super.onPostExecute(integer);
         }
 
