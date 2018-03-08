@@ -288,7 +288,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         }
 
-        Log.d(TAG, "writeToParcel: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
+        Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
 
         mBtController.write(mRoundResult);
         mGameFragment.showRoundMessage("You lost the point!");
@@ -396,7 +396,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         } else if (obj instanceof RoundResult){
             mGameFragment.showRoundMessage("You won the ball!");
             mRoundResult = (RoundResult)obj;
-            Log.d(TAG, "writeToParcel: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
+            Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
             mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
             mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
             uiHandler.postDelayed(new Runnable() {
