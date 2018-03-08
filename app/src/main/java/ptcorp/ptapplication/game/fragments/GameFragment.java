@@ -24,7 +24,7 @@ import ptcorp.ptapplication.R;
 public class GameFragment extends Fragment{
     private static final String TAG = "GameFragment";
     private LoadingFragment loadingFragment;
-    private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike;
+    private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike, alertDialogRoundMessage;
     private ImageView mCompass;
     private TextView hostPoints, clientPoints;
     private LockDirection mLockDirection;
@@ -145,6 +145,29 @@ public class GameFragment extends Fragment{
                 alertDialogLock.setCanceledOnTouchOutside(false);
                 alertDialogLock.setCancelable(false);
                 alertDialogLock.show();
+            }
+        });
+    }
+
+    public void showRoundMessage(final String roundMessage){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                        .setTitle("Round over!")
+                        .setMessage(roundMessage);
+                alertDialogRoundMessage = builder.create();
+                alertDialogRoundMessage.show();
+            }
+        });
+    }
+
+    public void dismissRoundMessage(){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(alertDialogRoundMessage.isShowing())
+                    alertDialogRoundMessage.dismiss();
             }
         });
     }

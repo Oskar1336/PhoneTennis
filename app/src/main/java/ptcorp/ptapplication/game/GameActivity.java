@@ -280,7 +280,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         mBtController.write(mRoundResult);
 
-        mGameFragment.serveDialog();
+         Handler showServeHandler = new Handler();
+         showServeHandler.postDelayed(new Runnable() {
+             @Override
+             public void run() {
+                mGameFragment.serveDialog();
+             }
+         }, 2000);
+
     }
 
     @Override
