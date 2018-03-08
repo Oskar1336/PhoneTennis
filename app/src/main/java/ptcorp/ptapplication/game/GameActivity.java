@@ -227,8 +227,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         if (xVal > 5)
             Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
 
-        if (xVal > STRIKE_FORWARD_LIMIT &&
-                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
+        if (xVal > STRIKE_FORWARD_LIMIT ) {
+//                &&
+//                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
 
             Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
 
@@ -283,11 +284,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
         mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
-
-
         if (mRoundResult.isGameOver()){
 
         }
+
+        Log.d(TAG, "writeToParcel: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
 
         mBtController.write(mRoundResult);
         mGameFragment.showRoundMessage("You lost the point!");
@@ -395,6 +396,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         } else if (obj instanceof RoundResult){
             mGameFragment.showRoundMessage("You won the ball!");
             mRoundResult = (RoundResult)obj;
+            Log.d(TAG, "writeToParcel: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
             mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
             mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
             uiHandler.postDelayed(new Runnable() {

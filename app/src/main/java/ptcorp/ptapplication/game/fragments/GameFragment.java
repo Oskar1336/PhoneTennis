@@ -143,7 +143,8 @@ public class GameFragment extends Fragment{
                 } else {
                     mProgressBar.setProgress(0);
                     // TODO: 2018-03-08 prompt user that he/she lost
-                    mGameListener.onOutOfTime();
+//                    mGameListener.onOutOfTime();
+//                    timer.cancel();
                 }
             }
         };
