@@ -37,7 +37,7 @@
     <com.dd.processbutton.iml.ActionProcessButton
         android:id="@+id/btnLockDirection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_weight="0.5"
         android:text="Lock direction"
         android:textColor="@android:color/white"

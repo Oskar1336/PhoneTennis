@@ -258,6 +258,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                finish();
+                // TODO: 2018-03-08 Send score to activity
             }
         });
         builder.create().show();
@@ -271,6 +273,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                finish();
+                // TODO: 2018-03-08 Send Score to activity
             }
         });
         builder.create().show();
@@ -287,7 +291,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
         if (mRoundResult.isGameOver()){
-
+            String message;
+            if(mRoundResult.getClientPoints() == 7){
+                message = getText(R.string.client_is_winner).toString();
+            } else  {
+                message = getText(R.string.host_is_winner).toString();
+            }
+            mGameFragment.showMatchResult(message);
         }
 
         Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
@@ -409,7 +419,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             },2000);
 
             if (mRoundResult.isGameOver()){
-
+                String message;
+                if(mRoundResult.getClientPoints() == 7){
+                    message = getText(R.string.client_is_winner).toString();
+                } else  {
+                    message = getText(R.string.host_is_winner).toString();
+                }
+                mGameFragment.showMatchResult(message);
             }
         }
     }

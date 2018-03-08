@@ -17,4 +17,6 @@
     <string name="start_degree">Start degree</string>
     <string name="current_degree">Current degree</string>
     <string name="choose_your_serve_direction">Choose your serve direction</string>
+    <string name="client_is_winner">Client won the game!</string>
+    <string name="host_is_winner">Host won the game!</string>
 </resources>

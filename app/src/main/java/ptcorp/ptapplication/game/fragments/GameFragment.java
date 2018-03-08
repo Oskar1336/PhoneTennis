@@ -3,6 +3,7 @@ package ptcorp.ptapplication.game.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -164,6 +165,25 @@ public class GameFragment extends Fragment{
                 alertDialogLock.setCanceledOnTouchOutside(false);
                 alertDialogLock.setCancelable(false);
                 alertDialogLock.show();
+            }
+        });
+    }
+
+    public void showMatchResult(final String matchResult){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                        .setTitle("The match is over!")
+                        .setMessage(matchResult)
+                        .setNeutralButton("Return to main menu", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getActivity().finish();
+                            }
+                        });
+                alertDialogRoundMessage = builder.create();
+                alertDialogRoundMessage.show();
             }
         });
     }
