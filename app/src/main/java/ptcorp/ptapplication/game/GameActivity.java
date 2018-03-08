@@ -388,15 +388,15 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
         } else if (obj instanceof RoundResult){
             mGameFragment.showRoundMessage("You won the ball!");
+            mRoundResult = (RoundResult)obj;
+            mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+            mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
             uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mGameFragment.dismissRoundMessage();
                 }
             },2000);
-            mRoundResult = (RoundResult)obj;
-            mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
-            mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
             if (mRoundResult.isGameOver()){
 
