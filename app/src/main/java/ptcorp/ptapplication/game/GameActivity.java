@@ -206,6 +206,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void startGame() {
+        mRoundResult = new RoundResult();
         Random rnd = new Random();
 //        int whoStarts = rnd.nextInt(2);
         int whoStarts = 1; // TODO: 2018-03-07 Change to random serve
@@ -275,23 +276,22 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void sendLost(RoundResult.RoundLostReason roundLostReason) {
-        RoundResult roundResult = new RoundResult();
-        roundResult.setRoundLostReason(roundLostReason);
+        mRoundResult.setRoundLostReason(roundLostReason);
         if(mIsHost){
-            roundResult.setClientPoints();
+            mRoundResult.setClientPoints();
         } else{
-            roundResult.setHostPoints();
+            mRoundResult.setHostPoints();
         }
-        mGameFragment.updateClientPoints(roundResult.getClientPoints());
-        mGameFragment.updateHostPoints(roundResult.getHostPoints());
+        mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+        mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
-        if (roundResult.isGameOver()){
+        if (mRoundResult.isGameOver()){
 
         }
 
-        Log.d(TAG, "outgoing: host: " + roundResult.getHostPoints() + " client: " + roundResult.getClientPoints());
+        Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
 
-        mBtController.write(roundResult);
+        mBtController.write(mRoundResult);
         mGameFragment.showRoundMessage("You lost the point!");
         uiHandler.postDelayed(new Runnable() {
              @Override
