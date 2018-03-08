@@ -279,11 +279,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
 
         mBtController.write(mRoundResult);
-
+        mGameFragment.showRoundMessage("You lost the point!");
          Handler showServeHandler = new Handler();
          showServeHandler.postDelayed(new Runnable() {
              @Override
              public void run() {
+                 mGameFragment.dismissRoundMessage();
                 mGameFragment.serveDialog();
              }
          }, 2000);
@@ -381,11 +382,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 sendLost();
             }
         } else if (obj instanceof RoundResult){
+            mGameFragment.showRoundMessage("You won the ball!");
             Handler showWin = new Handler();
             showWin.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    
+                    mGameFragment.dismissRoundMessage();
                 }
             },2000);
             mRoundResult = (RoundResult)obj;
