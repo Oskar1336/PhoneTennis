@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ptcorp.ptapplication.R;
 
@@ -32,6 +36,7 @@ public class GameFragment extends Fragment{
     private ProgressBar mProgressBar;
     private CountDownTimer mCountDownTimer;
     private LockDirection mLockDirection;
+    private Timer timer;
 
 
     public GameFragment() {
@@ -110,22 +115,8 @@ public class GameFragment extends Fragment{
                 mCompass = v.findViewById(R.id.ivCompassStrike);
                 mProgressBar = v.findViewById(R.id.pbStrikeTime);
                 mProgressBar.setMax(5);
-                mCountDownTimer = new CountDownTimer(5000,1000) {
-//                    int i = 0;
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int progress = (int)millisUntilFinished / 1000;
-                        mProgressBar.setProgress(progress);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        mProgressBar.setProgress(0);
-                        // TODO: 2018-03-08 User lost
-                    }
-                };
-
-
+                mProgressBar.setProgress(5);
+                startCountDown();
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -137,9 +128,26 @@ public class GameFragment extends Fragment{
                 alertDialogStrike.setCanceledOnTouchOutside(false);
                 alertDialogStrike.setCancelable(false);
                 alertDialogStrike.show();
-                mCountDownTimer.start();
             }
         });
+    }
+
+    public void startCountDown(){
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+        int timeCurrent = 5;
+            @Override
+            public void run() {
+                if (timeCurrent > 0) {
+                    timeCurrent -= 1;
+                    mProgressBar.setProgress(timeCurrent);
+                } else {
+                    mProgressBar.setProgress(0);
+                    // TODO: 2018-03-08 prompt user that he/she lost 
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(task, 0, 1000);
     }
 
     public void lockOpponentDirectionDialog(){
