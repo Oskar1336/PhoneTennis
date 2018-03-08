@@ -486,6 +486,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mGameFragment.rotateCompass(mRotateAnimation);
             }
             mCurrentDegree = -azimuthInDegress;
+            mGameFragment.setCurrentDegree(mCurrentDegree);
             lastUpdateTime = System.currentTimeMillis();
         }
     }
@@ -504,6 +505,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         } else{
             playerPositions.setmClientPosition(degree);
         }
+        mGameFragment.setStartDegree(degree);
         mBtController.write(playerPositions);
     }
 
