@@ -481,12 +481,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
             mRotateAnimation.setDuration(250);
             mRotateAnimation.setFillAfter(true);
+            mCurrentDegree = -azimuthInDegress;
 
             if(mGameFragment != null){
                 mGameFragment.rotateCompass(mRotateAnimation);
+                mGameFragment.setCurrentDegree(mCurrentDegree);
             }
-            mCurrentDegree = -azimuthInDegress;
-            mGameFragment.setCurrentDegree(mCurrentDegree);
             lastUpdateTime = System.currentTimeMillis();
         }
     }
