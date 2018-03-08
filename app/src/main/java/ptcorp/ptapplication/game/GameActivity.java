@@ -368,6 +368,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             float opponentStrike = strikeInformation.getDirection();
             float moveToPosition = degree;
             moveToPosition -= opponentStrike;
+
             if(opponentStrike < 0){
                 mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
             } else if(opponentStrike > 0){
