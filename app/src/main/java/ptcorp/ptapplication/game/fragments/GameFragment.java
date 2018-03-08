@@ -144,8 +144,6 @@ public class GameFragment extends Fragment{
                     mProgressBar.setProgress(0);
                     // TODO: 2018-03-08 prompt user that he/she lost
 //                    mGameListener.onOutOfTime();
-//                    timer.cancel();
-//                    task.cancel();
                 }
             }
         };
