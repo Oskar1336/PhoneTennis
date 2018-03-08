@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class RoundResult implements Parcelable, Serializable {
     private static final String TAG = "RoundResult";
-    private int hostPoints=0, clientPoints=0;
+    private int hostPoints, clientPoints;
     private final static int GAME_POINTS = 7;
     private RoundStatus roundStatus;
     private boolean isGameOver;
@@ -25,7 +25,8 @@ public class RoundResult implements Parcelable, Serializable {
     }
 
     public RoundResult() {
-        // Default
+        hostPoints = 0;
+        clientPoints = 0;
     }
 
     private enum RoundStatus {

@@ -324,6 +324,7 @@ public class BluetoothConnectionService extends Service {
         void write(Object obj) {
             try {
                 mBtOOS.writeObject(obj);
+                mBtOOS.reset();
             } catch (IOException e) {
                 Log.e(TAG, "Error when sending object", e);
             }

@@ -83,7 +83,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float mCurrentDegree;
 
     private PlayerPositions playerPositions;
-    private RoundResult mRoundResult = new RoundResult();
+    private RoundResult mRoundResult;
     private float degree;
     private ImageView mCompass;
     private boolean mTimeToStrike;
@@ -275,22 +275,23 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void sendLost(RoundResult.RoundLostReason roundLostReason) {
-        mRoundResult.setRoundLostReason(roundLostReason);
+        RoundResult roundResult = new RoundResult();
+        roundResult.setRoundLostReason(roundLostReason);
         if(mIsHost){
-            mRoundResult.setClientPoints();
+            roundResult.setClientPoints();
         } else{
-            mRoundResult.setHostPoints();
+            roundResult.setHostPoints();
         }
-        mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
-        mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
+        mGameFragment.updateClientPoints(roundResult.getClientPoints());
+        mGameFragment.updateHostPoints(roundResult.getHostPoints());
 
-        if (mRoundResult.isGameOver()){
+        if (roundResult.isGameOver()){
 
         }
 
-        Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
+        Log.d(TAG, "outgoing: host: " + roundResult.getHostPoints() + " client: " + roundResult.getClientPoints());
 
-        mBtController.write(mRoundResult);
+        mBtController.write(roundResult);
         mGameFragment.showRoundMessage("You lost the point!");
         uiHandler.postDelayed(new Runnable() {
              @Override
