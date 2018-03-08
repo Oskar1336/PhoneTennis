@@ -3,8 +3,10 @@ package ptcorp.ptapplication.game.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +35,9 @@ public class GameFragment extends Fragment{
     private ImageView mCompass;
     private TextView hostPoints, clientPoints;
     private ProgressBar mProgressBar;
-    private CountDownTimer mCountDownTimer;
+    private ProgressUpdater mProgressUpdater;
     private GameListener mGameListener;
-    private Timer timer;
+
 
 
     public GameFragment() {
@@ -113,14 +115,16 @@ public class GameFragment extends Fragment{
                 ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirectionStrike);
                 mCompass = v.findViewById(R.id.ivCompassStrike);
                 mProgressBar = v.findViewById(R.id.pbStrikeTime);
-                mProgressBar.setMax(5);
-                mProgressBar.setProgress(5);
-//                startCountDown();
+                mProgressUpdater = new ProgressUpdater();
+                mProgressUpdater.execute();
+
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mProgressUpdater.onCancelled();
                         mGameListener.onStrike();
                         alertDialogStrike.dismiss();
+
                     }
                 });
                 alertDialogStrike = builder.create();
@@ -131,24 +135,6 @@ public class GameFragment extends Fragment{
         });
     }
 
-    public void startCountDown(){
-        timer = new Timer();
-        final TimerTask task = new TimerTask() {
-        int timeCurrent = 5;
-            @Override
-            public void run() {
-                if (timeCurrent > 0) {
-                    timeCurrent -= 1;
-                    mProgressBar.setProgress(timeCurrent);
-                } else {
-                    mProgressBar.setProgress(0);
-                    // TODO: 2018-03-08 prompt user that he/she lost
-//                    mGameListener.onOutOfTime();
-                }
-            }
-        };
-        timer.scheduleAtFixedRate(task, 0, 1000);
-    }
 
     public void lockOpponentDirectionDialog(){
         getActivity().runOnUiThread(new Runnable() {
@@ -241,6 +227,50 @@ public class GameFragment extends Fragment{
         void onLock();
         void onStrike();
         void onOutOfTime();
+    }
+
+
+    private class ProgressUpdater extends AsyncTask<Void,Integer,Integer>{
+        private int timeCurrent = 5;
+
+        @Override
+        protected Integer doInBackground(Void... aVoid) {
+            while(timeCurrent > 0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                onProgressUpdate(--timeCurrent);
+            }
+            return 0;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            mProgressBar.setMax(5);
+            mProgressBar.setProgress(5);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mProgressBar.setProgress(integer);
+            mGameListener.onOutOfTime();
+            super.onPostExecute(integer);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... integers) {
+            mProgressBar.setProgress(integers[0]);
+            super.onProgressUpdate(integers);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
     }
 
 }
