@@ -98,6 +98,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mFragmentManager = getSupportFragmentManager();
         setConnectFragment();
 
+        mRoundResult = new RoundResult();
+
         mBtController = new BluetoothController(this);
         mBtController.setSearchListener(this);
         uiHandler = new Handler();
@@ -206,7 +208,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void startGame() {
-        mRoundResult = new RoundResult();
         Random rnd = new Random();
 //        int whoStarts = rnd.nextInt(2);
         int whoStarts = 1; // TODO: 2018-03-07 Change to random serve
