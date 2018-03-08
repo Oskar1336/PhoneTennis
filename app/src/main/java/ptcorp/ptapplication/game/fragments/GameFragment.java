@@ -102,7 +102,6 @@ public class GameFragment extends Fragment{
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LayoutInflater inflater = GameFragment.this.getLayoutInflater();
                 View v = inflater.inflate(R.layout.strike_dialog, null);
@@ -110,19 +109,18 @@ public class GameFragment extends Fragment{
                 ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirectionStrike);
                 mCompass = v.findViewById(R.id.ivCompassStrike);
                 mProgressBar = v.findViewById(R.id.pbStrikeTime);
-                mProgressBar.setMax(100);
+                mProgressBar.setMax(5);
                 mCountDownTimer = new CountDownTimer(5000,1000) {
-                    int i = 0;
+//                    int i = 0;
                     @Override
                     public void onTick(long millisUntilFinished) {
-                        i++;
-                        mProgressBar.setProgress((int)i*100/(5000/1000));
+                        int progress = (int)millisUntilFinished / 1000;
+                        mProgressBar.setProgress(progress);
                     }
 
                     @Override
                     public void onFinish() {
-                        i++;
-                        mProgressBar.setProgress(100);
+                        mProgressBar.setProgress(0);
                         // TODO: 2018-03-08 User lost
                     }
                 };
