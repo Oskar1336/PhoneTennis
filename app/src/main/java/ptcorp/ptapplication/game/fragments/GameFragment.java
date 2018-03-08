@@ -57,7 +57,7 @@ public class GameFragment extends Fragment{
         hostPoints = view.findViewById(R.id.tvHostPoints);
         clientPoints = view.findViewById(R.id.tvClintPoints);
         tvCurrentDegree = view.findViewById(R.id.tvCurrent);
-        tvStartingDegree = view.findViewById(R.id.tvStart);
+        tvStartingDegree = view.findViewById(R.id.tvLocked);
         return view;
     }
 
