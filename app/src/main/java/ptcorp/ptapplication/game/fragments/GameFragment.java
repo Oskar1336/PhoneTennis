@@ -33,7 +33,7 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike, alertDialogRoundMessage;
     private ImageView mCompass;
-    private TextView hostPoints, clientPoints;
+    private TextView hostPoints, clientPoints, tvCurrentDegree, tvStartingDegree;
     private ProgressBar mProgressBar;
     private ProgressUpdater mProgressUpdater;
     private GameListener mGameListener;
@@ -56,6 +56,8 @@ public class GameFragment extends Fragment{
         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
         hostPoints = view.findViewById(R.id.tvHostPoints);
         clientPoints = view.findViewById(R.id.tvClintPoints);
+        tvCurrentDegree = view.findViewById(R.id.tvCurrent);
+        tvStartingDegree = view.findViewById(R.id.tvStart);
         return view;
     }
 
@@ -73,7 +75,7 @@ public class GameFragment extends Fragment{
             @Override
             public void run() {
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 20);
+                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 50);
                 toast.show();
             }
         });
@@ -221,6 +223,14 @@ public class GameFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    public void setCurrentDegree(float mCurrentDegree) {
+        tvCurrentDegree.setText(String.valueOf(mCurrentDegree));
+    }
+
+    public void setStartDegree(float startDegree){
+        tvStartingDegree.setText(String.valueOf(startDegree));
     }
 
     public interface GameListener {
