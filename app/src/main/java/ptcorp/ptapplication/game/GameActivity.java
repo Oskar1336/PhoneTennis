@@ -81,6 +81,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float degree;
     private ImageView mCompass;
     private boolean mTimeToStrike;
+    private Handler uiHandler;
 
 
     @Override
@@ -92,7 +93,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         mBtController = new BluetoothController(this);
         mBtController.setSearchListener(this);
-
+        uiHandler = new Handler();
         mCompass = findViewById(R.id.ivCompass);
         setupSensors();
     }
@@ -280,8 +281,15 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         }
 
         mBtController.write(mRoundResult);
+        mGameFragment.showRoundMessage("You lost the point!");
+        uiHandler.postDelayed(new Runnable() {
+             @Override
+             public void run() {
+                 mGameFragment.dismissRoundMessage();
+                 mGameFragment.serveDialog();
+             }
+        }, 2000);
 
-        mGameFragment.serveDialog();
     }
 
     @Override
@@ -311,17 +319,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         serverConnectFragment.updateComplete();
     }
 
-
     @Override
     public void onBluetoothConnected() {
         // TODO: 2018-03-01 Continue to gamescreen
-//        loadingFragment.dismiss();
-//        mGameFragment = new GameFragment();
-//        mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
         this.runOnUiThread(new RunOnUI());
-
-
-
         Log.d(TAG, "onBluetoothConnected: Connected");
     }
 
@@ -382,6 +383,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 sendLost(RoundResult.RoundLostReason.MISSED_BALL);
             }
         } else if (obj instanceof RoundResult){
+            mGameFragment.showRoundMessage("You won the ball!");
+            uiHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mGameFragment.dismissRoundMessage();
+                }
+            },2000);
             mRoundResult = (RoundResult)obj;
             mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
             mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
