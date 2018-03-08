@@ -81,6 +81,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float degree;
     private ImageView mCompass;
     private boolean mTimeToStrike;
+    private Handler uiHandler;
 
 
     @Override
@@ -92,7 +93,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         mBtController = new BluetoothController(this);
         mBtController.setSearchListener(this);
-
+        uiHandler = new Handler();
         mCompass = findViewById(R.id.ivCompass);
         setupSensors();
     }
@@ -280,14 +281,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         mBtController.write(mRoundResult);
         mGameFragment.showRoundMessage("You lost the point!");
-         Handler showServeHandler = new Handler();
-         showServeHandler.postDelayed(new Runnable() {
+        uiHandler.postDelayed(new Runnable() {
              @Override
              public void run() {
                  mGameFragment.dismissRoundMessage();
-                mGameFragment.serveDialog();
+                 mGameFragment.serveDialog();
              }
-         }, 2000);
+        }, 2000);
 
     }
 
@@ -383,8 +383,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
         } else if (obj instanceof RoundResult){
             mGameFragment.showRoundMessage("You won the ball!");
-            Handler showWin = new Handler();
-            showWin.postDelayed(new Runnable() {
+            uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mGameFragment.dismissRoundMessage();
