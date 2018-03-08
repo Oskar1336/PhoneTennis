@@ -82,6 +82,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private ImageView mCompass;
     private boolean mTimeToStrike;
     private Handler uiHandler;
+    private float strikeDirection;
 
 
     @Override
@@ -228,7 +229,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             } else {
                 mBtController.write(new StrikeInformation(
                         ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10),
-                        mCurrentDegree - degree));
+                        strikeDirection));
             }
             return false;
         } else if ((yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
@@ -495,6 +496,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         // TODO: 2018-03-07 Set a delay here depending on distance.
         mTimeToStrike = true;
+        strikeDirection = mCurrentDegree - degree;
 //        mBtController.write(new StrikeInformation(0f,0f, strikeDirection));
     }
 
