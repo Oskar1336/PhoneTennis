@@ -310,17 +310,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         serverConnectFragment.updateComplete();
     }
 
-
     @Override
     public void onBluetoothConnected() {
         // TODO: 2018-03-01 Continue to gamescreen
-//        loadingFragment.dismiss();
-//        mGameFragment = new GameFragment();
-//        mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
         this.runOnUiThread(new RunOnUI());
-
-
-
         Log.d(TAG, "onBluetoothConnected: Connected");
     }
 
