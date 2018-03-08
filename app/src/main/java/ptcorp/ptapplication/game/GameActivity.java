@@ -461,31 +461,33 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mLastMagnetometer[1] = alpha*mLastMagnetometer[1]+(1-alpha)*event.values[1];
                 mLastMagnetometer[2] = alpha*mLastMagnetometer[2]+(1-alpha)*event.values[2];
             }
+            if (mLastAccelerometerSet && mLastMagnetometerSet &&
+                System.currentTimeMillis() - lastUpdateTime > 250) {
+                float R[] = new float[9];
+                float I[] = new float[9];
+                boolean success = SensorManager.getRotationMatrix(R, I, mLastAccelerometer, mLastMagnetometer);
 
-            float R[] = new float[9];
-            float I[] = new float[9];
-            boolean success = SensorManager.getRotationMatrix(R, I, mLastAccelerometer, mLastMagnetometer);
+                if (success) {
+                    float orientation[] = new float[3];
+                    SensorManager.getOrientation(R, orientation);
+                    mAzimuth = (float) Math.toDegrees(orientation[0]);
+                    mAzimuth = (mAzimuth + 360) % 360;
 
-            if (success) {
-                float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
-                mAzimuth = (float)Math.toDegrees(orientation[0]);
-                mAzimuth = (mAzimuth+360)%360;
+                }
 
-            }
-
-            RotateAnimation mRotateAnimation = new RotateAnimation(
-                    mCurrentDegree, -mAzimuth,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
-                    Animation.RELATIVE_TO_SELF, 0.5f);
-            mRotateAnimation.setDuration(250);
-            mRotateAnimation.setFillAfter(true);
+                RotateAnimation mRotateAnimation = new RotateAnimation(
+                        mCurrentDegree, -mAzimuth,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+                mRotateAnimation.setDuration(250);
+                mRotateAnimation.setFillAfter(true);
 //            mCompass.startAnimation(mRotateAnimation);
-            if(mGameFragment != null){
-                mGameFragment.rotateCompass(mRotateAnimation);
+                if (mGameFragment != null) {
+                    mGameFragment.rotateCompass(mRotateAnimation);
+                }
+                mCurrentDegree = -mAzimuth;
+                lastUpdateTime = System.currentTimeMillis();
             }
-            mCurrentDegree = -mAzimuth;
-            lastUpdateTime = System.currentTimeMillis();
         }
     }
 
