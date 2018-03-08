@@ -226,11 +226,13 @@ public class GameFragment extends Fragment{
     }
 
     public void setCurrentDegree(float mCurrentDegree) {
-        tvCurrentDegree.setText(String.valueOf(mCurrentDegree));
+        if (tvCurrentDegree!=null)
+            tvCurrentDegree.setText(String.valueOf(mCurrentDegree));
     }
 
     public void setStartDegree(float startDegree){
-        tvStartingDegree.setText(String.valueOf(startDegree));
+        if (tvStartingDegree!=null)
+            tvStartingDegree.setText(String.valueOf(startDegree));
     }
 
     public interface GameListener {
