@@ -48,6 +48,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private final static short STRIKE_BACKWARDS_LIMIT = -2;
     private final static short STRIKE_STRENGTH_LIMIT = 31;
 
+    private final static float COMPASS_ALPHA = 0.97f;
+
 
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
@@ -384,7 +386,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
 
-            if (mCurrentDegree<=(moveToPosition+ERROR_MARGIN) && mCurrentDegree>=(moveToPosition-ERROR_MARGIN)){
+            if (mCurrentDegree<=((moveToPosition+ERROR_MARGIN)%360) && mCurrentDegree>=((moveToPosition-ERROR_MARGIN)%360)){
 
                 mGameFragment.strikeDialog();
             } else {
@@ -416,6 +418,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 showHostNotStartedError();
             }
         });
+        // TODO: 2018-03-07 update scores before quitting
     }
 
     @Override
@@ -445,94 +448,43 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void onUpdate(SensorEvent event) {
-        final float alpha = 0.97f;
+        if (event.sensor == mAccelerometerSensor) {
+            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+            mLastAccelerometerSet = true;
 
-        synchronized (this) {
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                mLastAccelerometer[0] = alpha*mLastAccelerometer[0]+(1-alpha)*event.values[0];
-                mLastAccelerometer[1] = alpha*mLastAccelerometer[1]+(1-alpha)*event.values[1];
-                mLastAccelerometer[2] = alpha*mLastAccelerometer[2]+(1-alpha)*event.values[2];
-
-                if (mTimeToStrike) {
-                    mTimeToStrike = performStrike(event);
-                }
-            } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                mLastMagnetometer[0] = alpha*mLastMagnetometer[0]+(1-alpha)*event.values[0];
-                mLastMagnetometer[1] = alpha*mLastMagnetometer[1]+(1-alpha)*event.values[1];
-                mLastMagnetometer[2] = alpha*mLastMagnetometer[2]+(1-alpha)*event.values[2];
+            if (mTimeToStrike) {
+                mTimeToStrike = performStrike(event);
             }
-            if (mLastAccelerometerSet && mLastMagnetometerSet &&
+        } else if (event.sensor == mMagneticSensor) {
+            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+            mLastMagnetometerSet = true;
+        }
+
+        if (!mTimeToStrike && mLastAccelerometerSet && mLastMagnetometerSet &&
                 System.currentTimeMillis() - lastUpdateTime > 250) {
-                float R[] = new float[9];
-                float I[] = new float[9];
-                boolean success = SensorManager.getRotationMatrix(R, I, mLastAccelerometer, mLastMagnetometer);
 
-                if (success) {
-                    float orientation[] = new float[3];
-                    SensorManager.getOrientation(R, orientation);
-                    mAzimuth = (float) Math.toDegrees(orientation[0]);
-                    mAzimuth = (mAzimuth + 360) % 360;
+            SensorManager.getRotationMatrix(mRotationMatrix, null,
+                    mLastAccelerometer, mLastMagnetometer);
+            SensorManager.getOrientation(mRotationMatrix, mOrientation);
 
-                }
+            float azimuthInRadians = mOrientation[0];
+            float azimuthInDegress = (float)(Math.toDegrees(azimuthInRadians) + 360) % 360;
 
-                RotateAnimation mRotateAnimation = new RotateAnimation(
-                        mCurrentDegree, -mAzimuth,
-                        Animation.RELATIVE_TO_SELF, 0.5f,
-                        Animation.RELATIVE_TO_SELF, 0.5f);
-                mRotateAnimation.setDuration(250);
-                mRotateAnimation.setFillAfter(true);
-//            mCompass.startAnimation(mRotateAnimation);
-                if (mGameFragment != null) {
-                    mGameFragment.rotateCompass(mRotateAnimation);
-                }
-                mCurrentDegree = -mAzimuth;
-                lastUpdateTime = System.currentTimeMillis();
+            RotateAnimation mRotateAnimation = new RotateAnimation(
+                    mCurrentDegree, -azimuthInDegress,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+
+            mRotateAnimation.setDuration(250);
+            mRotateAnimation.setFillAfter(true);
+
+            if(mGameFragment != null){
+                mGameFragment.rotateCompass(mRotateAnimation);
             }
+            mCurrentDegree = -azimuthInDegress;
+            lastUpdateTime = System.currentTimeMillis();
         }
     }
-
-//    @Override
-//    public void onUpdate(SensorEvent event) {
-//        if (event.sensor == mAccelerometerSensor) {
-//
-//
-//
-//            System.arraycopy(event.values, 0, mLastAccelerometer, 0,
-//                    event.values.length);
-//            mLastAccelerometerSet = true;
-//
-//            if (mTimeToStrike) {
-//                mTimeToStrike = performStrike(event);
-//            }
-//        } else if (event.sensor == mMagneticSensor) {
-//            System.arraycopy(event.values, 0, mLastMagnetometer, 0,
-//                    event.values.length);
-//            mLastMagnetometerSet = true;
-//        }//only 4 times in 1 second
-//        if (mLastAccelerometerSet && mLastMagnetometerSet &&
-//                System.currentTimeMillis() - lastUpdateTime > 250) {
-//            SensorManager.getRotationMatrix(mRotationMatrix, null,
-//                    mLastAccelerometer, mLastMagnetometer);
-//            SensorManager.getOrientation(mRotationMatrix, mOrientation);
-//
-//            float azimuthInRadians = mOrientation[0];
-//            float azimuthInDegress = (float)
-//                    (Math.toDegrees(azimuthInRadians) + 360) % 360;
-//
-//            RotateAnimation mRotateAnimation = new RotateAnimation(
-//                    mCurrentDegree, -azimuthInDegress,
-//                    Animation.RELATIVE_TO_SELF, 0.5f,
-//                    Animation.RELATIVE_TO_SELF, 0.5f);
-//            mRotateAnimation.setDuration(250);
-//            mRotateAnimation.setFillAfter(true);
-////            mCompass.startAnimation(mRotateAnimation);
-//            if(mGameFragment != null){
-//                mGameFragment.rotateCompass(mRotateAnimation);
-//            }
-//            mCurrentDegree = -azimuthInDegress;
-//            lastUpdateTime = System.currentTimeMillis();
-//        }
-//    }
 
     @Override
     public void onLock() {
@@ -553,11 +505,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void onStrike() {
-
-        // TODO: 2018-03-07 Set a delay here depending on distance.
         mTimeToStrike = true;
         strikeDirection = mCurrentDegree - degree;
-//        mBtController.write(new StrikeInformation(0f,0f, strikeDirection));
     }
 
     private class RunOnUI implements Runnable{
