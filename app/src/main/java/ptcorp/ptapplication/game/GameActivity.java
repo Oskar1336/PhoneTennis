@@ -260,6 +260,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             return false;
         } else if ((yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
                 (zVal < STRIKE_BACKWARDS_LIMIT)) {
+            // TODO: 2018-03-09 Max amount of misses restructure if
             // TODO: 2018-03-07 Display to loose message toast maybe
         }
         return true;
@@ -553,6 +554,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onStrike() {
         mTimeToStrike = true;
+        // TODO: 2018-03-09 Calculate degree correct
         strikeDirection = mCurrentDegree - degree;
     }
 

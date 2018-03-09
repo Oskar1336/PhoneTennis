@@ -1,8 +1,6 @@
 package ptcorp.ptapplication.game.fragments;
 
-import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -32,7 +30,7 @@ public class LoadingFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.loading_fragment, container, false);
         mLoading = view.findViewById(R.id.rotateloading);
-        tvTitle = view.findViewById(R.id.tvTitle);
+        tvTitle = view.findViewById(R.id.tvCaliTitle);
         tvTitle.setText(this.title);
         mLoading.start();
 

@@ -29,7 +29,7 @@
             android:textColor="@android:color/white"
             android:textSize="18sp"
             custom:pb_colorNormal="@color/red_error"
-            custom:pb_colorPressed="#cf3739" />
+            custom:pb_colorPressed="@color/red_pressed" />
 
         <com.dd.processbutton.iml.ActionProcessButton
             android:id="@+id/btn_start_cali"

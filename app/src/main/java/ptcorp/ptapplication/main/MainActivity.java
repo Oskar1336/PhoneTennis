@@ -34,6 +34,7 @@ import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.game.Sensors.SensorListener;
 import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
+import ptcorp.ptapplication.main.fragments.CalibrateDialogFragment;
 import ptcorp.ptapplication.main.fragments.CalibrateStrikeFragment;
 import ptcorp.ptapplication.main.fragments.GamesFragment;
 import ptcorp.ptapplication.main.fragments.HomeFragment;
@@ -42,7 +43,9 @@ import ptcorp.ptapplication.main.fragments.LoginFragment;
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.main.pojos.GameScore;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener, CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult {
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener,
+        CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult,
+        CalibrateDialogFragment.CalibratingListener {
     private static final String TAG = "MainActivity";
     public static final int REQUEST_CODE = 9911;
     private final int NAV_LOGIN = 0;
@@ -62,11 +65,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     private ActionBar mActionBar;
     private Menu mOptMenu;
+    private CalibrateDialogFragment mCalibrateDialog;
 
     private SensorManager mSensorManager;
     private SensorListener mSensorListener;
     private Sensor mAccelerometerSensor;
     private boolean mHasAccelerometer;
+    private boolean mAccelerometerActive;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -257,19 +262,33 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         if (mHasAccelerometer) {
             mSensorManager.registerListener(mSensorListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mAccelerometerActive = true;
         }
+
+        mCalibrateDialog = new CalibrateDialogFragment();
+        mCalibrateDialog.setListener(MainActivity.this);
+        mCalibrateDialog.setCancelable(false);
+        mCalibrateDialog.show(getSupportFragmentManager(), "CalibrateDialog");
 
 
     }
 
     @Override
     public void onCancel() {
+        if (mAccelerometerActive) {
+            mSensorManager.unregisterListener(mSensorListener);
+        }
         fragmentHolder.setCurrentItem(1);
     }
 
     @Override
     public void onUpdate(SensorEvent event) {
+        Log.d(TAG, "onUpdate: X: " + event.values[0] + " / Y: " + event.values[1] + " / Z: " + event.values[2]);
+    }
 
+    @Override
+    public void onCalibrateCancel() {
+        Log.d(TAG, "onUpdate: ---------------------------------------------------------------------------------------");
     }
 
     private class FragmentPageAdapter extends FragmentPagerAdapter {
