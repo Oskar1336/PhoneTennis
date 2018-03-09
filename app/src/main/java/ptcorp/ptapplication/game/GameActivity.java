@@ -235,8 +235,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             if (xVal > STRIKE_STRENGTH_LIMIT) {
                 sendLost(RoundResult.RoundLostReason.SHOT_OUT_OF_BOUNDS);
             } else {
+                // TODO: 2018-03-09 Add strength to calculation
                 mBtController.write(new StrikeInformation(
-                        ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10),
+                        ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10) + 2,
                         strikeDirection));
             }
             return false;
