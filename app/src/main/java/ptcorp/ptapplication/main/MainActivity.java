@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             Log.d(TAG, "onActivityResult: Lägger till i databas");
             GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
             gDB.addGame(gameScore);
+
         }
     }
 

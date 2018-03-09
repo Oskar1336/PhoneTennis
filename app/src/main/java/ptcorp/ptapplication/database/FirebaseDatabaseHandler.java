@@ -74,8 +74,7 @@ public class FirebaseDatabaseHandler {
     }
 
     public String getUsername(){
-        String [] split  = user.getEmail().split("@");
-        return split[0];
+        return user.getEmail().split("@")[0];
     }
 
     public void updateScoreForUser(LeaderboardScore newScore) {
