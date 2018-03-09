@@ -89,6 +89,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private boolean mTimeToStrike;
     private Handler uiHandler;
     private float strikeDirection;
+    private float moveToPosition;
 
 
     @Override
@@ -390,8 +391,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
         } else if(obj instanceof StrikeInformation){
             StrikeInformation strikeInformation = (StrikeInformation)obj;
+            Log.d(TAG, "onMessageReceived: TIME IN AIR: " + strikeInformation.getTimeInAir());
             float opponentStrike = strikeInformation.getDirection();
-            float moveToPosition = degree;
+            moveToPosition = degree;
             moveToPosition -= opponentStrike;
 
             if(opponentStrike < 0){
@@ -401,13 +403,16 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             } else{
                 mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
-
-            if (mCurrentDegree<=((moveToPosition+ERROR_MARGIN)%360) && mCurrentDegree>=((moveToPosition-ERROR_MARGIN)%360)){
-
-                mGameFragment.strikeDialog();
-            } else {
-                sendLost(RoundResult.RoundLostReason.MISSED_BALL);
-            }
+            uiHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mCurrentDegree<=((moveToPosition+ERROR_MARGIN)%360) && mCurrentDegree>=((moveToPosition-ERROR_MARGIN)%360)){
+                        mGameFragment.strikeDialog();
+                    } else {
+                        sendLost(RoundResult.RoundLostReason.MISSED_BALL);
+                    }
+                }
+            }, (long) strikeInformation.getTimeInAir());
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
             Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
