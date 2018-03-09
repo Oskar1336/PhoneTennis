@@ -3,13 +3,15 @@ package ptcorp.ptapplication.game.pojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 import ptcorp.ptapplication.game.enums.GameState;
 
 /**
  * Created by LinusHakansson on 2018-03-09.
  */
 
-public class InitGame implements Parcelable {
+public class InitGame implements Parcelable, Serializable {
     private String opponentName;
     private GameState gameState;
 
