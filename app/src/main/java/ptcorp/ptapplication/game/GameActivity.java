@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -69,6 +70,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor, mMagneticSensor;
     private boolean isStriking, hasAccelerometerSensor, hasMagneticSensor;
+    Vibrator v;
 
     private float[] mLastAccelerometer = new float[3];
     private boolean mLastAccelerometerSet;
@@ -105,6 +107,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mBtController.setSearchListener(this);
         uiHandler = new Handler();
         mCompass = findViewById(R.id.ivCompass);
+        v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         setupSensors();
     }
 
@@ -240,6 +243,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 sendLost(RoundResult.RoundLostReason.SHOT_OUT_OF_BOUNDS);
             } else {
                 // TODO: 2018-03-09 Add strength to calculation
+                // Vibrate for 500 milliseconds
+                v.vibrate(500);
                 mBtController.write(new StrikeInformation(
                         ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10) + 2,
                         strikeDirection));
