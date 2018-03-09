@@ -19,6 +19,10 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import ptcorp.ptapplication.R;
@@ -36,6 +40,7 @@ import ptcorp.ptapplication.game.pojos.GameSettings;
 import ptcorp.ptapplication.game.pojos.PlayerPositions;
 import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
+import ptcorp.ptapplication.main.pojos.GameScore;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
         ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.GameListener {
@@ -43,6 +48,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
     private final static float ERROR_MARGIN = 20;
+    public final static String GAME_RESULT = "GameActivity.GAME_RESULT";
 
     private final static short STRIKE_FORWARD_LIMIT = 10;
     private final static short STRIKE_TILT_LIMIT = 5;
@@ -552,6 +558,18 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onOutOfTime() {
         sendLost(RoundResult.RoundLostReason.TOOK_TOO_LONG);
+    }
+
+    @Override
+    public void onGameFinished() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date today = Calendar.getInstance().getTime();
+        String stringDate = df.format(today);
+
+        GameScore gameScore = new GameScore("Host", "Client", stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
+        Intent resultIntent = new Intent();
+//        resultIntent.putExtra("GameResult", gameScore);
+
     }
 
     private class RunOnUI implements Runnable{
