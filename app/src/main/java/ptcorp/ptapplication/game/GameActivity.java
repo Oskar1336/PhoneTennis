@@ -298,20 +298,18 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 message = getText(R.string.host_is_winner).toString();
             }
             mGameFragment.showMatchResult(message);
+        } else{
+            mGameFragment.showRoundMessage("You lost the point!");
+            uiHandler.postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                     mGameFragment.dismissRoundMessage();
+                     mGameFragment.serveDialog();
+                 }
+            }, 2000);
         }
-
         Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
-
         mBtController.write(mRoundResult);
-        mGameFragment.showRoundMessage("You lost the point!");
-        uiHandler.postDelayed(new Runnable() {
-             @Override
-             public void run() {
-                 mGameFragment.dismissRoundMessage();
-                 mGameFragment.serveDialog();
-             }
-        }, 2000);
-
     }
 
     @Override

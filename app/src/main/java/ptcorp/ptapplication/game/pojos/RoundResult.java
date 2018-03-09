@@ -25,7 +25,7 @@ public class RoundResult implements Parcelable, Serializable {
     }
 
     public RoundResult() {
-        hostPoints = 0;
+        hostPoints = 6;
         clientPoints = 0;
     }
 
