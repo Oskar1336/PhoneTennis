@@ -23,7 +23,7 @@ import ptcorp.ptapplication.R;
  */
 public class LoginFragment extends Fragment {
 
-    public ActionProcessButton loginBtn, createBtn;
+    private ActionProcessButton loginBtn, createBtn;
     private final static String PT_PREFS = "phoneTennisPrefs";
     private EditText username, password;
     private MaterialTextField mtf_username, mtf_password;
@@ -89,11 +89,19 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    public void setLoginBtnProgress(int progress) {
+        loginBtn.setProgress(progress);
+    }
+
+    public void setCreateBtnProgress(int progress) {
+        createBtn.setProgress(progress);
+    }
+
     private void saveEmail(){
         SharedPreferences.Editor edit = mSharedPrefs.edit();
         edit.putString("email", username.getText().toString());
         edit.putString("password", password.getText().toString());
-        edit.commit();
+        edit.apply();
     }
     private void setEmail(){
         username.setText(mSharedPrefs.getString("email", ""));

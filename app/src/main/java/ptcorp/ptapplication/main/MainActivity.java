@@ -1,13 +1,20 @@
 package ptcorp.ptapplication.main;
 
 
+import android.annotation.SuppressLint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,16 +29,25 @@ import android.view.MenuItem;
 import android.view.View;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
+import ptcorp.ptapplication.game.Sensors.SensorListener;
 import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
+import ptcorp.ptapplication.main.fragments.CalibrateStrikeFragment;
 import ptcorp.ptapplication.main.fragments.GamesFragment;
 import ptcorp.ptapplication.main.fragments.HomeFragment;
 import ptcorp.ptapplication.main.fragments.LeaderboardFragment;
 import ptcorp.ptapplication.main.fragments.LoginFragment;
 import ptcorp.ptapplication.R;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener {
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener, CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult {
     private static final String TAG = "MainActivity";
+
+    private final int NAV_LOGIN = 0;
+    private final int NAV_HOME = 1;
+    private final int NAV_MY_GAMES = 2;
+    private final int NAV_LEADERBOARD = 3;
+    private final int NAV_CALIBRATE_STRIKE = 4;
+
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
@@ -41,6 +57,14 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private GamesFragment myGameFragment;
     private GamesDatabaseHandler gDB;
 
+    private ActionBar mActionBar;
+    private Menu mOptMenu;
+
+    private SensorManager mSensorManager;
+    private SensorListener mSensorListener;
+    private Sensor mAccelerometerSensor;
+    private boolean mHasAccelerometer;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -48,25 +72,27 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    fragmentHolder.setCurrentItem(1);
+                    fragmentHolder.setCurrentItem(NAV_HOME);
                     return true;
                 case R.id.navigation_myGames:
-                    fragmentHolder.setCurrentItem(2);
+                    fragmentHolder.setCurrentItem(NAV_MY_GAMES);
                     myGameFragment.setAdapter(new GamesAdapter(gDB.getGames()));
                     return true;
                 case R.id.navigation_leaderboard:
-                    fragmentHolder.setCurrentItem(3);
+                    fragmentHolder.setCurrentItem(NAV_LEADERBOARD);
                     return true;
             }
             return false;
         }
     };
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initFirebase();
+
         gDB = new GamesDatabaseHandler(this);
         loginFragment = new LoginFragment();
         loginFragment.setListener(this);
@@ -74,19 +100,47 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         myGameFragment = new GamesFragment();
         leaderboardFragment = new LeaderboardFragment();
 
+        mActionBar = getSupportActionBar();
+
+        nav = findViewById(R.id.navigation);
+        nav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         fragmentHolder = findViewById(R.id.vpPager);
         fragmentHolder.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
-        fragmentHolder.setCurrentItem(0);
         fragmentHolder.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return true;
             }
         });
+        fragmentHolder.addOnPageChangeListener(new NavListener());
 
-        nav = findViewById(R.id.navigation);
-        nav.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        nav.setVisibility(View.INVISIBLE);
+        fragmentHolder.setCurrentItem(NAV_LOGIN);
+
+        mSensorListener = new SensorListener(MainActivity.this);
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+
+        if (mSensorManager != null) {
+            if ((mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) != null)
+                mHasAccelerometer = true;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        mOptMenu = menu;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option_menu, menu);
+        mOptMenu.setGroupVisible(R.id.opt_menu, false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.opt_calibrate_strike) {
+            fragmentHolder.setCurrentItem(NAV_CALIBRATE_STRIKE);
+        }
+        return true;
     }
 
     @Override
@@ -106,21 +160,30 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (fragmentHolder.getCurrentItem() == NAV_CALIBRATE_STRIKE) {
+            fragmentHolder.setCurrentItem(NAV_HOME);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void createUser(String email, String password){
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            loginFragment.createBtn.setProgress(100);
+                            loginFragment.setCreateBtnProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            fragmentHolder.setCurrentItem(1);
+
+                            fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Account created and logged in!");
                         } else {
-                            loginFragment.createBtn.setProgress(-1);
+                            loginFragment.setCreateBtnProgress(-1);
                             new ButtonHandler().execute();
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -137,16 +200,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            loginFragment.loginBtn.setProgress(100);
+                            loginFragment.setLoginBtnProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-//                            FirebaseUser user = mAuth.getCurrentUser();
+
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
-                            fragmentHolder.setCurrentItem(1);
+                            fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Logged in!");
                         } else {
-                            loginFragment.loginBtn.setProgress(-1);
+                            loginFragment.setLoginBtnProgress(-1);
                             new ButtonHandler().execute();
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -175,38 +238,57 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         createUser(user, pass);
     }
 
+    @Override
+    public void onStartCalibrate() {
+        // TODO: 2018-03-09 Register sensor
+
+        if (mHasAccelerometer) {
+            mSensorManager.registerListener(mSensorListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+
+    }
+
+    @Override
+    public void onCancel() {
+        fragmentHolder.setCurrentItem(1);
+    }
+
+    @Override
+    public void onUpdate(SensorEvent event) {
+
+    }
+
     private class FragmentPageAdapter extends FragmentPagerAdapter {
-
-
-
-        public FragmentPageAdapter(FragmentManager fm) {
+        FragmentPageAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0:
+                case NAV_LOGIN:
                     return loginFragment;
-//                    return new GameFragment();
-                case 1:
+                case NAV_HOME:
                     return homeFragment;
-                case 2:
+                case NAV_MY_GAMES:
                     return myGameFragment;
-                case 3:
+                case NAV_LEADERBOARD:
                     return leaderboardFragment;
+                case NAV_CALIBRATE_STRIKE:
+                    return new CalibrateStrikeFragment();
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class ButtonHandler extends AsyncTask<Void, Void, Void>{
-
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -220,8 +302,59 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            loginFragment.loginBtn.setProgress(0);
-            loginFragment.createBtn.setProgress(0);
+            loginFragment.setLoginBtnProgress(0);
+            loginFragment.setCreateBtnProgress(0);
         }
     }
+
+    private class NavListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position == NAV_LOGIN || position == NAV_CALIBRATE_STRIKE) {
+                nav.setVisibility(View.GONE);
+            } else {
+                nav.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            switch (position){
+                case NAV_LOGIN:
+                    if (mOptMenu != null)
+                        mOptMenu.setGroupVisible(R.id.opt_menu, false);
+                    mActionBar.setTitle(R.string.login);
+
+                    break;
+                case NAV_HOME:
+                    mActionBar.setTitle(R.string.home);
+                    if (mOptMenu != null)
+                        mOptMenu.setGroupVisible(R.id.opt_menu, true);
+
+                    break;
+                case NAV_MY_GAMES:
+                    mActionBar.setTitle(R.string.my_games);
+                    if (mOptMenu != null)
+                        mOptMenu.setGroupVisible(R.id.opt_menu, true);
+
+                    break;
+                case NAV_LEADERBOARD:
+                    mActionBar.setTitle(R.string.leaderboard);
+                    if (mOptMenu != null)
+                        mOptMenu.setGroupVisible(R.id.opt_menu, true);
+
+                    break;
+                case NAV_CALIBRATE_STRIKE:
+                    mActionBar.setTitle(R.string.calibrate_strike_sensor);
+                    if (mOptMenu != null)
+                        mOptMenu.setGroupVisible(R.id.opt_menu, false);
+
+                    break;
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) { }
+    }
+
 }
