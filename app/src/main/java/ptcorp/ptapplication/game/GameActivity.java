@@ -313,7 +313,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
         if (mRoundResult.isGameOver()){
             String message;
-            if(mRoundResult.getClientPoints() == 7){
+            if(mRoundResult.getClientPoints() == RoundResult.GAME_POINTS){
                 message = getText(R.string.client_is_winner).toString();
             } else  {
                 message = getText(R.string.host_is_winner).toString();
@@ -438,7 +438,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
             if (mRoundResult.isGameOver()){
                 String message;
-                if(mRoundResult.getClientPoints() == 7){
+                if(mRoundResult.getClientPoints() == RoundResult.GAME_POINTS){
                     message = getText(R.string.client_is_winner).toString();
                 } else  {
                     message = getText(R.string.host_is_winner).toString();
