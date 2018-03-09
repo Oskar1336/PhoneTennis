@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             if (position == NAV_LOGIN || position == NAV_CALIBRATE_STRIKE) {
                 nav.setVisibility(View.INVISIBLE);
-            } else {s
+            } else {
                 nav.setVisibility(View.VISIBLE);
             }
         }
