@@ -70,7 +70,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor, mMagneticSensor;
     private boolean isStriking, hasAccelerometerSensor, hasMagneticSensor;
-    Vibrator v;
+    private Vibrator v;
+    private long[] vibratePattern = {200,100,200,100,200};
 
     private float[] mLastAccelerometer = new float[3];
     private boolean mLastAccelerometerSet;
@@ -401,6 +402,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             float opponentStrike = strikeInformation.getDirection();
             moveToPosition = degree;
             moveToPosition -= opponentStrike;
+
+            v.vibrate(vibratePattern,-1);
 
             if(opponentStrike < 0){
                 mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
