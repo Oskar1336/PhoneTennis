@@ -6,10 +6,8 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.dd.processbutton.iml.ActionProcessButton;
-import com.victor.loading.rotate.RotateLoading;
 
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.main.components.DottedProgressBar;
@@ -44,7 +42,7 @@ public class CalibrateDialogFragment extends DialogFragment {
     }
 
     public void updateProgress() {
-        if (mDottedProgress != null) mDottedProgress.addDot();
+        if (mDottedProgress != null) mDottedProgress.addDots();
     }
 
     @Override

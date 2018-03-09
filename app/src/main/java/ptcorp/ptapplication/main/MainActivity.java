@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private final int NAV_LEADERBOARD = 3;
     private final int NAV_CALIBRATE_STRIKE = 4;
 
+    private final int CALIBRATION_MAX_TRIES = 5;
+
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     private ActionBar mActionBar;
     private Menu mOptMenu;
+
     private CalibrateDialogFragment mCalibrateDialog;
 
     private SensorManager mSensorManager;
@@ -69,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private Sensor mAccelerometerSensor;
     private boolean mHasAccelerometer;
     private boolean mAccelerometerActive;
+    private boolean mAccBackStarted;
+    private boolean mStrikeOver;
+    private float mCurHardestStrikeX = 0f;
+    private short mCurTry = 0;
+    private float[] mStrikeXArr = new float[CALIBRATION_MAX_TRIES];
+    private final Object lockStrikeReader = new Object();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -81,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_myGames:
                     fragmentHolder.setCurrentItem(NAV_MY_GAMES);
-                    myGameFragment.setAdapter(new GamesAdapter(gDB.getGames()));
                     return true;
                 case R.id.navigation_leaderboard:
                     fragmentHolder.setCurrentItem(NAV_LEADERBOARD);
@@ -90,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             return false;
         }
     };
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -245,7 +255,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onStartCalibrate() {
-        // TODO: 2018-03-09 Register sensor
+        mAccBackStarted = false;
+        mCurHardestStrikeX = 0;
+        mCurTry = 0;
+        mStrikeXArr = new float[CALIBRATION_MAX_TRIES];
 
         if (mHasAccelerometer) {
             mSensorManager.registerListener(mSensorListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -256,12 +269,14 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         mCalibrateDialog.setListener(MainActivity.this);
         mCalibrateDialog.setCancelable(false);
         mCalibrateDialog.show(getSupportFragmentManager(), "CalibrateDialog");
-
-
     }
 
     @Override
-    public void onCancel() {
+    public void onCancel(boolean cancelWithResult) {
+        if (cancelWithResult) {
+            // TODO: 2018-03-09 save to shared preferences
+        }
+
         if (mAccelerometerActive) {
             mSensorManager.unregisterListener(mSensorListener);
         }
@@ -270,12 +285,43 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onUpdate(SensorEvent event) {
-        Log.d(TAG, "onUpdate: X: " + event.values[0] + " / Y: " + event.values[1] + " / Z: " + event.values[2]);
+        float x = event.values[0];
+        float y = event.values[1]; // rm
+        float z = event.values[2];
+
+        Log.d(TAG, "onUpdate: X: " + x + " / Y: " + y + " / Z: " + z);
+
+        // Measure strike start
+        if (!mAccBackStarted && (z > 8 && x < -0.5)) {
+            Log.d(TAG, "onUpdate: ---- Backwards X: " + x + " / Y: " + y + " / Z: " + z);
+            mAccBackStarted = true;
+        } else if (mAccBackStarted && (z < -2) && x > mCurHardestStrikeX) {
+            mCurHardestStrikeX = x;
+            Log.d(TAG, "onUpdate: new hardest X: " + x + " / Y: " + y + " / Z: " + z);
+        }
+
+        if (mCurHardestStrikeX > x && (z < 5 && z > 0)) {
+            mAccBackStarted = false;
+
+            mStrikeXArr[mCurTry] = mCurHardestStrikeX;
+            mCurHardestStrikeX = 0;
+
+            Log.d(TAG, "onUpdate: saving hardest X: " + x + " / Y: " + y + " / Z: " + z);
+
+//            mCurTry++;
+            mCalibrateDialog.updateProgress();
+        }
+
+        if (mCurTry == CALIBRATION_MAX_TRIES) {
+
+            // TODO: 2018-03-09 Save values
+            onCancel(true);
+        }
     }
 
     @Override
     public void onCalibrateCancel() {
-        Log.d(TAG, "onUpdate: ---------------------------------------------------------------------------------------");
+        onCancel(false);
     }
 
     private class FragmentPageAdapter extends FragmentPagerAdapter {
@@ -330,8 +376,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             if (position == NAV_LOGIN || position == NAV_CALIBRATE_STRIKE) {
-                nav.setVisibility(View.GONE);
-            } else {
+                nav.setVisibility(View.INVISIBLE);
+            } else {s
                 nav.setVisibility(View.VISIBLE);
             }
         }

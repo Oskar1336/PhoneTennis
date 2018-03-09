@@ -3,6 +3,7 @@ package ptcorp.ptapplication.main.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,7 @@ public class CalibrateStrikeFragment extends Fragment {
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCancel();
+                mListener.onCancel(false);
             }
         });
         return v;
@@ -48,6 +49,6 @@ public class CalibrateStrikeFragment extends Fragment {
 
     public interface CalibrateButtonListener {
         void onStartCalibrate();
-        void onCancel();
+        void onCancel(boolean cancelWithResult);
     }
 }
