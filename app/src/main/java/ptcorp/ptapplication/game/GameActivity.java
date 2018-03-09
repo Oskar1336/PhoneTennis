@@ -49,6 +49,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public static final int CLIENT_STARTS = 0;
     private final static float ERROR_MARGIN = 20;
     public final static String GAME_RESULT = "GameActivity.GAME_RESULT";
+    public final static int Game_RESULT_CODE = 1199;
 
     private final static short STRIKE_FORWARD_LIMIT = 10;
     private final static short STRIKE_TILT_LIMIT = 5;
@@ -567,9 +568,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         String stringDate = df.format(today);
 
         GameScore gameScore = new GameScore("Host", "Client", stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
-        Intent resultIntent = new Intent();
-//        resultIntent.putExtra("GameResult", gameScore);
-
+        Intent resultIntent = getIntent();
+        resultIntent.putExtra(GAME_RESULT, gameScore);
+        setResult(Game_RESULT_CODE, resultIntent);
+        finish();
     }
 
     private class RunOnUI implements Runnable{

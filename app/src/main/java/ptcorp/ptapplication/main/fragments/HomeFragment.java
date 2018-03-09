@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.game.GameActivity;
+import ptcorp.ptapplication.main.MainActivity;
 
 
 /**
@@ -34,7 +35,7 @@ public class HomeFragment extends Fragment {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), GameActivity.class));
+                startActivityForResult(new Intent(getActivity(), GameActivity.class), MainActivity.REQUEST_CODE);
             }
         });
         return v;

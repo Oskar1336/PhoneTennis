@@ -2,6 +2,7 @@ package ptcorp.ptapplication.main;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -29,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
+import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.game.Sensors.SensorListener;
 import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
@@ -38,10 +40,11 @@ import ptcorp.ptapplication.main.fragments.HomeFragment;
 import ptcorp.ptapplication.main.fragments.LeaderboardFragment;
 import ptcorp.ptapplication.main.fragments.LoginFragment;
 import ptcorp.ptapplication.R;
+import ptcorp.ptapplication.main.pojos.GameScore;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener, CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult {
     private static final String TAG = "MainActivity";
-
+    public static final int REQUEST_CODE = 9911;
     private final int NAV_LOGIN = 0;
     private final int NAV_HOME = 1;
     private final int NAV_MY_GAMES = 2;
@@ -166,6 +169,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             fragmentHolder.setCurrentItem(NAV_HOME);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CODE){
+            if(resultCode == GameActivity.Game_RESULT_CODE){
+                GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
+                gDB.addGame(gameScore);
+            }
         }
     }
 
