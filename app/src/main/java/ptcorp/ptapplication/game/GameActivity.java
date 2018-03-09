@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +19,10 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import ptcorp.ptapplication.R;
@@ -35,6 +40,7 @@ import ptcorp.ptapplication.game.pojos.GameSettings;
 import ptcorp.ptapplication.game.pojos.PlayerPositions;
 import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
+import ptcorp.ptapplication.main.pojos.GameScore;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
         ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.GameListener {
@@ -42,6 +48,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
     private final static float ERROR_MARGIN = 20;
+    public final static String GAME_RESULT = "GameActivity.GAME_RESULT";
 
     private final static short STRIKE_FORWARD_LIMIT = 10;
     private final static short STRIKE_TILT_LIMIT = 5;
@@ -69,6 +76,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor, mMagneticSensor;
     private boolean isStriking, hasAccelerometerSensor, hasMagneticSensor;
+    private Vibrator v;
+    private long[] vibratePattern = {200,100,200,100,200,100};
 
     private float[] mLastAccelerometer = new float[3];
     private boolean mLastAccelerometerSet;
@@ -105,6 +114,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mBtController.setSearchListener(this);
         uiHandler = new Handler();
         mCompass = findViewById(R.id.ivCompass);
+        v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         setupSensors();
     }
 
@@ -240,6 +250,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 sendLost(RoundResult.RoundLostReason.SHOT_OUT_OF_BOUNDS);
             } else {
                 // TODO: 2018-03-09 Add strength to calculation
+                // Vibrate for 500 milliseconds
+                v.vibrate(500);
                 mBtController.write(new StrikeInformation(
                         ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10) + 2,
                         strikeDirection));
@@ -398,6 +410,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             moveToPosition = degree;
             moveToPosition -= opponentStrike;
 
+            v.vibrate(vibratePattern,-1);
+
             if(opponentStrike < 0){
                 mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
             } else if(opponentStrike > 0){
@@ -414,7 +428,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         sendLost(RoundResult.RoundLostReason.MISSED_BALL);
                     }
                 }
-            }, (long) strikeInformation.getTimeInAir());
+            }, (long) (strikeInformation.getTimeInAir() * 1000));
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
             Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
@@ -546,6 +560,18 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onOutOfTime() {
         sendLost(RoundResult.RoundLostReason.TOOK_TOO_LONG);
+    }
+
+    @Override
+    public void onGameFinished() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date today = Calendar.getInstance().getTime();
+        String stringDate = df.format(today);
+
+        GameScore gameScore = new GameScore("Host", "Client", stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
+        Intent resultIntent = new Intent();
+//        resultIntent.putExtra("GameResult", gameScore);
+
     }
 
     private class RunOnUI implements Runnable{

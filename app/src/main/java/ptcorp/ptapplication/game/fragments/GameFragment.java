@@ -179,7 +179,7 @@ public class GameFragment extends Fragment{
                         .setNeutralButton("Return to main menu", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
+                                mGameListener.onGameFinished();
                             }
                         });
                 alertDialogRoundMessage = builder.create();
@@ -259,6 +259,7 @@ public class GameFragment extends Fragment{
         void onLock();
         void onStrike();
         void onOutOfTime();
+        void onGameFinished();
     }
 
 
