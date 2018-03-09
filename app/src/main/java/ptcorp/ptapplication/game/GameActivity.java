@@ -413,7 +413,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         sendLost(RoundResult.RoundLostReason.MISSED_BALL);
                     }
                 }
-            }, (long) strikeInformation.getTimeInAir());
+            }, (long) (strikeInformation.getTimeInAir() * 1000));
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
             Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
