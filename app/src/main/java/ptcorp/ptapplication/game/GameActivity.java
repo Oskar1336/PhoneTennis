@@ -251,35 +251,40 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void showHostNotStartedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.host_error);
-        builder.setMessage(R.string.host_error_explanation);
-        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-                // TODO: 2018-03-08 Send score to activity
-            }
-        });
-        builder.create().show();
+        if(!mRoundResult.isGameOver()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.host_error);
+            builder.setMessage(R.string.host_error_explanation);
+            builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                    // TODO: 2018-03-08 Send score to activity
+                }
+            });
+            builder.create().show();
+        }
     }
 
     private void showNotConnectedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.bluetooth_error);
-        builder.setMessage(R.string.bluetooth_error_explination);
-        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-                // TODO: 2018-03-08 Send Score to activity
-            }
-        });
-        builder.create().show();
+        if(!mRoundResult.isGameOver()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.bluetooth_error);
+            builder.setMessage(R.string.bluetooth_error_explination);
+            builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                    // TODO: 2018-03-08 Send Score to activity
+                }
+            });
+            builder.create().show();
+        }
     }
 
+    //Loser sends this
     private void sendLost(RoundResult.RoundLostReason roundLostReason) {
         mRoundResult.setRoundLostReason(roundLostReason);
         if(mIsHost){
@@ -404,17 +409,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 sendLost(RoundResult.RoundLostReason.MISSED_BALL);
             }
         } else if (obj instanceof RoundResult){
-            mGameFragment.showRoundMessage("You won the ball!");
             mRoundResult = (RoundResult)obj;
             Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
             mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
             mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
-            uiHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mGameFragment.dismissRoundMessage();
-                }
-            },2000);
 
             if (mRoundResult.isGameOver()){
                 String message;
@@ -424,6 +422,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     message = getText(R.string.host_is_winner).toString();
                 }
                 mGameFragment.showMatchResult(message);
+            }else{
+                mGameFragment.showRoundMessage("You won the ball!");
+                uiHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameFragment.dismissRoundMessage();
+                    }
+                },2000);
             }
         }
     }
