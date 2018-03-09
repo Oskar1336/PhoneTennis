@@ -2,6 +2,7 @@ package ptcorp.ptapplication.game.pojos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.Serializable;
 
@@ -10,7 +11,8 @@ import java.io.Serializable;
  */
 
 public class RoundResult implements Parcelable, Serializable {
-    private int hostPoints=0, clientPoints=0;
+    private static final String TAG = "RoundResult";
+    private int hostPoints, clientPoints;
     private final static int GAME_POINTS = 7;
     private RoundStatus roundStatus;
     private boolean isGameOver;
@@ -23,7 +25,8 @@ public class RoundResult implements Parcelable, Serializable {
     }
 
     public RoundResult() {
-        // Default
+        hostPoints = 6;
+        clientPoints = 0;
     }
 
     private enum RoundStatus {
@@ -83,6 +86,8 @@ public class RoundResult implements Parcelable, Serializable {
         this.isGameOver = in.readByte() != 0x00; // boolean...
         String roundLostReason = in.readString();
         this.roundLostReason = RoundLostReason.valueOf(roundLostReason);
+
+        Log.d(TAG, "writeToParcel: host: " + hostPoints + " client: " + clientPoints);
     }
 
     public static final Creator<RoundResult> CREATOR = new Creator<RoundResult>() {
@@ -109,5 +114,7 @@ public class RoundResult implements Parcelable, Serializable {
         dest.writeString(roundStatus.name()); // send enum as string
         dest.writeByte((byte) (isGameOver ? 0x01 : 0x00)); // true or false
         dest.writeString(roundLostReason.name());
+
+        Log.d(TAG, "writeToParcel: host: " + hostPoints + " client: " + clientPoints);
     }
 }

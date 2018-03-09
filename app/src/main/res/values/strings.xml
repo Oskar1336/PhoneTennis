@@ -21,4 +21,6 @@
     <string name="calibrate_strike_sensor">Calibrate strike sensor</string>
     <string name="login">Login</string>
     <string name="calibrate_strike">Calibrate strike</string>
+    <string name="client_is_winner">Client won the game!</string>
+    <string name="host_is_winner">Host won the game!</string>
 </resources>

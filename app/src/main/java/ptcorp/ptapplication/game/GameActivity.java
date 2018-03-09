@@ -37,7 +37,7 @@ import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
-        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.LockDirection {
+        ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.GameListener {
     private static final String TAG = "GameActivity";
     public static final int HOST_STARTS = 1;
     public static final int CLIENT_STARTS = 0;
@@ -83,12 +83,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float mCurrentDegree;
 
     private PlayerPositions playerPositions;
-    private RoundResult mRoundResult = new RoundResult();
+    private RoundResult mRoundResult;
     private float degree;
     private ImageView mCompass;
     private boolean mTimeToStrike;
     private Handler uiHandler;
     private float strikeDirection;
+    private float moveToPosition;
 
 
     @Override
@@ -97,6 +98,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         setContentView(R.layout.activity_game);
         mFragmentManager = getSupportFragmentManager();
         setConnectFragment();
+
+        mRoundResult = new RoundResult();
 
         mBtController = new BluetoothController(this);
         mBtController.setSearchListener(this);
@@ -227,8 +230,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         if (xVal > 5)
             Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
 
-        if (xVal > STRIKE_FORWARD_LIMIT &&
-                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
+        if (xVal > STRIKE_FORWARD_LIMIT ) {
+//                &&
+//                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
 
             Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
 
@@ -249,31 +253,40 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     private void showHostNotStartedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.host_error);
-        builder.setMessage(R.string.host_error_explanation);
-        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
+        if(!mRoundResult.isGameOver()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.host_error);
+            builder.setMessage(R.string.host_error_explanation);
+            builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                    // TODO: 2018-03-08 Send score to activity
+                }
+            });
+            builder.create().show();
+        }
     }
 
     private void showNotConnectedError() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.bluetooth_error);
-        builder.setMessage(R.string.bluetooth_error_explination);
-        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
+        if(!mRoundResult.isGameOver()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.bluetooth_error);
+            builder.setMessage(R.string.bluetooth_error_explination);
+            builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                    // TODO: 2018-03-08 Send Score to activity
+                }
+            });
+            builder.create().show();
+        }
     }
 
+    //Loser sends this
     private void sendLost(RoundResult.RoundLostReason roundLostReason) {
         mRoundResult.setRoundLostReason(roundLostReason);
         if(mIsHost){
@@ -284,22 +297,26 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
         mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
-
-
         if (mRoundResult.isGameOver()){
-
+            String message;
+            if(mRoundResult.getClientPoints() == 7){
+                message = getText(R.string.client_is_winner).toString();
+            } else  {
+                message = getText(R.string.host_is_winner).toString();
+            }
+            mGameFragment.showMatchResult(message);
+        } else{
+            mGameFragment.showRoundMessage("You lost the point!");
+            uiHandler.postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                     mGameFragment.dismissRoundMessage();
+                     mGameFragment.serveDialog();
+                 }
+            }, 2000);
         }
-
+        Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
         mBtController.write(mRoundResult);
-        mGameFragment.showRoundMessage("You lost the point!");
-        uiHandler.postDelayed(new Runnable() {
-             @Override
-             public void run() {
-                 mGameFragment.dismissRoundMessage();
-                 mGameFragment.serveDialog();
-             }
-        }, 2000);
-
     }
 
     @Override
@@ -375,8 +392,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
         } else if(obj instanceof StrikeInformation){
             StrikeInformation strikeInformation = (StrikeInformation)obj;
+            Log.d(TAG, "onMessageReceived: TIME IN AIR: " + strikeInformation.getTimeInAir());
             float opponentStrike = strikeInformation.getDirection();
-            float moveToPosition = degree;
+            moveToPosition = degree;
             moveToPosition -= opponentStrike;
 
             if(opponentStrike < 0){
@@ -386,27 +404,38 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             } else{
                 mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
-
-            if (mCurrentDegree<=((moveToPosition+ERROR_MARGIN)%360) && mCurrentDegree>=((moveToPosition-ERROR_MARGIN)%360)){
-
-                mGameFragment.strikeDialog();
-            } else {
-                sendLost(RoundResult.RoundLostReason.MISSED_BALL);
-            }
-        } else if (obj instanceof RoundResult){
-            mGameFragment.showRoundMessage("You won the ball!");
-            mRoundResult = (RoundResult)obj;
-            mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
-            mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
             uiHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mGameFragment.dismissRoundMessage();
+                    if (mCurrentDegree<=((moveToPosition+ERROR_MARGIN)%360) && mCurrentDegree>=((moveToPosition-ERROR_MARGIN)%360)){
+                        mGameFragment.strikeDialog();
+                    } else {
+                        sendLost(RoundResult.RoundLostReason.MISSED_BALL);
+                    }
                 }
-            },2000);
+            }, (long) strikeInformation.getTimeInAir());
+        } else if (obj instanceof RoundResult){
+            mRoundResult = (RoundResult)obj;
+            Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
+            mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
+            mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
             if (mRoundResult.isGameOver()){
-
+                String message;
+                if(mRoundResult.getClientPoints() == 7){
+                    message = getText(R.string.client_is_winner).toString();
+                } else  {
+                    message = getText(R.string.host_is_winner).toString();
+                }
+                mGameFragment.showMatchResult(message);
+            }else{
+                mGameFragment.showRoundMessage("You won the ball!");
+                uiHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGameFragment.dismissRoundMessage();
+                    }
+                },2000);
             }
         }
     }
@@ -478,11 +507,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
             mRotateAnimation.setDuration(250);
             mRotateAnimation.setFillAfter(true);
+            mCurrentDegree = -azimuthInDegress;
 
             if(mGameFragment != null){
                 mGameFragment.rotateCompass(mRotateAnimation);
+                mGameFragment.setCurrentDegree(mCurrentDegree);
             }
-            mCurrentDegree = -azimuthInDegress;
             lastUpdateTime = System.currentTimeMillis();
         }
     }
@@ -501,6 +531,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         } else{
             playerPositions.setmClientPosition(degree);
         }
+        mGameFragment.setStartDegree(degree);
         mBtController.write(playerPositions);
     }
 
@@ -508,6 +539,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public void onStrike() {
         mTimeToStrike = true;
         strikeDirection = mCurrentDegree - degree;
+    }
+
+    @Override
+    public void onOutOfTime() {
+        sendLost(RoundResult.RoundLostReason.TOOK_TOO_LONG);
     }
 
     private class RunOnUI implements Runnable{

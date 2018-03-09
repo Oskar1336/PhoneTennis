@@ -49,6 +49,7 @@
         android:layout_marginTop="16dp"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:gravity="center"
         custom:layout_constraintLeft_toLeftOf="parent"
         custom:layout_constraintRight_toRightOf="parent"
         custom:layout_constraintTop_toTopOf="parent"

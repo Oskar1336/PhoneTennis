@@ -3,8 +3,11 @@ package ptcorp.ptapplication.game.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,9 @@ import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import ptcorp.ptapplication.R;
 
 /**
@@ -28,10 +34,11 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike, alertDialogRoundMessage;
     private ImageView mCompass;
-    private TextView hostPoints, clientPoints;
+    private TextView hostPoints, clientPoints, tvCurrentDegree, tvStartingDegree;
     private ProgressBar mProgressBar;
-    private CountDownTimer mCountDownTimer;
-    private LockDirection mLockDirection;
+    private ProgressUpdater mProgressUpdater;
+    private GameListener mGameListener;
+
 
 
     public GameFragment() {
@@ -50,6 +57,8 @@ public class GameFragment extends Fragment{
         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
         hostPoints = view.findViewById(R.id.tvHostPoints);
         clientPoints = view.findViewById(R.id.tvClintPoints);
+        tvCurrentDegree = view.findViewById(R.id.tvCurrent);
+        tvStartingDegree = view.findViewById(R.id.tvLocked);
         return view;
     }
 
@@ -67,7 +76,7 @@ public class GameFragment extends Fragment{
             @Override
             public void run() {
                 Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER|Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 50);
                 toast.show();
             }
         });
@@ -86,7 +95,7 @@ public class GameFragment extends Fragment{
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLockDirection.onStrike();
+                        mGameListener.onStrike();
                         alertDialogServe.dismiss();
                     }
                 });
@@ -109,38 +118,26 @@ public class GameFragment extends Fragment{
                 ActionProcessButton btnLock = v.findViewById(R.id.btnLockDirectionStrike);
                 mCompass = v.findViewById(R.id.ivCompassStrike);
                 mProgressBar = v.findViewById(R.id.pbStrikeTime);
-                mProgressBar.setMax(5);
-                mCountDownTimer = new CountDownTimer(5000,1000) {
-//                    int i = 0;
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int progress = (int)millisUntilFinished / 1000;
-                        mProgressBar.setProgress(progress);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        mProgressBar.setProgress(0);
-                        // TODO: 2018-03-08 User lost
-                    }
-                };
-
+                mProgressUpdater = new ProgressUpdater();
+                mProgressUpdater.execute();
 
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLockDirection.onStrike();
+                        mProgressUpdater.cancel(true);
+                        mGameListener.onStrike();
                         alertDialogStrike.dismiss();
+
                     }
                 });
                 alertDialogStrike = builder.create();
                 alertDialogStrike.setCanceledOnTouchOutside(false);
                 alertDialogStrike.setCancelable(false);
                 alertDialogStrike.show();
-                mCountDownTimer.start();
             }
         });
     }
+
 
     public void lockOpponentDirectionDialog(){
         getActivity().runOnUiThread(new Runnable() {
@@ -157,7 +154,7 @@ public class GameFragment extends Fragment{
                 btnLock.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLockDirection.onLock();
+                        mGameListener.onLock();
                         loadingFragment = new LoadingFragment();
                         loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
                         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
@@ -168,6 +165,25 @@ public class GameFragment extends Fragment{
                 alertDialogLock.setCanceledOnTouchOutside(false);
                 alertDialogLock.setCancelable(false);
                 alertDialogLock.show();
+            }
+        });
+    }
+
+    public void showMatchResult(final String matchResult){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                        .setTitle("The match is over!")
+                        .setMessage(matchResult)
+                        .setNeutralButton("Return to main menu", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getActivity().finish();
+                            }
+                        });
+                alertDialogRoundMessage = builder.create();
+                alertDialogRoundMessage.show();
             }
         });
     }
@@ -221,7 +237,7 @@ public class GameFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mLockDirection = (LockDirection) getActivity();
+        mGameListener = (GameListener) getActivity();
     }
 
     @Override
@@ -229,9 +245,65 @@ public class GameFragment extends Fragment{
         super.onResume();
     }
 
-    public interface LockDirection {
+    public void setCurrentDegree(float mCurrentDegree) {
+        if (tvCurrentDegree!=null)
+            tvCurrentDegree.setText(String.valueOf(Math.abs(mCurrentDegree)));
+    }
+
+    public void setStartDegree(float startDegree){
+        if (tvStartingDegree!=null)
+            tvStartingDegree.setText(String.valueOf(Math.abs(startDegree)));
+    }
+
+    public interface GameListener {
         void onLock();
         void onStrike();
+        void onOutOfTime();
+    }
+
+
+    private class ProgressUpdater extends AsyncTask<Void,Integer,Integer>{
+        private int timeCurrent = 5;
+
+        @Override
+        protected Integer doInBackground(Void... aVoid) {
+            while(timeCurrent > 0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                onProgressUpdate(--timeCurrent);
+            }
+            return 0;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            mProgressBar.setMax(5);
+            mProgressBar.setProgress(5);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mProgressBar.setProgress(integer);
+            mGameListener.onOutOfTime();
+            alertDialogStrike.dismiss();
+            super.onPostExecute(integer);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... integers) {
+            mProgressBar.setProgress(integers[0]);
+            super.onProgressUpdate(integers);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
     }
 
 }
