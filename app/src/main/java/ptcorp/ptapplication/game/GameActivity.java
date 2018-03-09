@@ -77,7 +77,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private Sensor mAccelerometerSensor, mMagneticSensor;
     private boolean isStriking, hasAccelerometerSensor, hasMagneticSensor;
     private Vibrator v;
-    private long[] vibratePattern = {200,100,200,100,200};
+    private long[] vibratePattern = {200,100,200,100,200,100};
 
     private float[] mLastAccelerometer = new float[3];
     private boolean mLastAccelerometerSet;
