@@ -181,7 +181,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult: Går in i onActivityResult");
         if(requestCode == REQUEST_CODE){
+            Log.d(TAG, "onActivityResult: Första IF");
             if(resultCode == GameActivity.Game_RESULT_CODE){
                 Log.d(TAG, "onActivityResult: Lägger till i databas");
                 GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
