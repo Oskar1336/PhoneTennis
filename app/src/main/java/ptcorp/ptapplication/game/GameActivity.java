@@ -37,9 +37,11 @@ import ptcorp.ptapplication.game.fragments.GameFragment;
 import ptcorp.ptapplication.game.fragments.LoadingFragment;
 import ptcorp.ptapplication.game.fragments.ServerConnectFragment;
 import ptcorp.ptapplication.game.pojos.GameSettings;
+import ptcorp.ptapplication.game.pojos.InitGame;
 import ptcorp.ptapplication.game.pojos.PlayerPositions;
 import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
+import ptcorp.ptapplication.main.MainActivity;
 import ptcorp.ptapplication.main.pojos.GameScore;
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
@@ -57,6 +59,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private final static short STRIKE_STRENGTH_LIMIT = 31;
 
     private final static float COMPASS_ALPHA = 0.97f;
+    private String username, opponentUsername;
 
 
     private FragmentManager mFragmentManager;
@@ -376,8 +379,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onMessageReceived(Object obj) {
         Log.d(TAG, "onMessageReceived: " + obj.getClass().getName());
-        if (obj instanceof GameState) {
-            mOtherDeviceState = (GameState)obj;
+        if (obj instanceof InitGame) {
+            mOtherDeviceState = ((InitGame) obj).getGameState();
+            opponentUsername = ((InitGame) obj).getOpponentName();
             Log.d(TAG, "onMessageReceived: FIRST IF -------------------------");
             if (GameState.DEVICE_READY.equals(mOtherDeviceState) &&
                     GameState.DEVICE_READY.equals(mThisDeviceState)) {
@@ -387,6 +391,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 //                    startGame();
                        mGameFragment.hideInitGame();
                        mGameFragment.lockOpponentDirectionDialog();
+                    mGameFragment.setHostname(username);
+                    mGameFragment.setClientname(opponentUsername);
+                } else{
+                    mGameFragment.setHostname(opponentUsername);
+                    mGameFragment.setClientname(username);
                 }
             }
         } else if(obj instanceof GameSettings) {
@@ -568,8 +577,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date today = Calendar.getInstance().getTime();
         String stringDate = df.format(today);
-
-        GameScore gameScore = new GameScore("Host", "Client", stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
+        GameScore gameScore;
+        if (mIsHost) {
+            gameScore = new GameScore(username, opponentUsername, stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
+        }else{
+            gameScore = new GameScore(opponentUsername, username, stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
+        }
         Intent resultIntent = getIntent();
         resultIntent.putExtra(GAME_RESULT, gameScore);
         setResult(Game_RESULT_CODE, resultIntent);
@@ -589,13 +602,18 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             mFragmentTransaction.replace(R.id.gameContainer, mGameFragment, "GameFragment").commit();
 
             mThisDeviceState = GameState.DEVICE_READY;
+            username = getIntent().getStringExtra(MainActivity.USERNAME);
+            final InitGame initGame = new InitGame(GameState.DEVICE_READY, username);
+
+
 
             Handler loadingTimer = new Handler();
             loadingTimer.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     Log.d(TAG, "run: " + mThisDeviceState.name());
-                    mBtController.write(GameState.DEVICE_READY);
+//                    mBtController.write(GameState.DEVICE_READY);
+                    mBtController.write(initGame);
                 }
             }, 4000);
         }

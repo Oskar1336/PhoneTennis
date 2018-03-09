@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         CalibrateDialogFragment.CalibratingListener {
     private static final String TAG = "MainActivity";
     public static final int REQUEST_CODE = 9911;
+    public static final String USERNAME = "username";
     private final int NAV_LOGIN = 0;
     private final int NAV_HOME = 1;
     private final int NAV_MY_GAMES = 2;
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
     private ViewPager fragmentHolder;
-    private Fragment homeFragment, leaderboardFragment;
+    private Fragment  leaderboardFragment;
+    private HomeFragment homeFragment;
     private LoginFragment loginFragment;
     private GamesFragment myGameFragment;
     private GamesDatabaseHandler gDB;
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         loginFragment = new LoginFragment();
         loginFragment.setListener(this);
         homeFragment = new HomeFragment();
+        homeFragment.setUsername(mHandlerDB.getUsername());
         myGameFragment = new GamesFragment();
         leaderboardFragment = new LeaderboardFragment();
 
@@ -249,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     private void initFirebase(){
         mAuth = FirebaseAuth.getInstance();
+        mHandlerDB = new FirebaseDatabaseHandler(mAuth);
     }
 
     @Override

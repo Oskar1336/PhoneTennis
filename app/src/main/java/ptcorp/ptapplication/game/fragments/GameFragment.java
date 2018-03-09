@@ -34,7 +34,7 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike, alertDialogRoundMessage;
     private ImageView mCompass;
-    private TextView hostPoints, clientPoints, tvCurrentDegree, tvStartingDegree;
+    private TextView hostPoints, clientPoints, tvCurrentDegree, tvStartingDegree, tvHostName, tvClientName;
     private ProgressBar mProgressBar;
     private ProgressUpdater mProgressUpdater;
     private GameListener mGameListener;
@@ -56,9 +56,12 @@ public class GameFragment extends Fragment{
         loadingFragment.enableButton(false);
         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
         hostPoints = view.findViewById(R.id.tvHostPoints);
+        tvHostName = view.findViewById(R.id.tvHostName);
+        tvClientName = view.findViewById(R.id.tvClientName);
         clientPoints = view.findViewById(R.id.tvClintPoints);
         tvCurrentDegree = view.findViewById(R.id.tvCurrent);
         tvStartingDegree = view.findViewById(R.id.tvLocked);
+
         return view;
     }
 
@@ -69,6 +72,14 @@ public class GameFragment extends Fragment{
                 loadingFragment.dismiss();
             }
         });
+    }
+
+    public void setHostname(String hostname){
+        tvHostName.setText(hostname);
+    }
+
+    public void setClientname(String clientname){
+         tvClientName.setText(clientname);
     }
 
     public void showNewDegree(final String message){
