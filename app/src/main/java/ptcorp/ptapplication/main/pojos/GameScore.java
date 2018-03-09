@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
+import ptcorp.ptapplication.game.enums.GameWinner;
+
 /**
  * Created by Pontus on 2018-02-22.
  */
@@ -13,6 +15,7 @@ public class GameScore implements Parcelable{
 
     private String player1, player2, date;
     private int score1, score2;
+    private GameWinner gameWinner;
 
     public GameScore(String player1, String player2, String date, int score1, int score2) {
         this.player1 = player1;
@@ -22,6 +25,9 @@ public class GameScore implements Parcelable{
         this.score2 = score2;
     }
 
+    public void setGameWinner(GameWinner winner){
+        this.gameWinner = winner;
+    }
 
     protected GameScore(Parcel in) {
         player1 = in.readString();
@@ -29,6 +35,8 @@ public class GameScore implements Parcelable{
         date = in.readString();
         score1 = in.readInt();
         score2 = in.readInt();
+        String winner = in.readString();
+        gameWinner = GameWinner.valueOf(winner);
     }
 
     public static final Creator<GameScore> CREATOR = new Creator<GameScore>() {
@@ -63,6 +71,10 @@ public class GameScore implements Parcelable{
         return score2;
     }
 
+    public GameWinner getGameWinner(){
+        return gameWinner;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -75,5 +87,6 @@ public class GameScore implements Parcelable{
         parcel.writeString(date);
         parcel.writeInt(score1);
         parcel.writeInt(score2);
+        parcel.writeString(gameWinner.name());
     }
 }
