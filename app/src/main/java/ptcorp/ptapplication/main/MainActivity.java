@@ -49,8 +49,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult,
         CalibrateDialogFragment.CalibratingListener {
     private static final String TAG = "MainActivity";
-    public static final int REQUEST_CODE = 9911;
     public static final String USERNAME = "username";
+    public static final int REQUEST_CODE = 99;
+
     private final int NAV_LOGIN = 0;
     private final int NAV_HOME = 1;
     private final int NAV_MY_GAMES = 2;
@@ -184,14 +185,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult: Går in i onActivityResult");
-        if(requestCode == REQUEST_CODE){
-            Log.d(TAG, "onActivityResult: Första IF");
-            if(resultCode == GameActivity.Game_RESULT_CODE){
-                Log.d(TAG, "onActivityResult: Lägger till i databas");
-                GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
-                gDB.addGame(gameScore);
-            }
+        Log.d(TAG, "onActivityResult: Går in i onActivityResult" + requestCode);
+        if(resultCode == GameActivity.GAME_RESULT_CODE){
+            Log.d(TAG, "onActivityResult: Lägger till i databas");
+            GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
+            gDB.addGame(gameScore);
         }
     }
 
