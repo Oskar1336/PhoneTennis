@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ptcorp.ptapplication.main.pojos.GameScore;
+
+import static com.facebook.stetho.inspector.network.ResponseHandlingInputStream.TAG;
 
 /**
  * Created by Pontus on 2018-02-26.
@@ -84,6 +87,9 @@ public class GamesDatabaseHandler extends SQLiteOpenHelper {
                     null, values);
             if (row != -1){
                 created = true;
+                Log.d(TAG, "addGame: GameCreated");
+            } else {
+                Log.d(TAG, "addGame: Not created");
             }
             db.close();
         } catch (Exception e){

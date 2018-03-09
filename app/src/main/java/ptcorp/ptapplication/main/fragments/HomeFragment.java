@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.game.GameActivity;
+import ptcorp.ptapplication.main.MainActivity;
+
+import static ptcorp.ptapplication.main.MainActivity.REQUEST_CODE;
 
 
 /**
@@ -18,10 +21,15 @@ import ptcorp.ptapplication.game.GameActivity;
  */
 public class HomeFragment extends Fragment {
     private info.hoang8f.widget.FButton mPlayButton;
+    private String username;
     private TextView tvPlayer, tvWins, tvLosses, tvWinrate;
 
     public HomeFragment() {
         // Required empty public constructor
+    }
+
+    public void setUsername(String username){
+        this.username = username;
     }
 
 
@@ -34,7 +42,9 @@ public class HomeFragment extends Fragment {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), GameActivity.class));
+                Intent intent = new Intent(getActivity(), GameActivity.class);
+                intent.putExtra(MainActivity.USERNAME, username);
+                startActivityForResult(intent, MainActivity.REQUEST_CODE);
             }
         });
         return v;

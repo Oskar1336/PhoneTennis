@@ -2,6 +2,7 @@ package ptcorp.ptapplication.main;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -18,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.widget.Toast;
+
+import com.facebook.stetho.Stetho;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -30,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
+import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.game.Sensors.SensorListener;
 import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
@@ -40,11 +44,14 @@ import ptcorp.ptapplication.main.fragments.HomeFragment;
 import ptcorp.ptapplication.main.fragments.LeaderboardFragment;
 import ptcorp.ptapplication.main.fragments.LoginFragment;
 import ptcorp.ptapplication.R;
+import ptcorp.ptapplication.main.pojos.GameScore;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener,
         CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult,
         CalibrateDialogFragment.CalibratingListener {
     private static final String TAG = "MainActivity";
+    public static final String USERNAME = "username";
+    public static final int REQUEST_CODE = 99;
 
     private final int NAV_LOGIN = 0;
     private final int NAV_HOME = 1;
@@ -58,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
     private ViewPager fragmentHolder;
-    private Fragment homeFragment, leaderboardFragment;
+    private Fragment  leaderboardFragment;
+    private HomeFragment homeFragment;
     private LoginFragment loginFragment;
     private GamesFragment myGameFragment;
     private GamesDatabaseHandler gDB;
@@ -107,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initFirebase();
-
+        Stetho.initializeWithDefaults(this);
         gDB = new GamesDatabaseHandler(this);
         loginFragment = new LoginFragment();
         loginFragment.setListener(this);
@@ -184,6 +192,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult: Går in i onActivityResult" + requestCode);
+        if(resultCode == GameActivity.GAME_RESULT_CODE){
+            Log.d(TAG, "onActivityResult: Lägger till i databas");
+            GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
+            gDB.addGame(gameScore);
+        }
+    }
+
     private void createUser(String email, String password){
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -193,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             loginFragment.setCreateBtnProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
-
+                            homeFragment.setUsername(mHandlerDB.getUsername());
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Account created and logged in!");
@@ -220,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             Log.d(TAG, "signInWithEmail:success");
 
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
+                            homeFragment.setUsername(mHandlerDB.getUsername());
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Logged in!");

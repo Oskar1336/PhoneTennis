@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tvHostName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="HostPoints"
@@ -40,6 +41,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tvClientName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ClientPoints"

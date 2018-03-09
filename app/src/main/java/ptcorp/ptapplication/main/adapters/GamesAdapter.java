@@ -36,8 +36,9 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewhol
 
         holder.tvPlayer1.setText(game.getPlayer1());
         holder.tvPlayer2.setText(game.getPlayer2());
-        holder.tvScore1.setText(game.getScore1());
-        holder.tvScore2.setText(game.getScore2());
+        holder.tvScore1.setText(String.valueOf(game.getScore1()));
+        holder.tvScore2.setText(String.valueOf(game.getScore2()));
+        holder.tvDate.setText(game.getDate());
     }
 
     @Override
@@ -47,7 +48,7 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewhol
 
     class GamesViewholder extends RecyclerView.ViewHolder{
 
-        private TextView tvPlayer1, tvPlayer2, tvScore1, tvScore2;
+        private TextView tvPlayer1, tvPlayer2, tvScore1, tvScore2, tvDate;
 
         public GamesViewholder(View itemView) {
             super(itemView);
@@ -56,6 +57,7 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewhol
             tvPlayer2 = itemView.findViewById(R.id.tvPlayer2);
             tvScore1 = itemView.findViewById(R.id.tvScore1);
             tvScore2 = itemView.findViewById(R.id.tvScore2);
+            tvDate = itemView.findViewById(R.id.tvDate);
         }
     }
 }

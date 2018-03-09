@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by Pontus on 2018-02-22.
  */
 
-public class GameScore implements Serializable, Parcelable{
+public class GameScore implements Parcelable{
 
     private String player1, player2, date;
     private int score1, score2;

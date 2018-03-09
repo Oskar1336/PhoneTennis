@@ -34,7 +34,7 @@ public class GameFragment extends Fragment{
     private LoadingFragment loadingFragment;
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike, alertDialogRoundMessage;
     private ImageView mCompass;
-    private TextView hostPoints, clientPoints, tvCurrentDegree, tvStartingDegree;
+    private TextView hostPoints, clientPoints, tvCurrentDegree, tvStartingDegree, tvHostName, tvClientName;
     private ProgressBar mProgressBar;
     private ProgressUpdater mProgressUpdater;
     private GameListener mGameListener;
@@ -56,9 +56,12 @@ public class GameFragment extends Fragment{
         loadingFragment.enableButton(false);
         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
         hostPoints = view.findViewById(R.id.tvHostPoints);
+        tvHostName = view.findViewById(R.id.tvHostName);
+        tvClientName = view.findViewById(R.id.tvClientName);
         clientPoints = view.findViewById(R.id.tvClintPoints);
         tvCurrentDegree = view.findViewById(R.id.tvCurrent);
         tvStartingDegree = view.findViewById(R.id.tvLocked);
+
         return view;
     }
 
@@ -67,6 +70,25 @@ public class GameFragment extends Fragment{
             @Override
             public void run() {
                 loadingFragment.dismiss();
+            }
+        });
+    }
+
+    public void setHostname(final String hostname){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvHostName.setText(hostname);
+
+            }
+        });
+    }
+
+    public void setClientname(final String clientname){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvClientName.setText(clientname);
             }
         });
     }
@@ -247,12 +269,12 @@ public class GameFragment extends Fragment{
 
     public void setCurrentDegree(float mCurrentDegree) {
         if (tvCurrentDegree!=null)
-            tvCurrentDegree.setText(String.valueOf(Math.abs(mCurrentDegree)));
+            tvCurrentDegree.setText(String.valueOf(Math.abs((int)mCurrentDegree)));
     }
 
     public void setStartDegree(float startDegree){
         if (tvStartingDegree!=null)
-            tvStartingDegree.setText(String.valueOf(Math.abs(startDegree)));
+            tvStartingDegree.setText(String.valueOf(Math.abs((int)startDegree)));
     }
 
     public interface GameListener {

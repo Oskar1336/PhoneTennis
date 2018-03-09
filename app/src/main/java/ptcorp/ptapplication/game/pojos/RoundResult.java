@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class RoundResult implements Parcelable, Serializable {
     private static final String TAG = "RoundResult";
     private int hostPoints, clientPoints;
-    private final static int GAME_POINTS = 7;
+    public final static int GAME_POINTS = 5;
     private RoundStatus roundStatus;
     private boolean isGameOver;
     private RoundLostReason roundLostReason;
