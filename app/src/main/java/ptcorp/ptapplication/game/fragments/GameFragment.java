@@ -74,12 +74,23 @@ public class GameFragment extends Fragment{
         });
     }
 
-    public void setHostname(String hostname){
-        tvHostName.setText(hostname);
+    public void setHostname(final String hostname){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvHostName.setText(hostname);
+
+            }
+        });
     }
 
-    public void setClientname(String clientname){
-         tvClientName.setText(clientname);
+    public void setClientname(final String clientname){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvClientName.setText(clientname);
+            }
+        });
     }
 
     public void showNewDegree(final String message){

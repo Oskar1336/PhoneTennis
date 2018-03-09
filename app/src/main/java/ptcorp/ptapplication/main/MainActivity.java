@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         loginFragment = new LoginFragment();
         loginFragment.setListener(this);
         homeFragment = new HomeFragment();
-        homeFragment.setUsername(mHandlerDB.getUsername());
         myGameFragment = new GamesFragment();
         leaderboardFragment = new LeaderboardFragment();
 
@@ -202,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             loginFragment.setCreateBtnProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
-
+                            homeFragment.setUsername(mHandlerDB.getUsername());
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Account created and logged in!");
@@ -229,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             Log.d(TAG, "signInWithEmail:success");
 
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
+                            homeFragment.setUsername(mHandlerDB.getUsername());
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Logged in!");
@@ -250,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     private void initFirebase(){
         mAuth = FirebaseAuth.getInstance();
-        mHandlerDB = new FirebaseDatabaseHandler(mAuth);
     }
 
     @Override
