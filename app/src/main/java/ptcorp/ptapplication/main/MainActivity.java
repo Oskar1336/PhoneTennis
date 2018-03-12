@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             mHandlerDB.addOnUpdateListener(MainActivity.this);
+                            initCurrentUser();
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             homeFragment.setUsername(mHandlerDB.getUsername());
                             nav.setVisibility(View.VISIBLE);
@@ -271,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             mHandlerDB.addOnUpdateListener(MainActivity.this);
+                            initCurrentUser();
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             homeFragment.setUsername(mHandlerDB.getUsername());
                             nav.setVisibility(View.VISIBLE);
@@ -293,9 +295,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     private void initFirebase(){
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void initCurrentUser(){
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-
     }
 
     @Override
