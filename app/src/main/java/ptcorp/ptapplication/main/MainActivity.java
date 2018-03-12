@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
             gDB.addGame(gameScore);
             LeaderboardScore score = new LeaderboardScore();
+            Log.d(TAG, "onActivityResult: " + mHandlerDB.getUsername());
             if(mHandlerDB.getUsername().equals(gameScore.getPlayer1())){// HOST
                 score.setUsername(gameScore.getPlayer1());
                 if(gameScore.getGameWinner().equals(GameWinner.HOSTWON)){

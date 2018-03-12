@@ -66,6 +66,7 @@ public class FirebaseDatabaseHandler {
         LeaderboardScore score;
         if (mScoreList.containsKey(userID)) {
             score = mScoreList.get(userID);
+            Log.d(TAG, "updateScoreForUser: " + score.getUsername());
             if (newScore.getWonGames() == 1) {
                 score.setWonGames(score.getWonGames() + 1);
             } else {
@@ -73,7 +74,7 @@ public class FirebaseDatabaseHandler {
             }
         } else{
             score = new LeaderboardScore();
-            score.setUsername(newScore.getUsername());
+            score.setUsername(getUsername());
             if(newScore.getWonGames() == 1){
                 score.setWonGames(1);
             }else{
