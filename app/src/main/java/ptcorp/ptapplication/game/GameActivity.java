@@ -584,6 +584,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         Date today = Calendar.getInstance().getTime();
         String stringDate = df.format(today);
         GameScore gameScore;
+        Log.d(TAG, "onGameFinished: Jag " + username + "Opponent " + opponentUsername);
         if (mIsHost) {
             gameScore = new GameScore(username, opponentUsername, stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
         }else{
