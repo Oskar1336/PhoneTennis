@@ -64,6 +64,7 @@ public class FirebaseDatabaseHandler {
 
     public void updateScoreForUser(LeaderboardScore newScore) {
         LeaderboardScore score;
+        Log.d(TAG, "updateScoreForUser: usrId" + userID);
         if (mScoreList.containsKey(userID)) {
             score = mScoreList.get(userID);
             Log.d(TAG, "updateScoreForUser: " + score.getUsername());
