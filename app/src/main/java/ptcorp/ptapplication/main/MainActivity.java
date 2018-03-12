@@ -9,7 +9,6 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -35,7 +34,6 @@ import android.view.View;
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
 import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.game.Sensors.SensorListener;
-import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
 import ptcorp.ptapplication.main.fragments.CalibrateDialogFragment;
 import ptcorp.ptapplication.main.fragments.CalibrateStrikeFragment;
@@ -59,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private final int NAV_LEADERBOARD = 3;
     private final int NAV_CALIBRATE_STRIKE = 4;
 
-    private final int CALIBRATION_MAX_TRIES = 5;
+    private final short CALIBRATION_MAX_TRIES = 5;
+    private final short STILL_AVERAGE_DIVIDER = 20;
+    private static final float SENSOR_SPIKE_THREASHOLD = 3;
 
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
@@ -81,12 +81,18 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private Sensor mAccelerometerSensor;
     private boolean mHasAccelerometer;
     private boolean mAccelerometerActive;
-    private boolean mAccBackStarted;
-    private boolean mStrikeOver;
+
+    private boolean mCalculating;
     private float mCurHardestStrikeX = 0f;
     private short mCurTry = 0;
     private float[] mStrikeXArr = new float[CALIBRATION_MAX_TRIES];
-    private final Object lockStrikeReader = new Object();
+    private long mLastStrike = 0;
+
+
+    private short mStillPos = 0;
+    private float[] mStillAverageArr = new float[STILL_AVERAGE_DIVIDER];
+    private float mTotalAverage = 0f;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -274,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     public void onStartCalibrate() {
-        mAccBackStarted = false;
+        mCalculating = false;
         mCurHardestStrikeX = 0;
         mCurTry = 0;
         mStrikeXArr = new float[CALIBRATION_MAX_TRIES];
@@ -305,36 +311,27 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void onUpdate(SensorEvent event) {
         float x = event.values[0];
-        float y = event.values[1]; // rm
+        float y = event.values[1];
         float z = event.values[2];
 
-        Log.d(TAG, "onUpdate: X: " + x + " / Y: " + y + " / Z: " + z);
+        // Measure strike start !mCalculating && !mCalculating && ((event.timestamp - mLastStrike) > 500) &&
+        if ((y < 3 && y > -3)) {
+            Log.d(TAG, "onUpdate: X: " + x + " / Y: " + y + " / Z: " + z);
 
-        // Measure strike start
-        if (!mAccBackStarted && (z > 8 && x < -0.5)) {
-            Log.d(TAG, "onUpdate: ---- Backwards X: " + x + " / Y: " + y + " / Z: " + z);
-            mAccBackStarted = true;
-        } else if (mAccBackStarted && (z < -2) && x > mCurHardestStrikeX) {
-            mCurHardestStrikeX = x;
-            Log.d(TAG, "onUpdate: new hardest X: " + x + " / Y: " + y + " / Z: " + z);
-        }
+            mStillPos++;
+            mStillAverageArr[mStillPos % STILL_AVERAGE_DIVIDER] = x;
 
-        if (mCurHardestStrikeX > x && (z < 5 && z > 0)) {
-            mAccBackStarted = false;
+            if (mStillPos > STILL_AVERAGE_DIVIDER) {
+                float average = 0f;
+                for (float aMStillAverageArr : mStillAverageArr) {
+                    average += aMStillAverageArr;
+                }
+                mTotalAverage = average / STILL_AVERAGE_DIVIDER;
+            }
 
-            mStrikeXArr[mCurTry] = mCurHardestStrikeX;
-            mCurHardestStrikeX = 0;
-
-            Log.d(TAG, "onUpdate: saving hardest X: " + x + " / Y: " + y + " / Z: " + z);
-
-//            mCurTry++;
-            mCalibrateDialog.updateProgress();
-        }
-
-        if (mCurTry == CALIBRATION_MAX_TRIES) {
-
-            // TODO: 2018-03-09 Save values
-            onCancel(true);
+            if (mTotalAverage < (x + SENSOR_SPIKE_THREASHOLD) && (z < 0)) {
+                Log.d(TAG, "onUpdate: STRIKE");
+            }
         }
     }
 
