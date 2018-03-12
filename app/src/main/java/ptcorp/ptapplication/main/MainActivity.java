@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private ArrayList<LeaderboardScore> mLeaderboardList;
 
     private ActionBar mActionBar;
-    private Menu mOptMenu;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {

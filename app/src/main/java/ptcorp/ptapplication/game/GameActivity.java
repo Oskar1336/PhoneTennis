@@ -59,7 +59,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private final static short STRIKE_BACKWARDS_LIMIT = -2;
     private final static short STRIKE_STRENGTH_LIMIT = 31;
 
-    private final static float COMPASS_ALPHA = 0.97f;
     private String username, opponentUsername;
 
 
@@ -81,7 +80,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private SensorListener mSensorListener;
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor, mMagneticSensor;
-    private boolean isStriking, hasAccelerometerSensor, hasMagneticSensor;
+    private boolean hasAccelerometerSensor, hasMagneticSensor;
     private Vibrator v;
     private long[] vibratePattern = {200,100,200,100,200,100};
 
@@ -89,8 +88,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private boolean mLastAccelerometerSet;
     private float[] mLastMagnetometer = new float[3];
     private boolean mLastMagnetometerSet;
-    private float mAzimuth = 0f;
-    private float mCurrentAzimuth = 0f;
 
     private long lastUpdateTime;
     private float[] mRotationMatrix = new float[16];
@@ -243,14 +240,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         float yVal = event.values[1];
         float zVal = event.values[2];
 
-        if (xVal > 5)
-            Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
-
-        if (xVal > STRIKE_FORWARD_LIMIT ) {
-//                &&
-//                (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
-
-            Log.d(TAG, "performStrike: x: " + xVal + " / y: " + yVal + " / z: " + zVal);
+        if (xVal > STRIKE_FORWARD_LIMIT && (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
 
             if (xVal > STRIKE_STRENGTH_LIMIT) {
                 sendLost(RoundResult.RoundLostReason.SHOT_OUT_OF_BOUNDS);

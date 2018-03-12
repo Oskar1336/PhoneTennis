@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import info.hoang8f.widget.FButton;
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.main.MainActivity;
@@ -21,7 +22,7 @@ import static ptcorp.ptapplication.main.MainActivity.REQUEST_CODE;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
-    private info.hoang8f.widget.FButton mPlayButton;
+    private FButton mPlayButton, mBtnHowToPlay;
     private static final String TAG = "HomeFragment";
     private String username, wins, losses, winrate;
     private TextView tvPlayer, tvWins, tvLosses, tvWinrate;
@@ -78,6 +79,15 @@ public class HomeFragment extends Fragment {
                 startActivityForResult(intent, MainActivity.REQUEST_CODE);
             }
         });
+
+        mBtnHowToPlay = v.findViewById(R.id.btnHowToPlay);
+        mBtnHowToPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return v;
     }
 }
