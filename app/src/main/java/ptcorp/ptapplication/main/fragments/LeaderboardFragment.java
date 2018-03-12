@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
+import ptcorp.ptapplication.main.adapters.LeaderboardAdapter;
 import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 import ptcorp.ptapplication.R;
 
@@ -19,7 +20,7 @@ import ptcorp.ptapplication.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHandler.OnDatabaseUpdateListener {
+public class LeaderboardFragment extends Fragment{
 
     private RecyclerView rvLeaderboard;
 
@@ -44,10 +45,5 @@ public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHan
         rvLeaderboard.setHasFixedSize(true);
         rvLeaderboard.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvLeaderboard.setAdapter(adapter);
-    }
-
-    @Override
-    public void updateAdapter(List<LeaderboardScore> list) {
-
     }
 }

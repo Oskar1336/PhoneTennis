@@ -32,6 +32,7 @@ import ptcorp.ptapplication.bluetooth.bluetoothConnection.BtServiceListener;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.DeviceSearchListener;
 import ptcorp.ptapplication.game.Sensors.SensorListener;
 import ptcorp.ptapplication.game.enums.GameState;
+import ptcorp.ptapplication.game.enums.GameWinner;
 import ptcorp.ptapplication.game.fragments.ConnectFragment;
 import ptcorp.ptapplication.game.fragments.GameFragment;
 import ptcorp.ptapplication.game.fragments.LoadingFragment;
@@ -75,6 +76,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private GameState mThisDeviceState;
     private boolean mIsHost = false;
     private GameSettings mGameSettings;
+    private GameWinner mGameWinner;
 
     private SensorListener mSensorListener;
     private SensorManager mSensorManager;
@@ -318,8 +320,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             String message;
             if(mRoundResult.getClientPoints() == RoundResult.GAME_POINTS){
                 message = getText(R.string.client_is_winner).toString();
+                mGameWinner = GameWinner.CLIENTWON;
             } else  {
                 message = getText(R.string.host_is_winner).toString();
+                mGameWinner = GameWinner.HOSTWON;
             }
             mGameFragment.showMatchResult(message);
         } else{
@@ -449,8 +453,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 String message;
                 if(mRoundResult.getClientPoints() == RoundResult.GAME_POINTS){
                     message = getText(R.string.client_is_winner).toString();
+                    mGameWinner = GameWinner.CLIENTWON;
                 } else  {
                     message = getText(R.string.host_is_winner).toString();
+                    mGameWinner = GameWinner.HOSTWON;
                 }
                 mGameFragment.showMatchResult(message);
             }else{
@@ -578,11 +584,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         Date today = Calendar.getInstance().getTime();
         String stringDate = df.format(today);
         GameScore gameScore;
+        Log.d(TAG, "onGameFinished: Jag " + username + "Opponent " + opponentUsername);
         if (mIsHost) {
             gameScore = new GameScore(username, opponentUsername, stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
         }else{
             gameScore = new GameScore(opponentUsername, username, stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
         }
+        gameScore.setGameWinner(mGameWinner);
         Intent resultIntent = getIntent();
         resultIntent.putExtra(GAME_RESULT, gameScore);
         setResult(GAME_RESULT_CODE, resultIntent);

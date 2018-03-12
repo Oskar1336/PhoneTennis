@@ -6,6 +6,8 @@ import android.util.Log;
 
 import java.io.Serializable;
 
+import ptcorp.ptapplication.game.enums.GameWinner;
+
 /**
  * Created by LinusHakansson on 2018-03-01.
  */
@@ -13,8 +15,8 @@ import java.io.Serializable;
 public class RoundResult implements Parcelable, Serializable {
     private static final String TAG = "RoundResult";
     private int hostPoints, clientPoints;
-    public final static int GAME_POINTS = 5;
-    private RoundStatus roundStatus;
+    public final static int GAME_POINTS = 1;
+    private GameWinner roundStatus;
     private boolean isGameOver;
     private RoundLostReason roundLostReason;
 
@@ -29,25 +31,19 @@ public class RoundResult implements Parcelable, Serializable {
         clientPoints = 0;
     }
 
-    private enum RoundStatus {
-        HOSTWON,
-        CLIENTWON
-    }
-
-    public void setGameOver(boolean gameOver) {
-        this.isGameOver = gameOver;
-    }
-
     public void setHostPoints() {
         this.hostPoints++;
-        if (hostPoints==GAME_POINTS)
+        if (hostPoints == GAME_POINTS) {
             isGameOver = true;
+            roundStatus = GameWinner.HOSTWON;
+        }
     }
 
     public void setClientPoints() {
         this.clientPoints++;
         if (clientPoints==GAME_POINTS){
             isGameOver = true;
+            roundStatus = GameWinner.CLIENTWON;
         }
     }
 
@@ -57,10 +53,6 @@ public class RoundResult implements Parcelable, Serializable {
 
     public void setRoundLostReason(RoundLostReason roundLostReason) {
         this.roundLostReason = roundLostReason;
-    }
-
-    public void setRoundStatus(RoundStatus roundStatus) {
-        this.roundStatus = roundStatus;
     }
 
     public int getHostPoints() {
@@ -74,7 +66,7 @@ public class RoundResult implements Parcelable, Serializable {
         return this.isGameOver;
     }
 
-    public RoundStatus getRoundStatus() {
+    public GameWinner getRoundStatus() {
         return roundStatus;
     }
 
@@ -82,7 +74,7 @@ public class RoundResult implements Parcelable, Serializable {
         this.hostPoints = in.readInt();
         this.clientPoints = in.readInt();
         String roundStats = in.readString(); // enum parceled as String
-        this.roundStatus = RoundStatus.valueOf(roundStats);
+        this.roundStatus = GameWinner.valueOf(roundStats);
         this.isGameOver = in.readByte() != 0x00; // boolean...
         String roundLostReason = in.readString();
         this.roundLostReason = RoundLostReason.valueOf(roundLostReason);

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ptcorp.ptapplication.main.MainActivity;
 import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 
 
@@ -55,65 +56,53 @@ public class FirebaseDatabaseHandler {
                 Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         });
-        testSaveScore();
     }
 
-    /*
-    * Just a test method
-    * Will be deleted.
-    * */
-    private void testSaveScore(){
-        Log.d(TAG, "testSaveScore: called." );
-        String [] split  = user.getEmail().split("@");
-        String username = split[0];
-        LeaderboardScore score = new LeaderboardScore();
-        score.setUsername(username);
-        score.setWonGames(3);
-        score.setLostGames(4);
-        saveScore(score);
-    }
 
     public String getUsername(){
-        String [] split  = user.getEmail().split("@");
-        return split[0];
+        return user.getEmail().split("@")[0];
     }
 
     public void updateScoreForUser(LeaderboardScore newScore) {
         LeaderboardScore score;
+        Log.d(TAG, "updateScoreForUser: usrId" + userID);
         if (mScoreList.containsKey(userID)) {
             score = mScoreList.get(userID);
-            if (score.getWonGames() == newScore.getWonGames()) {
-                score.setLostGames(score.getLostGames() + 1);
-            } else {
+            Log.d(TAG, "updateScoreForUser: " + score.getUsername());
+            if (newScore.getWonGames() == 1) {
                 score.setWonGames(score.getWonGames() + 1);
+            } else {
+                score.setLostGames(score.getLostGames() + 1);
             }
         } else{
+            Log.d(TAG, "updateScoreForUser: new user " + getUsername());
             score = new LeaderboardScore();
+            score.setUsername(getUsername());
             if(newScore.getWonGames() == 1){
                 score.setWonGames(1);
             }else{
                 score.setLostGames(1);
             }
         }
+        Log.d(TAG, "updateScoreForUser: " + score.getUsername());
         saveScore(score);
     }
 
 
     private void showData(DataSnapshot dataSnapshot) {
-        Log.d(TAG, "showData:" + dataSnapshot.toString());
-
         for (DataSnapshot dsScore : dataSnapshot.child("Leaderboard").child("Scores").getChildren()) {
-            Log.d(TAG, "showData: "+ dsScore);
             LeaderboardScore leaderboardScore = new LeaderboardScore();
             Log.d(TAG, "showData: " + dsScore.toString());
             leaderboardScore.setUsername(dsScore.getValue(LeaderboardScore.class).getUsername());
             leaderboardScore.setWonGames(dsScore.getValue(LeaderboardScore.class).getWonGames());
             leaderboardScore.setLostGames(dsScore.getValue(LeaderboardScore.class).getLostGames());
-            mScoreList.put( userID,leaderboardScore);
+//            dataSnapshot.child("Leaderboard").child("Scores")
+            mScoreList.put(dsScore.getKey() ,leaderboardScore);
 
         }
         List<LeaderboardScore> list = new ArrayList<>(mScoreList.values());
-//            mListener.updateAdapter(list);
+        if(mListener != null)
+            mListener.updateAdapter(list);
     }
 
     public void addOnUpdateListener(OnDatabaseUpdateListener listener){
@@ -127,4 +116,5 @@ public class FirebaseDatabaseHandler {
     public interface OnDatabaseUpdateListener {
         void updateAdapter(List<LeaderboardScore> list);
     }
+
 }

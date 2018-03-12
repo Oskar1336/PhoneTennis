@@ -10,7 +10,8 @@ public class LeaderboardScore {
     private long wonGames, lostGames;
 
     public LeaderboardScore() {
-
+        wonGames = 0;
+        lostGames = 0;
     }
 
     public void setUsername(String username) {
