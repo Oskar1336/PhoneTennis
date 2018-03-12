@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
     }
 

@@ -57,6 +57,9 @@ public class HomeFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         mPlayButton = v.findViewById(R.id.btnPlay);
         tvPlayer = v.findViewById(R.id.tvPlayerName);
+        tvWinrate = v.findViewById(R.id.tvMyWinrate);
+        tvWins = v.findViewById(R.id.tvMyWins);
+        tvLosses = v.findViewById(R.id.tvMyLosses);
         tvPlayer.setText(username);
         tvWins.setText(wins);
         tvLosses.setText(losses);
