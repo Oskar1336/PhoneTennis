@@ -100,9 +100,9 @@ public class FirebaseDatabaseHandler {
             mScoreList.put(dsScore.getKey() ,leaderboardScore);
 
         }
-        List<LeaderboardScore> list = new ArrayList<>(mScoreList.values());
+
         if(mListener != null)
-            mListener.updateAdapter(list);
+            mListener.updateAdapter(mScoreList);
     }
 
     public void addOnUpdateListener(OnDatabaseUpdateListener listener){
@@ -114,7 +114,7 @@ public class FirebaseDatabaseHandler {
     }
 
     public interface OnDatabaseUpdateListener {
-        void updateAdapter(List<LeaderboardScore> list);
+        void updateAdapter(HashMap<String,LeaderboardScore> scoreMap);
     }
 
 }

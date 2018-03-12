@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private final int NAV_CALIBRATE_STRIKE = 4;
 
     private final int CALIBRATION_MAX_TRIES = 5;
+
+    private String userID;
 
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
@@ -290,6 +293,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     private void initFirebase(){
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+
     }
 
     @Override
@@ -374,9 +380,21 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
     @Override
-    public void updateAdapter(List<LeaderboardScore> list) {
-        mLeaderboardList = (ArrayList<LeaderboardScore>) list;
+    public void updateAdapter(HashMap<String,LeaderboardScore> map) {
+        mLeaderboardList = new ArrayList<>(map.values());
+        LeaderboardScore score;
+        if(map.containsKey(userID)){
+            score = map.get(userID);
+            homeFragment.setWins(score.getWonGames());
+            homeFragment.setLosses(score.getLostGames());
+            homeFragment.setWinrate(winRate(score));
+        }
     }
+
+    private String winRate(LeaderboardScore score){
+        return String.valueOf((float) (score.getWonGames() / (score.getLostGames() + score.getWonGames())) * 100 );
+    }
+
 
     private class FragmentPageAdapter extends FragmentPagerAdapter {
         FragmentPageAdapter(FragmentManager fm) {
