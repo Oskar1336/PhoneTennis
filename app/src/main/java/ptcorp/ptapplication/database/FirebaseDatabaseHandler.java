@@ -55,23 +55,8 @@ public class FirebaseDatabaseHandler {
                 Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         });
-//        testSaveScore();
     }
 
-    /*
-    * Just a test method
-    * Will be deleted.
-    * */
-    private void testSaveScore(){
-        Log.d(TAG, "testSaveScore: called." );
-        String [] split  = user.getEmail().split("@");
-        String username = split[0];
-        LeaderboardScore score = new LeaderboardScore();
-        score.setUsername(username);
-        score.setWonGames(3);
-        score.setLostGames(4);
-        saveScore(score);
-    }
 
     public String getUsername(){
         return user.getEmail().split("@")[0];
