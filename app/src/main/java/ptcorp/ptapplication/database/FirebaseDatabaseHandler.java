@@ -100,6 +100,7 @@ public class FirebaseDatabaseHandler {
 
         }
         List<LeaderboardScore> list = new ArrayList<>(mScoreList.values());
+        if(mListener != null)
             mListener.updateAdapter(list);
     }
 
