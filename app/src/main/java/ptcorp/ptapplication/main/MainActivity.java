@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentHolder.addOnPageChangeListener(new NavListener());
 
         fragmentHolder.setCurrentItem(NAV_LOGIN);
+        mHandlerDB.addOnUpdateListener((FirebaseDatabaseHandler.OnDatabaseUpdateListener)leaderboardFragment);
 
         mSensorListener = new SensorListener(MainActivity.this);
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
