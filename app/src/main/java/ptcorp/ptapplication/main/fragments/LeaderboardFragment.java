@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
+import ptcorp.ptapplication.main.adapters.LeaderboardAdapter;
 import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 import ptcorp.ptapplication.R;
 
@@ -48,6 +49,6 @@ public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHan
 
     @Override
     public void updateAdapter(List<LeaderboardScore> list) {
-
+        setAdapter(new LeaderboardAdapter(list));
     }
 }
