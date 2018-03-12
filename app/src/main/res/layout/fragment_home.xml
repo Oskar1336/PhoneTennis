@@ -30,106 +30,104 @@
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="3dp" />
 
-    <ImageView
-        android:id="@+id/ivPlayer"
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/icons8_tennis_player_48"
-        fbutton:layout_constraintBottom_toBottomOf="@+id/tvPlayerName"
-        fbutton:layout_constraintEnd_toStartOf="@+id/tvPlayerName"
-        fbutton:layout_constraintTop_toTopOf="@+id/tvPlayerName" />
 
-    <TextView
-        android:id="@+id/tvPlayerName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:text="TextView"
-        android:textSize="30sp"
+        fbutton:layout_constraintBottom_toBottomOf="parent"
         fbutton:layout_constraintEnd_toEndOf="parent"
-        fbutton:layout_constraintStart_toStartOf="parent"
-        fbutton:layout_constraintTop_toBottomOf="@+id/btnPlay" />
+        fbutton:layout_constraintStart_toStartOf="parent">
 
-    <ImageView
-        android:id="@+id/ivWins"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_win"
-        fbutton:layout_constraintBottom_toBottomOf="@+id/tvMyWins"
-        fbutton:layout_constraintEnd_toStartOf="@+id/tvMyWins"
-        fbutton:layout_constraintTop_toTopOf="@+id/tvMyWins" />
+        <TableRow
+            android:gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/tvMyWins"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="TextView"
-        android:textSize="30sp"
-        fbutton:layout_constraintEnd_toEndOf="parent"
-        fbutton:layout_constraintHorizontal_bias="0.502"
-        fbutton:layout_constraintStart_toStartOf="parent"
-        fbutton:layout_constraintTop_toBottomOf="@+id/tvPlayerName" />
+            <ImageView
+                android:id="@+id/ivPlayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/icons8_tennis_player_48" />
 
-    <ImageView
-        android:id="@+id/ivLoses"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_skull"
-        fbutton:layout_constraintBottom_toBottomOf="@+id/tvMyLosses"
-        fbutton:layout_constraintTop_toTopOf="@+id/tvMyLosses"
-        fbutton:layout_constraintEnd_toStartOf="@id/tvMyLosses"
-        />
+            <TextView
+                android:id="@+id/tvPlayerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/tvMyLosses"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="TextView"
-        android:textSize="30sp"
-        fbutton:layout_constraintEnd_toEndOf="parent"
-        fbutton:layout_constraintHorizontal_bias="0.502"
-        fbutton:layout_constraintStart_toStartOf="parent"
-        fbutton:layout_constraintTop_toBottomOf="@+id/tvMyWins" />
+        </TableRow>
 
-    <ImageView
-        android:id="@+id/ivWinRate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_winrate"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        fbutton:layout_constraintBottom_toBottomOf="@+id/tvMyWinrate"
-        fbutton:layout_constraintTop_toTopOf="@+id/tvMyWinrate"
-        fbutton:layout_constraintEnd_toStartOf="@id/tvMyWinrate"
-        />
+        <TableRow
+            android:gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/tvMyWinrate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="TextView"
-        android:textSize="30sp"
-        fbutton:layout_constraintEnd_toEndOf="parent"
-        fbutton:layout_constraintHorizontal_bias="0.502"
-        fbutton:layout_constraintStart_toStartOf="parent"
-        fbutton:layout_constraintTop_toBottomOf="@+id/tvMyLosses" />
+            <ImageView
+                android:id="@+id/ivWins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_win" />
+
+            <TextView
+                android:id="@+id/tvMyWins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:textSize="30sp" />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/ivLoses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_skull" />
+
+            <TextView
+                android:id="@+id/tvMyLosses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:textSize="30sp" />
+
+        </TableRow>
+
+        <TableRow android:gravity="center_horizontal">
+
+            <ImageView
+                android:id="@+id/ivWinRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_winrate" />
+
+            <TextView
+                android:id="@+id/tvMyWinrate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:textSize="30sp" />
+
+        </TableRow>
+
+    </TableLayout>
 
 
 </android.support.constraint.ConstraintLayout>

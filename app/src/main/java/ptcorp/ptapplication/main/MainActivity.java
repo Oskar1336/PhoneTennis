@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private final int NAV_HOME = 1;
     private final int NAV_MY_GAMES = 2;
     private final int NAV_LEADERBOARD = 3;
+
+    private String userID;
 
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             mHandlerDB.addOnUpdateListener(MainActivity.this);
+                            initCurrentUser();
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             homeFragment.setUsername(mHandlerDB.getUsername());
                             nav.setVisibility(View.VISIBLE);
@@ -207,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             mHandlerDB.addOnUpdateListener(MainActivity.this);
+                            initCurrentUser();
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             homeFragment.setUsername(mHandlerDB.getUsername());
                             nav.setVisibility(View.VISIBLE);
@@ -231,6 +236,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         mAuth = FirebaseAuth.getInstance();
     }
 
+    private void initCurrentUser(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        userID = user.getUid();
+    }
+
     @Override
     public void login(String user, String pass) {
         signInUser(user,pass);
@@ -242,9 +252,21 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
     @Override
-    public void updateAdapter(List<LeaderboardScore> list) {
-        mLeaderboardList = (ArrayList<LeaderboardScore>) list;
+    public void updateAdapter(HashMap<String,LeaderboardScore> map) {
+        mLeaderboardList = new ArrayList<>(map.values());
+        LeaderboardScore score;
+        if(map.containsKey(userID)){
+            score = map.get(userID);
+            homeFragment.setWins(score.getWonGames());
+            homeFragment.setLosses(score.getLostGames());
+            homeFragment.setWinrate(winRate(score));
+        }
     }
+
+    private String winRate(LeaderboardScore score){
+        return String.valueOf((float) (score.getWonGames() / (score.getLostGames() + score.getWonGames())) * 100 );
+    }
+
 
     private class FragmentPageAdapter extends FragmentPagerAdapter {
         FragmentPageAdapter(FragmentManager fm) {

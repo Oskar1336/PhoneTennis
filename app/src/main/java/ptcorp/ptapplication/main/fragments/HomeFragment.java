@@ -4,6 +4,7 @@ package ptcorp.ptapplication.main.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,8 @@ import static ptcorp.ptapplication.main.MainActivity.REQUEST_CODE;
  */
 public class HomeFragment extends Fragment {
     private info.hoang8f.widget.FButton mPlayButton;
-    private String username;
+    private static final String TAG = "HomeFragment";
+    private String username, wins, losses, winrate;
     private TextView tvPlayer, tvWins, tvLosses, tvWinrate;
 
     public HomeFragment() {
@@ -29,18 +31,36 @@ public class HomeFragment extends Fragment {
     }
 
     public void setUsername(String username){
-        this.username = username;
+        if(tvPlayer != null){
+            this.username = username;
+            tvPlayer.setText(username);
+        }
     }
 
+    public void setWins(long wins){
+        this.wins = String.valueOf(wins);
+    }
+
+    public void setLosses(long losses) {
+        this.losses = String.valueOf(losses);
+    }
+
+    public void setWinrate(String winrate) {
+        this.winrate = winrate;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         mPlayButton = v.findViewById(R.id.btnPlay);
         tvPlayer = v.findViewById(R.id.tvPlayerName);
         tvPlayer.setText(username);
+        tvWins.setText(wins);
+        tvLosses.setText(losses);
+        tvWinrate.setText(winrate);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
