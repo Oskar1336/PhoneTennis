@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentHolder.addOnPageChangeListener(new NavListener());
 
         fragmentHolder.setCurrentItem(NAV_LOGIN);
-        mHandlerDB.addOnUpdateListener((FirebaseDatabaseHandler.OnDatabaseUpdateListener)leaderboardFragment);
 
         mSensorListener = new SensorListener(MainActivity.this);
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -236,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             loginFragment.setCreateBtnProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
+                            mHandlerDB.addOnUpdateListener((FirebaseDatabaseHandler.OnDatabaseUpdateListener)leaderboardFragment);
                             homeFragment.setUsername(mHandlerDB.getUsername());
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
@@ -263,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             Log.d(TAG, "signInWithEmail:success");
 
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
+                            mHandlerDB.addOnUpdateListener((FirebaseDatabaseHandler.OnDatabaseUpdateListener)leaderboardFragment);
                             homeFragment.setUsername(mHandlerDB.getUsername());
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             nav.setVisibility(View.VISIBLE);
