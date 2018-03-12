@@ -49,6 +49,8 @@ public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHan
 
     @Override
     public void updateAdapter(List<LeaderboardScore> list) {
-        setAdapter(new LeaderboardAdapter(list));
+        if(rvLeaderboard!=null){
+            setAdapter(new LeaderboardAdapter(list));
+        }
     }
 }
