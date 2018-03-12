@@ -80,6 +80,7 @@ public class FirebaseDatabaseHandler {
                 score.setLostGames(1);
             }
         }
+        Log.d(TAG, "updateScoreForUser: " + score.getUsername());
         saveScore(score);
     }
 
