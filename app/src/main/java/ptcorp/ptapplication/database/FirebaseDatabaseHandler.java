@@ -55,7 +55,7 @@ public class FirebaseDatabaseHandler {
                 Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         });
-        testSaveScore();
+//        testSaveScore();
     }
 
     /*
@@ -88,6 +88,7 @@ public class FirebaseDatabaseHandler {
             }
         } else{
             score = new LeaderboardScore();
+            score.setUsername(newScore.getUsername());
             if(newScore.getWonGames() == 1){
                 score.setWonGames(1);
             }else{
