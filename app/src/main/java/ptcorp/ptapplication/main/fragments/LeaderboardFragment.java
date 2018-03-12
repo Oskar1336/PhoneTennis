@@ -20,7 +20,7 @@ import ptcorp.ptapplication.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHandler.OnDatabaseUpdateListener {
+public class LeaderboardFragment extends Fragment{
 
     private RecyclerView rvLeaderboard;
 
@@ -45,12 +45,5 @@ public class LeaderboardFragment extends Fragment implements FirebaseDatabaseHan
         rvLeaderboard.setHasFixedSize(true);
         rvLeaderboard.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvLeaderboard.setAdapter(adapter);
-    }
-
-    @Override
-    public void updateAdapter(List<LeaderboardScore> list) {
-        if(rvLeaderboard!=null){
-            setAdapter(new LeaderboardAdapter(list));
-        }
     }
 }

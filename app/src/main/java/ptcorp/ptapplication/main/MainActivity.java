@@ -1,6 +1,4 @@
 package ptcorp.ptapplication.main;
-
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -32,12 +30,16 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
 import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.game.Sensors.SensorListener;
 import ptcorp.ptapplication.game.enums.GameWinner;
 import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
+import ptcorp.ptapplication.main.adapters.LeaderboardAdapter;
 import ptcorp.ptapplication.main.fragments.CalibrateDialogFragment;
 import ptcorp.ptapplication.main.fragments.CalibrateStrikeFragment;
 import ptcorp.ptapplication.main.fragments.GamesFragment;
@@ -49,7 +51,7 @@ import ptcorp.ptapplication.main.pojos.GameScore;
 import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener,
-        CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult,
+        CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult, FirebaseDatabaseHandler.OnDatabaseUpdateListener,
         CalibrateDialogFragment.CalibratingListener {
     private static final String TAG = "MainActivity";
     public static final String USERNAME = "username";
@@ -67,11 +69,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
     private ViewPager fragmentHolder;
-    private Fragment  leaderboardFragment;
+    private LeaderboardFragment leaderboardFragment;
     private HomeFragment homeFragment;
     private LoginFragment loginFragment;
     private GamesFragment myGameFragment;
     private GamesDatabaseHandler gDB;
+    private ArrayList<LeaderboardScore> mLeaderboardList;
 
     private ActionBar mActionBar;
     private Menu mOptMenu;
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_leaderboard:
                     fragmentHolder.setCurrentItem(NAV_LEADERBOARD);
+                    leaderboardFragment.setAdapter(new LeaderboardAdapter(mLeaderboardList));
                     return true;
             }
             return false;
@@ -235,9 +239,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             loginFragment.setCreateBtnProgress(100);
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
-                            mHandlerDB.addOnUpdateListener((FirebaseDatabaseHandler.OnDatabaseUpdateListener)leaderboardFragment);
-                            homeFragment.setUsername(mHandlerDB.getUsername());
+                            mHandlerDB.addOnUpdateListener(MainActivity.this);
                             fragmentHolder.setCurrentItem(NAV_HOME);
+                            homeFragment.setUsername(mHandlerDB.getUsername());
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Account created and logged in!");
                         } else {
@@ -263,9 +267,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                             Log.d(TAG, "signInWithEmail:success");
 
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
-                            mHandlerDB.addOnUpdateListener((FirebaseDatabaseHandler.OnDatabaseUpdateListener)leaderboardFragment);
-                            homeFragment.setUsername(mHandlerDB.getUsername());
+                            mHandlerDB.addOnUpdateListener(MainActivity.this);
                             fragmentHolder.setCurrentItem(NAV_HOME);
+                            homeFragment.setUsername(mHandlerDB.getUsername());
                             nav.setVisibility(View.VISIBLE);
                             displayToast("Logged in!");
                         } else {
@@ -367,6 +371,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void onCalibrateCancel() {
         onCancel(false);
+    }
+
+    @Override
+    public void updateAdapter(List<LeaderboardScore> list) {
+        mLeaderboardList = (ArrayList<LeaderboardScore>) list;
     }
 
     private class FragmentPageAdapter extends FragmentPagerAdapter {

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ptcorp.ptapplication.main.MainActivity;
 import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 
 
@@ -115,4 +116,5 @@ public class FirebaseDatabaseHandler {
     public interface OnDatabaseUpdateListener {
         void updateAdapter(List<LeaderboardScore> list);
     }
+
 }
