@@ -24,4 +24,6 @@
     <string name="client_is_winner">Client won the game!</string>
     <string name="host_is_winner">Host won the game!</string>
     <string name="perform_5_example_strikes">Perform 5 example strikes</string>
+    <string name="play">PLAY</string>
+    <string name="cancel">Cancel</string>
 </resources>
