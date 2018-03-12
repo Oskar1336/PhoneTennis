@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             gDB.addGame(gameScore);
             LeaderboardScore score = new LeaderboardScore();
             if(mHandlerDB.getUsername().equals(gameScore.getPlayer1())){// HOST
-                score.setUsername(mHandlerDB.getUsername());
+                score.setUsername(gameScore.getPlayer1());
                 if(gameScore.getGameWinner().equals(GameWinner.HOSTWON)){
                     score.setWonGames(1);
                 }else{

@@ -15,7 +15,7 @@ import ptcorp.ptapplication.game.enums.GameWinner;
 public class RoundResult implements Parcelable, Serializable {
     private static final String TAG = "RoundResult";
     private int hostPoints, clientPoints;
-    public final static int GAME_POINTS = 5;
+    public final static int GAME_POINTS = 1;
     private GameWinner roundStatus;
     private boolean isGameOver;
     private RoundLostReason roundLostReason;
