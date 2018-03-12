@@ -89,16 +89,14 @@ public class FirebaseDatabaseHandler {
 
 
     private void showData(DataSnapshot dataSnapshot) {
-        Log.d(TAG, "showData:" + dataSnapshot.toString());
-
         for (DataSnapshot dsScore : dataSnapshot.child("Leaderboard").child("Scores").getChildren()) {
-            Log.d(TAG, "showData: "+ dsScore);
             LeaderboardScore leaderboardScore = new LeaderboardScore();
             Log.d(TAG, "showData: " + dsScore.toString());
             leaderboardScore.setUsername(dsScore.getValue(LeaderboardScore.class).getUsername());
             leaderboardScore.setWonGames(dsScore.getValue(LeaderboardScore.class).getWonGames());
             leaderboardScore.setLostGames(dsScore.getValue(LeaderboardScore.class).getLostGames());
-            mScoreList.put( userID,leaderboardScore);
+//            dataSnapshot.child("Leaderboard").child("Scores")
+            mScoreList.put(dsScore.getKey() ,leaderboardScore);
 
         }
         List<LeaderboardScore> list = new ArrayList<>(mScoreList.values());
