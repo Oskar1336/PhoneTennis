@@ -73,6 +73,7 @@ public class FirebaseDatabaseHandler {
                 score.setLostGames(score.getLostGames() + 1);
             }
         } else{
+            Log.d(TAG, "updateScoreForUser: new user " + getUsername());
             score = new LeaderboardScore();
             score.setUsername(getUsername());
             if(newScore.getWonGames() == 1){
