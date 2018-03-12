@@ -35,6 +35,7 @@ import android.view.View;
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
 import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.game.Sensors.SensorListener;
+import ptcorp.ptapplication.game.enums.GameWinner;
 import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
 import ptcorp.ptapplication.main.fragments.CalibrateDialogFragment;
@@ -45,6 +46,7 @@ import ptcorp.ptapplication.main.fragments.LeaderboardFragment;
 import ptcorp.ptapplication.main.fragments.LoginFragment;
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.main.pojos.GameScore;
+import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener,
         CalibrateStrikeFragment.CalibrateButtonListener, SensorListener.SensorResult,
@@ -199,7 +201,23 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             Log.d(TAG, "onActivityResult: Lägger till i databas");
             GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
             gDB.addGame(gameScore);
-
+            LeaderboardScore score = new LeaderboardScore();
+            if(mHandlerDB.getUsername().equals(gameScore.getPlayer1())){// HOST
+                score.setUsername(mHandlerDB.getUsername());
+                if(gameScore.getGameWinner().equals(GameWinner.HOSTWON)){
+                    score.setWonGames(1);
+                }else{
+                    score.setWonGames(0);
+                }
+            } else{
+                score.setUsername(gameScore.getPlayer2());
+                if(gameScore.getGameWinner().equals(GameWinner.CLIENTWON)){
+                    score.setWonGames(1);
+                }else{
+                    score.setWonGames(0);
+                }
+            }
+            mHandlerDB.updateScoreForUser(score);
         }
     }
 

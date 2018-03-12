@@ -81,10 +81,10 @@ public class FirebaseDatabaseHandler {
         LeaderboardScore score;
         if (mScoreList.containsKey(userID)) {
             score = mScoreList.get(userID);
-            if (score.getWonGames() == newScore.getWonGames()) {
-                score.setLostGames(score.getLostGames() + 1);
-            } else {
+            if (newScore.getWonGames() == 1) {
                 score.setWonGames(score.getWonGames() + 1);
+            } else {
+                score.setLostGames(score.getLostGames() + 1);
             }
         } else{
             score = new LeaderboardScore();

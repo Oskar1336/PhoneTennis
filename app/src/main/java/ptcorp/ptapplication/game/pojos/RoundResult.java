@@ -35,7 +35,7 @@ public class RoundResult implements Parcelable, Serializable {
         this.hostPoints++;
         if (hostPoints == GAME_POINTS) {
             isGameOver = true;
-        roundStatus = GameWinner.HOSTWON;
+            roundStatus = GameWinner.HOSTWON;
         }
     }
 
