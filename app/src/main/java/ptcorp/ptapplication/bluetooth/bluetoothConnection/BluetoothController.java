@@ -40,6 +40,7 @@ public class BluetoothController{
     private DeviceSearchListener mListener;
 
     private GameActivity mActivity;
+    private BroadcastReceiver mBtBondReceiver;
 
     public BluetoothController(GameActivity activity) {
         this.mActivity = activity;
@@ -48,6 +49,7 @@ public class BluetoothController{
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
         mBtSearchReciever = new SearchReceiver();
+        mBtBondReceiver = new BondStateReceiver();
 
         mBtServiceConnIntent = new Intent(mActivity, BluetoothConnectionService.class);
         mActivity.startService(mBtServiceConnIntent);
@@ -70,6 +72,7 @@ public class BluetoothController{
 
     public void onDestroy() {
         mActivity.stopService(mBtServiceConnIntent);
+
     }
 
     public void setSearchListener(DeviceSearchListener listener) {
@@ -172,6 +175,9 @@ public class BluetoothController{
         if (mBtAdapter.getBondedDevices().contains(device)) {
             mConnectionService.connectToDevice(device);
         } else {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            mActivity.registerReceiver(mBtBondReceiver, filter);
             mConnectionService.pairDevice(device);
         }
     }
@@ -217,12 +223,20 @@ public class BluetoothController{
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
                 // TODO: 2018-03-01 Check UUID  https://stackoverflow.com/questions/14812326/android-bluetooth-get-uuids-of-discovered-devices/15373239
                 mListener.onSearchComplete();
-            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent.getAction())) {
+            }
+        }
+    }
+
+    private class BondStateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent.getAction())) {
                 BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                     Log.d(TAG, "onReceive: connecting to device");
                     mConnectionService.connectToDevice(btDevice);
+                    mActivity.unregisterReceiver(mBtBondReceiver);
                 } else if (btDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                     Log.d(TAG, "onReceive: Bonding device");
                 } else if (btDevice.getBondState() == BluetoothDevice.BOND_NONE) {
