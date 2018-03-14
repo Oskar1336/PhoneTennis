@@ -27,6 +27,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -263,7 +264,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
     private String winRate(LeaderboardScore score){
-        return String.valueOf((float) (score.getWonGames() / (score.getLostGames() + score.getWonGames())) * 100 );
+        DecimalFormat df = new DecimalFormat("#.#");
+        return String.valueOf(df.format(((float) score.getWonGames()/(score.getLostGames()+score.getWonGames()))*100));
     }
 
 

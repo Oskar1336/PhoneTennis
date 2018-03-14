@@ -40,14 +40,20 @@ public class HomeFragment extends Fragment {
 
     public void setWins(long wins){
         this.wins = String.valueOf(wins);
+        if(tvWins != null)
+            tvWins.setText(this.wins);
     }
 
     public void setLosses(long losses) {
         this.losses = String.valueOf(losses);
+        if(tvLosses != null)
+            tvLosses.setText(this.losses);
     }
 
     public void setWinrate(String winrate) {
         this.winrate = winrate;
+        if(tvWinrate != null)
+            tvWinrate.setText(this.winrate);
     }
 
     @Override
