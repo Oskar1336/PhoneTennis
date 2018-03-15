@@ -34,4 +34,10 @@
     <string name="serve_content">Write how to serve</string>
     <string name="no_instruction">No instruction</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pretium dictum erat eu vulputate. Donec mollis ipsum a massa iaculis, consequat feugiat sapien posuere. Etiam quis mauris mauris. Sed tempor, tortor non laoreet aliquam, nisi nisi porttitor tellus, in tincidunt ipsum nisl sed felis. Proin est odio, hendrerit vitae viverra ut, pretium et dui. Fusce at vulputate urna. Duis neque ipsum, faucibus eu dolor vitae, accumsan maximus eros.  Vivamus placerat mollis dictum. Sed tincidunt neque nec diam placerat tincidunt. Cras et eros viverra, vehicula ex eu, pharetra risus. Sed pharetra magna a nibh semper, ut euismod nibh bibendum. Pellentesque dapibus dolor tristique, gravida magna eget, suscipit elit. Pellentesque justo odio, blandit eget lacinia nec, luctus a neque. Nulla vitae urna ac quam dictum auctor congue sed orci.</string>
+    <string name="waiting_for_serve">Waiting for your opponent to serve</string>
+    <string name="how_to_serve">When you first enter the game, point to your opponent in order to lock your position. It is important to do this correctly
+                                for the game to work properly. Then, when it is your time to serve, point to the direction you wish to strike. Your opponent have to
+                                catch the ball where you struck it. When you or the opponent catches the ball, you need to lock the direction for your next strike within
+                                some seconds, otherwise you will lose.
+    </string>
 </resources>

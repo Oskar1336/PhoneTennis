@@ -31,7 +31,7 @@ import ptcorp.ptapplication.R;
  */
 public class GameFragment extends Fragment{
     private static final String TAG = "GameFragment";
-    private LoadingFragment loadingFragment;
+    private LoadingFragment loadingFragment, dialogWaitingServe;
     private AlertDialog alertDialogServe, alertDialogLock, alertDialogStrike, alertDialogRoundMessage;
     private ImageView mCompass;
     private TextView hostPoints, clientPoints, tvCurrentDegree, tvStartingDegree, tvHostName, tvClientName;
@@ -158,6 +158,25 @@ public class GameFragment extends Fragment{
                 alertDialogStrike.show();
             }
         });
+    }
+
+    public void showWaitingForServeDialog(){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dialogWaitingServe = new LoadingFragment();
+                dialogWaitingServe.setTitle(getText(R.string.waiting_for_serve).toString());
+                dialogWaitingServe.enableButton(false);
+                dialogWaitingServe.setCancelable(false);
+                dialogWaitingServe.show(getActivity().getSupportFragmentManager(), "dialogFragment");
+            }
+        });
+    }
+
+    public void hideWaitingForServe(){
+        if(dialogWaitingServe!= null && dialogWaitingServe.isVisible()){
+            dialogWaitingServe.dismiss();
+        }
     }
 
 

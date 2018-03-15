@@ -187,6 +187,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 } else if (!mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS) {
                     mGameFragment.serveDialog();
                 }
+                if(mIsHost && mGameSettings.getmPlayerStarting() == CLIENT_STARTS){
+                    mGameFragment.showWaitingForServeDialog();
+                } else if(!mIsHost && mGameSettings.getmPlayerStarting() == HOST_STARTS){
+                    mGameFragment.showWaitingForServeDialog();
+                }
             }
         });
     }
@@ -251,6 +256,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mBtController.write(new StrikeInformation(
                         ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10) + 2,
                         strikeDirection));
+                mGameFragment.hideWaitingForServe();
             }
             return false;
         } else if ((yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
@@ -376,13 +382,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         if (obj instanceof InitGame) {
             mOtherDeviceState = ((InitGame) obj).getGameState();
             opponentUsername = ((InitGame) obj).getOpponentName();
-            Log.d(TAG, "onMessageReceived: FIRST IF -------------------------");
             if (GameState.DEVICE_READY.equals(mOtherDeviceState) &&
                     GameState.DEVICE_READY.equals(mThisDeviceState)) {
-                Log.d(TAG, "onMessageReceived: SECOND IF---------------------- ");
                 if (mIsHost) {
-                    Log.d(TAG, "onMessageReceived: Start gmae about to be called-..........................------------------");
-//                    startGame();
                        mGameFragment.hideInitGame();
                        mGameFragment.lockOpponentDirectionDialog();
                     mGameFragment.setHostname(username);
