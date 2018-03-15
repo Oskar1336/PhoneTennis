@@ -174,9 +174,14 @@ public class GameFragment extends Fragment{
     }
 
     public void hideWaitingForServe(){
-        if(dialogWaitingServe!= null && dialogWaitingServe.isVisible()){
-            dialogWaitingServe.dismiss();
-        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(dialogWaitingServe!= null && dialogWaitingServe.isVisible()){
+                    dialogWaitingServe.dismiss();
+                }
+            }
+        });
     }
 
 
