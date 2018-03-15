@@ -256,7 +256,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mBtController.write(new StrikeInformation(
                         ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10) + 2,
                         strikeDirection));
-                mGameFragment.hideWaitingForServe();
             }
             return false;
         } else if ((yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
@@ -410,6 +409,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     mGameFragment.lockOpponentDirectionDialog();
                 }
         } else if(obj instanceof StrikeInformation){
+            mGameFragment.hideWaitingForServe();
             StrikeInformation strikeInformation = (StrikeInformation)obj;
             Log.d(TAG, "onMessageReceived: TIME IN AIR: " + strikeInformation.getTimeInAir());
             float opponentStrike = strikeInformation.getDirection();
