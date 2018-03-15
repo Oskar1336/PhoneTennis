@@ -155,6 +155,17 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     @Override
+    public void onBackPressed() {
+        if(mIsHost && !mRoundResult.isGameOver()){
+            mRoundResult.setClientWinner();
+        } else if(!mIsHost && !mRoundResult.isGameOver()){
+            mRoundResult.setHostWinner();
+        }
+        mBtController.write(mRoundResult);
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE &&
                 resultCode == 200) {
