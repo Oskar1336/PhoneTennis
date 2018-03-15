@@ -158,10 +158,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     public void onBackPressed() {
         if(mIsHost && !mRoundResult.isGameOver()){
             mRoundResult.setClientWinner();
+            mGameWinner = GameWinner.CLIENTWON;
         } else if(!mIsHost && !mRoundResult.isGameOver()){
             mRoundResult.setHostWinner();
+            mGameWinner = GameWinner.HOSTWON;
         }
         mBtController.write(mRoundResult);
+        this.onGameFinished();
         super.onBackPressed();
     }
 
