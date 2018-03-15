@@ -27,4 +27,10 @@
     <string name="play">PLAY</string>
     <string name="cancel">Cancel</string>
     <string name="how_to_play">How to play</string>
+    <string name="waiting_for_serve">Waiting for your opponent to serve</string>
+    <string name="how_to_serve">When you first enter the game, point to your opponent in order to lock your position. It is important to do this correctly
+                                for the game to work properly. Then, when it is your time to serve, point to the direction you wish to strike. Your opponent have to
+                                catch the ball where you struck it. When you or the opponent catches the ball, you need to lock the direction for your next strike within
+                                some seconds, otherwise you will lose.
+    </string>
 </resources>
