@@ -233,14 +233,16 @@ public class BluetoothController{
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent.getAction())) {
                 BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    Log.d(TAG, "onReceive: connecting to device");
-                    mConnectionService.connectToDevice(btDevice);
-                    mActivity.unregisterReceiver(mBtBondReceiver);
-                } else if (btDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    Log.d(TAG, "onReceive: Bonding device");
-                } else if (btDevice.getBondState() == BluetoothDevice.BOND_NONE) {
-                    Log.d(TAG, "onReceive: Bond none");
+                if (btDevice.getAddress().equals(mConnectionService.getSelectedDevice().getAddress())) {
+                    if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                        Log.d(TAG, "onReceive: connecting to device");
+                        mConnectionService.connectToDevice(btDevice);
+                        mActivity.unregisterReceiver(mBtBondReceiver);
+                    } else if (btDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                        Log.d(TAG, "onReceive: Bonding device");
+                    } else if (btDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                        Log.d(TAG, "onReceive: Bond none");
+                    }
                 }
             }
         }

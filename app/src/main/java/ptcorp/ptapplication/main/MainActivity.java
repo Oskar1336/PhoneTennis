@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
-    private ViewPager fragmentHolder;
+        private ViewPager fragmentHolder;
     private LeaderboardFragment leaderboardFragment;
     private HomeFragment homeFragment;
     private LoginFragment loginFragment;

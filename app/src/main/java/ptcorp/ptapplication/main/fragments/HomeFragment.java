@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
         mBtnHowToPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                new InstructionDialogFragment().show(getFragmentManager(), "InstructionDialog");
             }
         });
 

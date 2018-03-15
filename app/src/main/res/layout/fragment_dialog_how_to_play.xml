@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -19,8 +19,18 @@
         custom:layout_constraintRight_toRightOf="parent"
         custom:layout_constraintTop_toTopOf="parent" />
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_instructions"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/btnContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvhtptitle" />
+
 
     <LinearLayout
+        android:id="@+id/btnContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -30,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvhtptitle">
 
         <com.dd.processbutton.iml.ActionProcessButton
-            android:id="@+id/btnPrevious"
+            android:id="@+id/btn_previous"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginRight="4dp"
@@ -42,7 +52,7 @@
             custom:pb_colorPressed="@color/blue_pressed" />
 
         <com.dd.processbutton.iml.ActionProcessButton
-            android:id="@+id/btnNext"
+            android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_marginLeft="4dp"

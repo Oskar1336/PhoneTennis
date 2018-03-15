@@ -74,6 +74,10 @@ public class BluetoothConnectionService extends Service {
         }
     }
 
+    public BluetoothDevice getSelectedDevice() {
+        return mBtDevice;
+    }
+
     /**
      * Writes an object to the connected device.
      * @param obj Any object
