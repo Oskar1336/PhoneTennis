@@ -82,7 +82,7 @@ public class ServerConnectFragment extends DialogFragment {
                 //TODO: Update adpater
             }
         });
-        mPullRefresh.setRefreshing(true);
+//        mPullRefresh.setRefreshing(true);
         return view;
     }
 
@@ -97,7 +97,7 @@ public class ServerConnectFragment extends DialogFragment {
     }
 
     public void updateComplete() {
-        if (mPullRefresh != null) mPullRefresh.setRefreshing(false);
+//        if (mPullRefresh != null) mPullRefresh.setRefreshing(false);
     }
 
     public void setListener(DeviceListListener listener) {
