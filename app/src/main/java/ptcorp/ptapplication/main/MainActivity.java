@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
@@ -68,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private GamesFragment myGameFragment;
     private GamesDatabaseHandler gDB;
     private ArrayList<LeaderboardScore> mLeaderboardList;
+    private GamesAdapter mGamesAdapter;
+    private ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
 
     private ActionBar mActionBar;
 
@@ -82,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_myGames:
                     fragmentHolder.setCurrentItem(NAV_MY_GAMES);
-                    myGameFragment.setAdapter(new GamesAdapter(gDB.getGames()));
+                    mGamesAdapter = new GamesAdapter(gDB.getGames());
+                    myGameFragment.setAdapter(mGamesAdapter);
                     return true;
                 case R.id.navigation_leaderboard:
                     fragmentHolder.setCurrentItem(NAV_LEADERBOARD);
@@ -106,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         loginFragment.setListener(this);
         homeFragment = new HomeFragment();
         myGameFragment = new GamesFragment();
+        enableDeleteFromRecyclerView();
+        myGameFragment.setOnItemTouchHelper(simpleItemTouchCallback);
         leaderboardFragment = new LeaderboardFragment();
 
         mActionBar = getSupportActionBar();
@@ -115,17 +122,31 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         fragmentHolder = findViewById(R.id.vpPager);
         fragmentHolder.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
-        fragmentHolder.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                fragmentHolder.setCurrentItem(fragmentHolder.getCurrentItem());
-                return true;
-            }
-        });
-
 
         fragmentHolder.addOnPageChangeListener(new NavListener());
         fragmentHolder.setCurrentItem(NAV_LOGIN);
+    }
+
+    private void enableDeleteFromRecyclerView() {
+         simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                //Remove swiped item from list and notify the RecyclerView
+
+                int position = viewHolder.getAdapterPosition();
+                mGamesAdapter.removeFromList(position);
+                mGamesAdapter.notifyDataSetChanged();
+            }
+        };
+    }
+
+    public interface RecyclerViewListener{
+        void removeFromList(int position);
     }
 
     @Override

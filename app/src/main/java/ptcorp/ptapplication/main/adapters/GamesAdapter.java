@@ -1,13 +1,17 @@
 package ptcorp.ptapplication.main.adapters;
 
+import android.app.ListActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import ptcorp.ptapplication.main.MainActivity;
 import ptcorp.ptapplication.main.pojos.GameScore;
 import ptcorp.ptapplication.R;
 
@@ -15,12 +19,13 @@ import ptcorp.ptapplication.R;
  * Created by Pontus on 2018-02-22.
  */
 
-public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewholder> {
+public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewholder> implements MainActivity.RecyclerViewListener {
 
     private List<GameScore> games;
 
     public GamesAdapter(List<GameScore> games){
         this.games = games;
+
     }
 
     @Override
@@ -44,6 +49,11 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.GamesViewhol
     @Override
     public int getItemCount() {
         return games.size();
+    }
+
+    @Override
+    public void removeFromList(int position) {
+        games.remove(position);
     }
 
     class GamesViewholder extends RecyclerView.ViewHolder{
