@@ -471,9 +471,9 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     @Override
                     public void run() {
                         mGameFragment.dismissRoundMessage();
+                        mGameFragment.showWaitingForServeDialog();
                     }
                 },2000);
-                mGameFragment.showWaitingForServeDialog();
             }
         }
     }
