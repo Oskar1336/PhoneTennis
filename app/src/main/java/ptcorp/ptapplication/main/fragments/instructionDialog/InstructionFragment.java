@@ -1,4 +1,4 @@
-package ptcorp.ptapplication.main.fragments;
+package ptcorp.ptapplication.main.fragments.instructionDialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +16,6 @@ import ptcorp.ptapplication.R;
  */
 
 public class InstructionFragment extends Fragment {
-
     private int mTextResource;
     private int mTitleResource;
     private int mDrawableResource;
@@ -32,11 +31,11 @@ public class InstructionFragment extends Fragment {
 
          mTvTextContent = v.findViewById(R.id.tv_inst_content);
          mTvTitle = v.findViewById(R.id.tv_inst_title);
-         mIvImage = v.findViewById(R.id.iv_inst_image);
+//         mIvImage = v.findViewById(R.id.iv_inst_image);
 
          mTvTitle.setText(mTitleResource);
          mTvTextContent.setText(mTextResource);
-         mIvImage.setImageResource(mDrawableResource);
+//         mIvImage.setImageResource(mDrawableResource);
 
         return v;
     }

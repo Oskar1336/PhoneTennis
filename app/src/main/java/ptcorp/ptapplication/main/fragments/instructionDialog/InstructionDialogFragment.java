@@ -1,0 +1,137 @@
+package ptcorp.ptapplication.main.fragments.instructionDialog;
+
+import android.app.Dialog;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.dd.processbutton.iml.ActionProcessButton;
+
+import ptcorp.ptapplication.R;
+import ptcorp.ptapplication.main.components.DialogViewPager;
+import ptcorp.ptapplication.main.components.DottedProgressBar;
+
+
+public class InstructionDialogFragment extends DialogFragment {
+
+    private DialogViewPager mVpInstructions;
+    private ActionProcessButton mApbNext, mApbPrev;
+    private DottedProgressBar mDpbProgress;
+
+    private View mView;
+
+    private short mCurVpPos;
+    private int mLastPosition;
+
+    private InstructionFragment mStartingGameFragment;
+    private InstructionFragment mServeFragment;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog d = getDialog();
+        if (d != null) {
+            int w = ViewGroup.LayoutParams.MATCH_PARENT;
+            int h = ViewGroup.LayoutParams.MATCH_PARENT;
+            d.getWindow().setLayout(w, h);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCurVpPos = 0;
+        mLastPosition = 0;
+
+        mStartingGameFragment = new InstructionFragment();
+        mStartingGameFragment.setTitle(R.string.starting_game_title);
+        mStartingGameFragment.setText(R.string.starting_game_content);
+
+        mServeFragment = new InstructionFragment();
+        mServeFragment.setTitle(R.string.how_to_serve_title);
+        mServeFragment.setText(R.string.how_to_serve_content);
+
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_dialog_how_to_play, container, false);
+
+        mDpbProgress = mView.findViewById(R.id.dpb_progress);
+        mVpInstructions = mView.findViewById(R.id.vp_instructions);
+        mApbNext = mView.findViewById(R.id.btn_next);
+        mApbPrev = mView.findViewById(R.id.btn_previous);
+
+        final InstructionPager ip = new InstructionPager(getChildFragmentManager());
+
+        mVpInstructions.storeAdapter(ip);
+        mVpInstructions.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            @Override
+            public void onPageScrollStateChanged(int state) { }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position > mLastPosition) {
+                    mDpbProgress.incDotPosition();
+                } else {
+                    mDpbProgress.decDotPosition();
+                }
+            }
+        });
+
+        mApbNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurVpPos < ip.getCount()) {
+                    mCurVpPos++;
+                    mVpInstructions.setCurrentItem(mCurVpPos);
+                }
+            }
+        });
+
+        mApbPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurVpPos > 0) {
+                    mCurVpPos--;
+                    mVpInstructions.setCurrentItem(mCurVpPos);
+                }
+            }
+        });
+
+        return mView;
+    }
+
+    private class InstructionPager extends FragmentPagerAdapter {
+        InstructionPager(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return mStartingGameFragment;
+                case 1:
+                    return mServeFragment;
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    }
+}

@@ -4,13 +4,12 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tvhtptitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/how_to_play"
         android:textSize="24sp"
@@ -19,15 +18,25 @@
         custom:layout_constraintRight_toRightOf="parent"
         custom:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v4.view.ViewPager
+    <ptcorp.ptapplication.main.components.DialogViewPager
         android:id="@+id/vp_instructions"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/btnContainer"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/dpb_progress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvhtptitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvhtptitle"
+        app:layout_constraintVertical_bias="0.0" />
 
+    <ptcorp.ptapplication.main.components.DottedProgressBar
+        android:id="@+id/dpb_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@id/btnContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/btnContainer"
@@ -36,14 +45,15 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvhtptitle">
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.dd.processbutton.iml.ActionProcessButton
             android:id="@+id/btn_previous"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginRight="4dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             android:layout_weight="0.5"
             android:text="Previous"
             android:textColor="@android:color/white"
@@ -54,8 +64,9 @@
         <com.dd.processbutton.iml.ActionProcessButton
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginLeft="4dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             android:layout_weight="0.5"
             android:text="Next"
             android:textColor="@android:color/white"
