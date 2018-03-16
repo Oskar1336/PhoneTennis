@@ -473,6 +473,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         mGameFragment.dismissRoundMessage();
                     }
                 },2000);
+                mGameFragment.showWaitingForServeDialog();
             }
         }
     }
