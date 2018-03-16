@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.main.pojos.GameScore;
 
 import static com.facebook.stetho.inspector.network.ResponseHandlingInputStream.TAG;
@@ -19,6 +20,7 @@ import static com.facebook.stetho.inspector.network.ResponseHandlingInputStream.
  */
 
 public class GamesDatabaseHandler extends SQLiteOpenHelper {
+    private static final String TAG = "GamesDatabaseHandler";
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "GamesDatabase";
@@ -99,4 +101,10 @@ public class GamesDatabaseHandler extends SQLiteOpenHelper {
         return created;
     }
 
+    public int removeGame(int gameID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_GAMES, "id = " + (gameID), null );
+        db.close();
+        return result;
+    }
 }

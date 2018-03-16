@@ -70,8 +70,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private GamesFragment myGameFragment;
     private GamesDatabaseHandler gDB;
     private ArrayList<LeaderboardScore> mLeaderboardList;
+    private ArrayList<GameScore> mGameScores;
     private GamesAdapter mGamesAdapter;
     private ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
+
 
     private ActionBar mActionBar;
 
@@ -86,7 +88,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_myGames:
                     fragmentHolder.setCurrentItem(NAV_MY_GAMES);
-                    mGamesAdapter = new GamesAdapter(gDB.getGames());
+                    mGameScores = (ArrayList) gDB.getGames();
+                    mGamesAdapter = new GamesAdapter(mGameScores);
                     myGameFragment.setAdapter(mGamesAdapter);
                     return true;
                 case R.id.navigation_leaderboard:
@@ -137,10 +140,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 //Remove swiped item from list and notify the RecyclerView
-
                 int position = viewHolder.getAdapterPosition();
-                mGamesAdapter.removeFromList(position);
-                mGamesAdapter.notifyDataSetChanged();
+
+                if(gDB.removeGame(mGameScores.get((position)).getID()) > 0){
+                    mGameScores.remove(position);
+                    mGamesAdapter.notifyDataSetChanged();
+                }
             }
         };
     }
