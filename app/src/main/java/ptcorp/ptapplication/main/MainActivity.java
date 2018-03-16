@@ -9,9 +9,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -29,8 +29,8 @@ import android.view.View;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 
 import ptcorp.ptapplication.database.FirebaseDatabaseHandler;
 import ptcorp.ptapplication.game.GameActivity;
@@ -38,6 +38,7 @@ import ptcorp.ptapplication.game.enums.GameWinner;
 import ptcorp.ptapplication.main.adapters.GamesAdapter;
 import ptcorp.ptapplication.database.GamesDatabaseHandler;
 import ptcorp.ptapplication.main.adapters.LeaderboardAdapter;
+import ptcorp.ptapplication.main.components.NonSwipableViewPager;
 import ptcorp.ptapplication.main.fragments.GamesFragment;
 import ptcorp.ptapplication.main.fragments.HomeFragment;
 import ptcorp.ptapplication.main.fragments.LeaderboardFragment;
@@ -62,13 +63,15 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private FirebaseAuth mAuth;
     private FirebaseDatabaseHandler mHandlerDB;
     private BottomNavigationView nav;
-        private ViewPager fragmentHolder;
+    private NonSwipableViewPager fragmentHolder;
     private LeaderboardFragment leaderboardFragment;
     private HomeFragment homeFragment;
     private LoginFragment loginFragment;
     private GamesFragment myGameFragment;
     private GamesDatabaseHandler gDB;
     private ArrayList<LeaderboardScore> mLeaderboardList;
+    private GamesAdapter mGamesAdapter;
+    private ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
 
     private ActionBar mActionBar;
 
@@ -83,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_myGames:
                     fragmentHolder.setCurrentItem(NAV_MY_GAMES);
-                    myGameFragment.setAdapter(new GamesAdapter(gDB.getGames()));
+                    mGamesAdapter = new GamesAdapter(gDB.getGames());
+                    myGameFragment.setAdapter(mGamesAdapter);
                     return true;
                 case R.id.navigation_leaderboard:
                     fragmentHolder.setCurrentItem(NAV_LEADERBOARD);
@@ -107,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         loginFragment.setListener(this);
         homeFragment = new HomeFragment();
         myGameFragment = new GamesFragment();
+        enableDeleteFromRecyclerView();
+        myGameFragment.setOnItemTouchHelper(simpleItemTouchCallback);
         leaderboardFragment = new LeaderboardFragment();
 
         mActionBar = getSupportActionBar();
@@ -116,15 +122,31 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         fragmentHolder = findViewById(R.id.vpPager);
         fragmentHolder.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
-        fragmentHolder.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
 
         fragmentHolder.addOnPageChangeListener(new NavListener());
         fragmentHolder.setCurrentItem(NAV_LOGIN);
+    }
+
+    private void enableDeleteFromRecyclerView() {
+         simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                //Remove swiped item from list and notify the RecyclerView
+
+                int position = viewHolder.getAdapterPosition();
+                mGamesAdapter.removeFromList(position);
+                mGamesAdapter.notifyDataSetChanged();
+            }
+        };
+    }
+
+    public interface RecyclerViewListener{
+        void removeFromList(int position);
     }
 
     @Override
@@ -137,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     protected void onDestroy() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null){
+        if (user != null) {
             mAuth.signOut();
         }
 
@@ -147,24 +169,24 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult: Går in i onActivityResult" + requestCode);
-        if(resultCode == GameActivity.GAME_RESULT_CODE){
+        if (resultCode == GameActivity.GAME_RESULT_CODE) {
             Log.d(TAG, "onActivityResult: Lägger till i databas");
             GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
             gDB.addGame(gameScore);
             LeaderboardScore score = new LeaderboardScore();
 
-            if(mHandlerDB.getUsername().equals(gameScore.getPlayer1())){// HOST
+            if (mHandlerDB.getUsername().equals(gameScore.getPlayer1())) {// HOST
                 score.setUsername(gameScore.getPlayer1());
-                if(gameScore.getGameWinner().equals(GameWinner.HOSTWON)){
+                if (gameScore.getGameWinner().equals(GameWinner.HOSTWON)) {
                     score.setWonGames(1);
-                }else{
+                } else {
                     score.setWonGames(0);
                 }
-            } else{
+            } else {
                 score.setUsername(gameScore.getPlayer2());
-                if(gameScore.getGameWinner().equals(GameWinner.CLIENTWON)){
+                if (gameScore.getGameWinner().equals(GameWinner.CLIENTWON)) {
                     score.setWonGames(1);
-                }else{
+                } else {
                     score.setWonGames(0);
                 }
             }
@@ -172,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         }
     }
 
-    private void createUser(String email, String password){
+    private void createUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -199,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 });
     }
 
-    private void signInUser(String email, String password){
+    private void signInUser(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -228,22 +250,22 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 });
     }
 
-    private void displayToast(String message){
+    private void displayToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void initFirebase(){
+    private void initFirebase() {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    private void initCurrentUser(){
+    private void initCurrentUser() {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
     }
 
     @Override
     public void login(String user, String pass) {
-        signInUser(user,pass);
+        signInUser(user, pass);
     }
 
     @Override
@@ -252,20 +274,28 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
     @Override
-    public void updateAdapter(HashMap<String,LeaderboardScore> map) {
+    public void updateAdapter(HashMap<String, LeaderboardScore> map) {
         mLeaderboardList = new ArrayList<>(map.values());
         LeaderboardScore score;
-        if(map.containsKey(userID)){
+        if (map.containsKey(userID)) {
             score = map.get(userID);
             homeFragment.setWins(score.getWonGames());
             homeFragment.setLosses(score.getLostGames());
             homeFragment.setWinrate(winRate(score));
         }
+        mLeaderboardList.sort(new Comparator<LeaderboardScore>() {
+            @Override
+            public int compare(LeaderboardScore t1, LeaderboardScore t2) {
+                float winRate = ((float) t1.getWonGames() / (t1.getLostGames() + t1.getWonGames())) * 100;
+                float compWinrate = ((float) t2.getWonGames() / (t2.getLostGames() + t2.getWonGames())) * 100;
+                return (int) (compWinrate - winRate);
+            }
+        });
     }
 
-    private String winRate(LeaderboardScore score){
+    private String winRate(LeaderboardScore score) {
         DecimalFormat df = new DecimalFormat("#.#");
-        return String.valueOf(df.format(((float) score.getWonGames()/(score.getLostGames()+score.getWonGames()))*100));
+        return String.valueOf(df.format(((float) score.getWonGames() / (score.getLostGames() + score.getWonGames())) * 100));
     }
 
 
@@ -276,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         @Override
         public Fragment getItem(int position) {
-            switch (position){
+            switch (position) {
                 case NAV_LOGIN:
                     return loginFragment;
                 case NAV_HOME:
@@ -296,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class ButtonHandler extends AsyncTask<Void, Void, Void>{
+    private class ButtonHandler extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -327,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         @Override
         public void onPageSelected(int position) {
-            switch (position){
+            switch (position) {
                 case NAV_LOGIN:
                     mActionBar.setTitle(R.string.login);
                     break;
@@ -344,7 +374,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         }
 
         @Override
-        public void onPageScrollStateChanged(int state) { }
+        public void onPageScrollStateChanged(int state) {
+        }
     }
 
 }

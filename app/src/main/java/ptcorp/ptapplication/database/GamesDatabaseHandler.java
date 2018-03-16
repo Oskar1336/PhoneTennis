@@ -63,6 +63,7 @@ public class GamesDatabaseHandler extends SQLiteOpenHelper {
                             (c.getColumnIndex(PLAYER2)), c.getString(c.getColumnIndex(CREATION_DATE)),
                             Integer.parseInt(c.getString(c.getColumnIndex(SCORE1))),
                             Integer.parseInt(c.getString(c.getColumnIndex(SCORE2))));
+                    mGame.setID(Integer.parseInt(c.getString(c.getColumnIndex(ID))));
                     mGamesList.add(mGame);
                 } while (c.moveToNext());
             }

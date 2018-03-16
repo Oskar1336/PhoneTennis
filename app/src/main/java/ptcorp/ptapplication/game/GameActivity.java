@@ -155,6 +155,20 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     }
 
     @Override
+    public void onBackPressed() {
+        if(mIsHost && !mRoundResult.isGameOver()){
+            mRoundResult.setClientWinner();
+            mGameWinner = GameWinner.CLIENTWON;
+        } else if(!mIsHost && !mRoundResult.isGameOver()){
+            mRoundResult.setHostWinner();
+            mGameWinner = GameWinner.HOSTWON;
+        }
+        mBtController.write(mRoundResult);
+        this.onGameFinished();
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE &&
                 resultCode == 200) {
@@ -457,6 +471,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     @Override
                     public void run() {
                         mGameFragment.dismissRoundMessage();
+                        mGameFragment.showWaitingForServeDialog();
                     }
                 },2000);
             }
@@ -486,6 +501,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
             }
         });
+
         // TODO: 2018-03-07 update scores before quitting
     }
 

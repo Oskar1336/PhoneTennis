@@ -1,11 +1,13 @@
 package ptcorp.ptapplication.main.pojos;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by LinusHakansson on 2018-02-21.
  * Carry information about a finished game
  */
 
-public class LeaderboardScore {
+public class LeaderboardScore{
     private String username;
     private long wonGames, lostGames;
 
@@ -37,4 +39,5 @@ public class LeaderboardScore {
     public long getLostGames() {
         return lostGames;
     }
+
 }
