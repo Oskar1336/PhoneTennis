@@ -14,7 +14,7 @@ import ptcorp.ptapplication.game.enums.GameWinner;
 public class GameScore implements Parcelable{
 
     private String player1, player2, date;
-    private int score1, score2;
+    private int score1, score2, id;
     private GameWinner gameWinner;
 
     public GameScore(String player1, String player2, String date, int score1, int score2) {
@@ -29,6 +29,10 @@ public class GameScore implements Parcelable{
         this.gameWinner = winner;
     }
 
+    public void setID(int dbID){
+        this.id = dbID;
+    }
+
     protected GameScore(Parcel in) {
         player1 = in.readString();
         player2 = in.readString();
@@ -37,6 +41,7 @@ public class GameScore implements Parcelable{
         score2 = in.readInt();
         String winner = in.readString();
         gameWinner = GameWinner.valueOf(winner);
+        id = in.readInt();
     }
 
     public static final Creator<GameScore> CREATOR = new Creator<GameScore>() {
@@ -75,6 +80,10 @@ public class GameScore implements Parcelable{
         return gameWinner;
     }
 
+    public int getID(){
+        return id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -88,5 +97,6 @@ public class GameScore implements Parcelable{
         parcel.writeInt(score1);
         parcel.writeInt(score2);
         parcel.writeString(gameWinner.name());
+        parcel.writeInt(id);
     }
 }
