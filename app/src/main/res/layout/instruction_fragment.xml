@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tv_inst_title"
@@ -13,40 +12,24 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textAlignment="viewStart"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Instruction title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_inst_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:textSize="12sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_inst_title"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pretium dictum erat eu vulputate. Donec mollis ipsum a massa iaculis, consequat feugiat sapien posuere. Etiam quis mauris mauris. Sed tempor, tortor non laoreet aliquam, nisi nisi porttitor tellus, in tincidunt ipsum nisl sed felis. Proin est odio, hendrerit vitae viverra ut, pretium et dui. Fusce at vulputate urna. Duis neque ipsum, faucibus eu dolor vitae, accumsan maximus eros. Vivamus placerat mollis dictum. Sed tincidunt neque nec diam placerat tincidunt. Cras et eros viverra, vehicula ex eu, pharetra risus. Sed pharetra magna a nibh semper, ut euismod nibh bibendum. Pellentesque dapibus dolor tristique, gravida magna eget, suscipit elit. Pellentesque justo odio, blandit eget lacinia nec, luctus a neque. Nulla vitae urna ac quam dictum auctor congue sed orci." />
+        app:layout_constraintVertical_bias="0.0" />
 
-    <ImageView
-        android:id="@+id/iv_inst_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/instructional_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_inst_content"
-        app:srcCompat="@drawable/cali_hand" />
 </android.support.constraint.ConstraintLayout>

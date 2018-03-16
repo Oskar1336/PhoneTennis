@@ -4,6 +4,7 @@ package ptcorp.ptapplication.main.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,7 @@ import info.hoang8f.widget.FButton;
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.game.GameActivity;
 import ptcorp.ptapplication.main.MainActivity;
-
-import static ptcorp.ptapplication.main.MainActivity.REQUEST_CODE;
+import ptcorp.ptapplication.main.fragments.instructionDialog.InstructionDialogFragment;
 
 
 /**
@@ -84,10 +84,36 @@ public class HomeFragment extends Fragment {
         mBtnHowToPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new InstructionDialogFragment().show(getFragmentManager(), "InstructionDialog");
+
+                InstructionDialogFragment id = new InstructionDialogFragment();
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.add(id, "instruction_dialog");
+                ft.commit();
+
+
+//                Dialog dialog = new Dialog(getContext());
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                dialog.setContentView(R.layout.fragment_dialog_how_to_play);
+
+//                List<Instruction> instructions = new ArrayList<>();
+//                instructions.add(new Instruction(getText(R.string.serve_title).toString(),
+//                        getText(R.string.how_to_serve).toString(), R.drawable.cali_hand));
+//                instructions.add(new Instruction(getText(R.string.starting_game_title).toString(),
+//                        getText(R.string.lorem_ipsum).toString(), R.drawable.cali_hand));
+//
+//                InstructionPagerAdapter pagerAdapter = new InstructionPagerAdapter(getActivity(), instructions);
+//
+//                ViewPager vp = dialog.findViewById(R.id.vp_instructions);
+//                vp.setAdapter(pagerAdapter);
+//
+//                dialog.show();
+//                new InstructionDialogFragment().show(getFragmentManager(), "InstructionDialog");
+
             }
         });
 
         return v;
     }
+
+
 }

@@ -15,7 +15,7 @@ public class DottedProgressBar extends View {
     private int mDotRadius = 8;
     private int mBounceDotRadius = 10;
     private int  mDotPosition;
-    private int mDotAmount = 10;
+    private int mDotAmount = 2;
     private Paint mPaint;
 
     public DottedProgressBar(Context context) {
@@ -45,13 +45,17 @@ public class DottedProgressBar extends View {
         startAnimation();
     }
 
-    public void addDots() {
-        mDotPosition+=2;
+    public void incDotPosition() {
+        mDotPosition++;
+    }
+
+    public void decDotPosition() {
+        mDotPosition--;
     }
 
     private void createDot(Canvas canvas) {
         for(int i = 0; i < mDotAmount; i++ ){
-            if(i <= mDotPosition){
+            if(i == mDotPosition){
                 mPaint.setColor(Color.parseColor("#fd583f"));
                 canvas.drawCircle(10+(i*20), mBounceDotRadius, mBounceDotRadius, mPaint);
             }else {
@@ -64,7 +68,7 @@ public class DottedProgressBar extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension((20*9), (mBounceDotRadius*2));
+        setMeasuredDimension((20*mDotAmount), (mBounceDotRadius*2));
     }
 
     private void startAnimation() {
@@ -74,7 +78,6 @@ public class DottedProgressBar extends View {
         bounceAnimation.setInterpolator(new LinearInterpolator());
         startAnimation(bounceAnimation);
     }
-
 
     private class BounceAnimation extends Animation {
         @Override
