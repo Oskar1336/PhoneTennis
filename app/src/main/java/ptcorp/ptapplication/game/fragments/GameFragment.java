@@ -40,7 +40,6 @@ public class GameFragment extends Fragment{
     private GameListener mGameListener;
 
 
-
     public GameFragment() {
         // Required empty public constructor
     }
