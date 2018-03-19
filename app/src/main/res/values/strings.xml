@@ -41,4 +41,9 @@
                                 catch the ball where you struck it. When you or the opponent catches the ball, you need to lock the direction for your next strike within
                                 some seconds, otherwise you will lose.
     </string>
+    <string name="instructions_dialog_title">Instructions</string>
+    <string name="instructions_dialog_message">If you want to delete a game from your history of played games,
+        you can simply swipe out the game to the right or left. If you delete a game in this way, you will not be able to retrieve it back later!
+
+    </string>
 </resources>
