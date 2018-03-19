@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">PTApplication</string>
+    <string name="app_name">Phone Tennis</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="my_games">My Games</string>
-    <string name="leaderboard">Leaderboard</string>
+    <string name="leaderboard">Leaderbord</string>
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="bluetooth_not_available">Bluetooth is not available on this device!</string>
     <string name="host_error">Host error</string>
@@ -32,13 +32,40 @@
     <string name="no_instruction">No instruction</string>
     <string name="how_to_play">How to play</string>
 
+    <string name="about_the_game_title">About the game</string>
+    <string name="about_the_game_content">
+        This is a game that tries to replicate beach tennis but on your phone using bluetooth and sensors.\n
+        The idea of the game is for one player to serve the ball at a specific direction and for the other player to then catch the ball by pointing the phone towards the opposite degree which the opponent shot the ball.
+        When a player then catch the ball the player have a couple of seconds to return the ball by locking in a direction and then shooting the ball by performing a strike, very similar to the serve except it has a time pressure.\n\n
+        Rules:\n
+        The first player to reach 3 round wins will win the game.
+        If a player fails to lock a direction within the time limit it counts as a miss and the other player wins that round.\n
+        If a player strike too hard when either serving or returning the ball it will count as a out of bounds and the opponent wins the round.\n
+        If a player fails to point the phone towards the correct degree it will count as a fail to catch the ball and the player looses the round.\n
+    </string>
+
     <string name="starting_game_title">Starting game</string>
-    <string name="starting_game_content">Write how to start a game</string>
+    <string name="starting_game_content">
+        To start a game one of the two players needs to select HOST and the other one CONNECT after pressing PLAY. This is because one needs to host the game server and the other player needs to connect to the host server.\n\n
+
+        When you first enter the game, you will be instructed to point towards your opponent in order to lock your position. It is important to do this correctly
+        for the game to work properly.\n\n
+         </string>
 
     <string name="how_to_serve_title">How to serve</string>
-    <string name="how_to_serve_content">When you first enter the game, point to your opponent in order to lock your position. It is important to do this correctly
-                                for the game to work properly. Then, when it is your time to serve, point to the direction you wish to strike. Your opponent have to
-                                catch the ball where you struck it. When you or the opponent catches the ball, you need to lock the direction for your next strike within
-                                some seconds, otherwise you will lose.
+    <string name="how_to_serve_content">
+        One of the two players will randomly get selected to serve at the start of the game.\n\n
+        When it is your time to serve, point to the direction you wish to strike and press LOCK DIRECTION.\n\n
+        When the direction you wish to strike is locked you perform a strike to serve, just like you saw in previous slide.\n\n
+        After you\'ve served the ball it\'s your opponents turn to catch it, just like shown in previous slides.
     </string>
+
+    <string name="how_to_strike_title">How to strike</string>
+    <string name="how_to_strike_content"></string>
+
+    <string name="how_to_catch_title">How to catch ball</string>
+    Your opponent have to catch the ball where you struck it. When you or the opponent catches the ball, you need to lock the direction for your next strike within
+    some seconds, otherwise you will lose.
+    <string name="how_to_catch_content"></string>
+    <string name="image">Image</string>
 </resources>

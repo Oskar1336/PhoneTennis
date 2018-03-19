@@ -195,7 +195,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             @Override
             public void run() {
                 mGameFragment.hideInitGame();
-                Log.d(TAG, "run: " + mGameSettings.getmPlayerStarting());
+
                 if (mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.HOST_STARTS) {
                     mGameFragment.serveDialog();
                 } else if (!mIsHost && mGameSettings.getmPlayerStarting() == GameActivity.CLIENT_STARTS) {
@@ -244,7 +244,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         Random rnd = new Random();
 //        int whoStarts = rnd.nextInt(2);
         int whoStarts = 1; // TODO: 2018-03-07 Change to random serve
-        Log.d(TAG, "startGame: VALUE:--------------" + whoStarts);
+
         if (whoStarts == GameActivity.HOST_STARTS) {
             mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
         } else {
@@ -257,14 +257,12 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private boolean performStrike(SensorEvent event) {
         float xVal = event.values[0];
         float yVal = event.values[1];
-        float zVal = event.values[2];
 
         if (xVal > STRIKE_FORWARD_LIMIT && (yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT)) {
 
             if (xVal > STRIKE_STRENGTH_LIMIT) {
                 sendLost(RoundResult.RoundLostReason.SHOT_OUT_OF_BOUNDS);
             } else {
-                // TODO: 2018-03-09 Add strength to calculation
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
                 mBtController.write(new StrikeInformation(
@@ -272,10 +270,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         strikeDirection));
             }
             return false;
-        } else if ((yVal < STRIKE_TILT_LIMIT && yVal > STRIKE_BACKWARDS_LIMIT) &&
-                (zVal < STRIKE_BACKWARDS_LIMIT)) {
-            // TODO: 2018-03-09 Max amount of misses restructure if
-            // TODO: 2018-03-07 Display to loose message toast maybe
         }
         return true;
     }
@@ -513,6 +507,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onDeviceSearchCancel() {
         mBtController.stopSearchingForDevices();
+    }
+
+    @Override
+    public void onReSearch() {
+        mBtController.startSearchingForDevices();
     }
 
     @Override

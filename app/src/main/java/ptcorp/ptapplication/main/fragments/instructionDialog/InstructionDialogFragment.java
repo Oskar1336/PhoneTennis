@@ -8,11 +8,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.main.components.DialogViewPager;
@@ -20,6 +24,8 @@ import ptcorp.ptapplication.main.components.DottedProgressBar;
 
 
 public class InstructionDialogFragment extends DialogFragment {
+
+    private final short INSTRUCTION_AMOUNT = 3;
 
     private DialogViewPager mVpInstructions;
     private ActionProcessButton mApbNext, mApbPrev;
@@ -30,6 +36,7 @@ public class InstructionDialogFragment extends DialogFragment {
     private short mCurVpPos;
     private int mLastPosition;
 
+    private InstructionFragment mAboutFragment;
     private InstructionFragment mStartingGameFragment;
     private InstructionFragment mServeFragment;
 
@@ -50,6 +57,10 @@ public class InstructionDialogFragment extends DialogFragment {
         mCurVpPos = 0;
         mLastPosition = 0;
 
+        mAboutFragment = new InstructionFragment();
+        mAboutFragment.setTitle(R.string.about_the_game_title);
+        mAboutFragment.setText(R.string.about_the_game_content);
+
         mStartingGameFragment = new InstructionFragment();
         mStartingGameFragment.setTitle(R.string.starting_game_title);
         mStartingGameFragment.setText(R.string.starting_game_content);
@@ -57,8 +68,7 @@ public class InstructionDialogFragment extends DialogFragment {
         mServeFragment = new InstructionFragment();
         mServeFragment.setTitle(R.string.how_to_serve_title);
         mServeFragment.setText(R.string.how_to_serve_content);
-
-
+        mServeFragment.setImage(R.drawable.serve_lock_dialog);
     }
 
     @Nullable
@@ -87,13 +97,15 @@ public class InstructionDialogFragment extends DialogFragment {
                 } else {
                     mDpbProgress.decDotPosition();
                 }
+                mLastPosition = position;
             }
         });
 
         mApbNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurVpPos < ip.getCount()) {
+                if (mCurVpPos < ip.getCount()-1) {
+                    Log.d("BUTTONNEXT", "onClick: ");
                     mCurVpPos++;
                     mVpInstructions.setCurrentItem(mCurVpPos);
                 }
@@ -122,8 +134,10 @@ public class InstructionDialogFragment extends DialogFragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return mStartingGameFragment;
+                    return mAboutFragment;
                 case 1:
+                    return mStartingGameFragment;
+                case 2:
                     return mServeFragment;
             }
             return null;
@@ -131,7 +145,7 @@ public class InstructionDialogFragment extends DialogFragment {
 
         @Override
         public int getCount() {
-            return 2;
+            return INSTRUCTION_AMOUNT;
         }
     }
 }
