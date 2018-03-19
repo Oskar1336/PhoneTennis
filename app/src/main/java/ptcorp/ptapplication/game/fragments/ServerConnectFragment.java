@@ -79,10 +79,10 @@ public class ServerConnectFragment extends DialogFragment {
         mPullRefresh.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //TODO: Update adpater
+                mListener.onReSearch();
+                mServersAdapter.emptyDeviceList();
             }
         });
-//        mPullRefresh.setRefreshing(true);
         return view;
     }
 
@@ -97,7 +97,7 @@ public class ServerConnectFragment extends DialogFragment {
     }
 
     public void updateComplete() {
-//        if (mPullRefresh != null) mPullRefresh.setRefreshing(false);
+        if (mPullRefresh != null) mPullRefresh.setRefreshing(false);
     }
 
     public void setListener(DeviceListListener listener) {
@@ -112,6 +112,11 @@ public class ServerConnectFragment extends DialogFragment {
 
         private void addItem(BTDevice btDevice) {
             mDevicesList.add(btDevice);
+            this.notifyDataSetChanged();
+        }
+
+        private void emptyDeviceList() {
+            mDevicesList.clear();
             this.notifyDataSetChanged();
         }
 
@@ -148,5 +153,6 @@ public class ServerConnectFragment extends DialogFragment {
     public interface DeviceListListener{
         void onDeviceClick(BluetoothDevice btDevice);
         void onDeviceSearchCancel();
+        void onReSearch();
     }
 }
