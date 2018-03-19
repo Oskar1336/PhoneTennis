@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_leaderboard:
                     fragmentHolder.setCurrentItem(NAV_LEADERBOARD);
-                    leaderboardFragment.setAdapter(new LeaderboardAdapter(mLeaderboardList));
+                    if (mLeaderboardList != null)
+                        leaderboardFragment.setAdapter(new LeaderboardAdapter(mLeaderboardList));
                     return true;
             }
             return false;
