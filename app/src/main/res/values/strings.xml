@@ -4,7 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="my_games">My Games</string>
-    <string name="leaderboard">Leaderbord</string>
+    <string name="leaderboard">Leaderboard</string>
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="bluetooth_not_available">Bluetooth is not available on this device!</string>
     <string name="host_error">Host error</string>
