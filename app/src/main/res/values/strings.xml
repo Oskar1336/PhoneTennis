@@ -43,7 +43,7 @@
     </string>
     <string name="instructions_dialog_title">Instructions</string>
     <string name="instructions_dialog_message">If you want to delete a game from your history of played games,
-        you can simply swipe out the game to the right or left. If you delete a game in this way, you will not be able to retrieve it back later!
+        you can simply swipe the game to the left or right. If you delete a game in this way, you will not be able to retrieve it back later!
 
     </string>
 </resources>
