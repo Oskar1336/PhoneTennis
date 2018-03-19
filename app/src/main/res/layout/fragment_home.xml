@@ -54,20 +54,12 @@
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="3dp" />
 
-    <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TableRow>
-
-        </TableRow>
-    </TableLayout>
-
-
 
     <LinearLayout
         android:id="@+id/llPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         fbutton:layout_constraintEnd_toEndOf="parent"
         fbutton:layout_constraintStart_toStartOf="parent"
         fbutton:layout_constraintTop_toBottomOf="@id/btnHowToPlay">

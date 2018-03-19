@@ -26,8 +26,8 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:clickable="true"
-        app:backgroundTint="@android:color/white"
+        app:backgroundTint="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/ic_qm_large" />
+        app:srcCompat="@drawable/ic_qm_large"/>
 </android.support.constraint.ConstraintLayout>
