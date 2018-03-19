@@ -18,7 +18,7 @@ import ptcorp.ptapplication.R;
 public class InstructionFragment extends Fragment {
     private int mTextResource;
     private int mTitleResource;
-    private int mDrawableResource;
+    private int mDrawableResource = -1;
 
     private TextView mTvTextContent;
     private TextView mTvTitle;
@@ -31,11 +31,13 @@ public class InstructionFragment extends Fragment {
 
          mTvTextContent = v.findViewById(R.id.tv_inst_content);
          mTvTitle = v.findViewById(R.id.tv_inst_title);
-//         mIvImage = v.findViewById(R.id.iv_inst_image);
+         mIvImage = v.findViewById(R.id.iv_instruction);
 
          mTvTitle.setText(mTitleResource);
          mTvTextContent.setText(mTextResource);
-//         mIvImage.setImageResource(mDrawableResource);
+         if (mDrawableResource != -1) {
+             mIvImage.setImageResource(mDrawableResource);
+         }
 
         return v;
     }

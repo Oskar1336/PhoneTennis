@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     return true;
                 case R.id.navigation_leaderboard:
                     fragmentHolder.setCurrentItem(NAV_LEADERBOARD);
-                    leaderboardFragment.setAdapter(new LeaderboardAdapter(mLeaderboardList));
+                    if (mLeaderboardList != null)
+                        leaderboardFragment.setAdapter(new LeaderboardAdapter(mLeaderboardList));
                     return true;
             }
             return false;
@@ -293,6 +294,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             public int compare(LeaderboardScore t1, LeaderboardScore t2) {
                 float winRate = ((float) t1.getWonGames() / (t1.getLostGames() + t1.getWonGames())) * 100;
                 float compWinrate = ((float) t2.getWonGames() / (t2.getLostGames() + t2.getWonGames())) * 100;
+                if (Float.isNaN(winRate)) winRate = -1;
+                if (Float.isNaN(compWinrate)) compWinrate = -1;
                 return (int) (compWinrate - winRate);
             }
         });

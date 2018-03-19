@@ -38,8 +38,11 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         holder.tvWins.setText(String.valueOf(game.getWonGames()));
         holder.tvLosses.setText(String.valueOf(game.getLostGames()));
         holder.tvWinrate.setText(String.valueOf(((float)game.getWonGames()/(game.getLostGames()+game.getWonGames()))*100));
+<<<<<<< HEAD
         holder.tvPosition.setText("#" + String.valueOf(position+1));
 
+=======
+>>>>>>> 749eba3b42b7ed8dfd8991b5cc9709f89ab2fe8d
     }
 
 
