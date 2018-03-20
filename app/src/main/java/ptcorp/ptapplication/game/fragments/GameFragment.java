@@ -202,6 +202,7 @@ public class GameFragment extends Fragment{
                         mGameListener.onLock();
                         loadingFragment = new LoadingFragment();
                         loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
+                        loadingFragment.enableButton(false);
                         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
                         alertDialogLock.dismiss();
                     }

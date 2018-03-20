@@ -66,7 +66,6 @@ public class LoginFragment extends Fragment {
                 }else{
                     createBtn.setProgress(-1);
                 }
-                clearFocus();
             }
         });
 
@@ -83,7 +82,6 @@ public class LoginFragment extends Fragment {
                 }else{
                     createBtn.setProgress(-1);
                 }
-                clearFocus();
             }
         });
         setEmail();
@@ -91,7 +89,7 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    private void clearFocus(){
+    public void clearFocus(){
         username.setFocusable(false);
         password.setFocusable(false);
     }
