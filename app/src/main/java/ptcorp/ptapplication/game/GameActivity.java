@@ -103,6 +103,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float strikeDirection;
     private float moveToPosition;
 
+    private Runnable handlerRunnable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +153,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     protected void onDestroy() {
         mBtController.onDestroy();
+        uiHandler.removeCallbacks(handlerRunnable);
         super.onDestroy();
     }
 
@@ -331,13 +334,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             mGameFragment.showMatchResult(message);
         } else{
             mGameFragment.showRoundMessage("You lost the point!");
-            uiHandler.postDelayed(new Runnable() {
+            uiHandler.postDelayed((handlerRunnable =new Runnable() {
                  @Override
                  public void run() {
                      mGameFragment.dismissRoundMessage();
                      mGameFragment.serveDialog();
                  }
-            }, 2000);
+            }), 2000);
         }
         Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
         mBtController.write(mRoundResult);
@@ -431,7 +434,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             } else{
                 mGameFragment.showNewDegree("Your opponent shot right at you!");
             }
-            uiHandler.postDelayed(new Runnable() {
+            uiHandler.postDelayed((handlerRunnable = new Runnable() {
                 @Override
                 public void run() {
                     if (mCurrentDegree<=((moveToPosition+ERROR_MARGIN)%360) && mCurrentDegree>=((moveToPosition-ERROR_MARGIN)%360)){
@@ -440,7 +443,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                         sendLost(RoundResult.RoundLostReason.MISSED_BALL);
                     }
                 }
-            }, (long) (strikeInformation.getTimeInAir() * 1000));
+            }), (long) (strikeInformation.getTimeInAir() * 1000));
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
             Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
@@ -459,13 +462,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 mGameFragment.showMatchResult(message);
             }else{
                 mGameFragment.showRoundMessage("You won the ball!");
-                uiHandler.postDelayed(new Runnable() {
+                uiHandler.postDelayed((handlerRunnable = new Runnable() {
                     @Override
                     public void run() {
                         mGameFragment.dismissRoundMessage();
                         mGameFragment.showWaitingForServeDialog();
                     }
-                },2000);
+                }),2000);
             }
         }
     }
@@ -622,14 +625,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
 
             Handler loadingTimer = new Handler();
-            loadingTimer.postDelayed(new Runnable() {
+            loadingTimer.postDelayed((handlerRunnable = new Runnable() {
                 @Override
                 public void run() {
                     Log.d(TAG, "run: " + mThisDeviceState.name());
 //                    mBtController.write(GameState.DEVICE_READY);
                     mBtController.write(initGame);
                 }
-            }, 4000);
+            }), 4000);
         }
     }
 }

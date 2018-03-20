@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             loginFragment.setCreateBtnProgress(100);
+                            loginFragment.clearFocus();
                             // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             mHandlerDB.addOnUpdateListener(MainActivity.this);
@@ -234,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             loginFragment.setLoginBtnProgress(100);
+                            loginFragment.clearFocus();
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
 

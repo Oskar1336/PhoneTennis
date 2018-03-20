@@ -40,7 +40,6 @@ public class GameFragment extends Fragment{
     private GameListener mGameListener;
 
 
-
     public GameFragment() {
         // Required empty public constructor
     }
@@ -203,6 +202,7 @@ public class GameFragment extends Fragment{
                         mGameListener.onLock();
                         loadingFragment = new LoadingFragment();
                         loadingFragment.setTitle(getText(R.string.waiting_for_position).toString());
+                        loadingFragment.enableButton(false);
                         loadingFragment.show(getActivity().getSupportFragmentManager(), "loadingFragment");
                         alertDialogLock.dismiss();
                     }

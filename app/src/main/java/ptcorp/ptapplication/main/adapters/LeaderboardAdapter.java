@@ -38,6 +38,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         holder.tvWins.setText(String.valueOf(game.getWonGames()));
         holder.tvLosses.setText(String.valueOf(game.getLostGames()));
         holder.tvWinrate.setText(String.valueOf(((float)game.getWonGames()/(game.getLostGames()+game.getWonGames()))*100));
+        holder.tvPosition.setText("#" + String.valueOf(position+1));
+
     }
 
 
@@ -48,7 +50,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     class LeaderboardViewholder extends RecyclerView.ViewHolder{
 
-        private TextView tvPlayer, tvWinrate, tvWins, tvLosses;
+        private TextView tvPlayer, tvWinrate, tvWins, tvLosses, tvPosition;
 
         public LeaderboardViewholder(View itemView) {
             super(itemView);
@@ -57,6 +59,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             tvWinrate = itemView.findViewById(R.id.tvWinrate);
             tvWins = itemView.findViewById(R.id.tvWins);
             tvLosses = itemView.findViewById(R.id.tvLosses);
+            tvPosition = itemView.findViewById(R.id.tvPosition);
         }
     }
 }
