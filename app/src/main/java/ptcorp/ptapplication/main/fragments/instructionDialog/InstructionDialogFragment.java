@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,7 +26,7 @@ import ptcorp.ptapplication.main.components.DottedProgressBar;
 
 public class InstructionDialogFragment extends DialogFragment {
 
-    private final short INSTRUCTION_AMOUNT = 3;
+    private final short INSTRUCTION_AMOUNT = 5;
 
     private DialogViewPager mVpInstructions;
     private ActionProcessButton mApbNext, mApbPrev;
@@ -38,6 +39,8 @@ public class InstructionDialogFragment extends DialogFragment {
 
     private InstructionFragment mAboutFragment;
     private InstructionFragment mStartingGameFragment;
+    private InstructionFragment mStrikeFragment;
+    private InstructionFragment mCatchFragment;
     private InstructionFragment mServeFragment;
 
     @Override
@@ -61,9 +64,19 @@ public class InstructionDialogFragment extends DialogFragment {
         mAboutFragment.setTitle(R.string.about_the_game_title);
         mAboutFragment.setText(R.string.about_the_game_content);
 
+        mStrikeFragment = new InstructionFragment();
+        mStrikeFragment.setTitle(R.string.how_to_strike_title);
+        mStrikeFragment.setText(R.string.how_to_strike_content);
+        mStrikeFragment.setImage(R.drawable.cali_hand);
+
+        mCatchFragment = new InstructionFragment();
+        mCatchFragment.setTitle(R.string.how_to_catch_title);
+        mCatchFragment.setText(R.string.how_to_catch_content);
+
         mStartingGameFragment = new InstructionFragment();
         mStartingGameFragment.setTitle(R.string.starting_game_title);
         mStartingGameFragment.setText(R.string.starting_game_content);
+//        mStartingGameFragment.setImage(R.drawable.start_point);
 
         mServeFragment = new InstructionFragment();
         mServeFragment.setTitle(R.string.how_to_serve_title);
@@ -94,8 +107,10 @@ public class InstructionDialogFragment extends DialogFragment {
             public void onPageSelected(int position) {
                 if (position > mLastPosition) {
                     mDpbProgress.incDotPosition();
+                    mCurVpPos++;
                 } else {
                     mDpbProgress.decDotPosition();
+                    mCurVpPos--;
                 }
                 mLastPosition = position;
             }
@@ -104,8 +119,7 @@ public class InstructionDialogFragment extends DialogFragment {
         mApbNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurVpPos < ip.getCount()-1) {
-                    Log.d("BUTTONNEXT", "onClick: ");
+                if (mCurVpPos < ip.getCount()) {
                     mCurVpPos++;
                     mVpInstructions.setCurrentItem(mCurVpPos);
                 }
@@ -136,8 +150,12 @@ public class InstructionDialogFragment extends DialogFragment {
                 case 0:
                     return mAboutFragment;
                 case 1:
-                    return mStartingGameFragment;
+                    return mStrikeFragment;
                 case 2:
+                    return mCatchFragment;
+                case 3:
+                    return mStartingGameFragment;
+                case 4:
                     return mServeFragment;
             }
             return null;

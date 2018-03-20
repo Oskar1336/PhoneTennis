@@ -266,7 +266,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 // Vibrate for 500 milliseconds
                 v.vibrate(500);
                 mBtController.write(new StrikeInformation(
-                        ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10) + 2,
+                        ((mBtController.getDistanceFromConnectedDevice() / event.values[0]) * 10) + 1,
                         strikeDirection));
             }
             return false;
@@ -372,9 +372,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void onBluetoothConnected() {
-        // TODO: 2018-03-01 Continue to gamescreen
         this.runOnUiThread(new RunOnUI());
-        Log.d(TAG, "onBluetoothConnected: Connected");
     }
 
     @Override

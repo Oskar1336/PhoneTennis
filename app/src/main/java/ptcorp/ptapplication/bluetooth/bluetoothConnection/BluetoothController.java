@@ -221,7 +221,6 @@ public class BluetoothController{
                     mListener.onDeviceFound(btDevice);
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
-                // TODO: 2018-03-01 Check UUID  https://stackoverflow.com/questions/14812326/android-bluetooth-get-uuids-of-discovered-devices/15373239
                 mListener.onSearchComplete();
             }
         }

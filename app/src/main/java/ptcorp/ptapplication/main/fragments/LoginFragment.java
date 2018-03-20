@@ -109,9 +109,10 @@ public class LoginFragment extends Fragment {
         edit.putString("password", password.getText().toString());
         edit.apply();
     }
+
     private void setEmail(){
         username.setText(mSharedPrefs.getString("email", ""));
-        password.setText(mSharedPrefs.getString("password", "")); // TODO: DELETE THIS LATER
+        password.setText(mSharedPrefs.getString("password", ""));
     }
 
     public interface LoginListener {

@@ -15,7 +15,7 @@ public class DottedProgressBar extends View {
     private int mDotRadius = 8;
     private int mBounceDotRadius = 10;
     private int  mDotPosition;
-    private int mDotAmount = 3;
+    private int mDotAmount = 5;
     private Paint mPaint;
 
     public DottedProgressBar(Context context) {

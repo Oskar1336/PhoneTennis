@@ -27,10 +27,10 @@
     <string name="play">PLAY</string>
     <string name="cancel">Cancel</string>
     <string name="waiting_for_serve">Waiting for your opponent to serve</string>
-
     <string name="instructional_image">Instructional image</string>
     <string name="no_instruction">No instruction</string>
     <string name="how_to_play">How to play</string>
+    <string name="image">Image</string>
 
     <string name="about_the_game_title">About the game</string>
     <string name="about_the_game_content">
@@ -47,10 +47,9 @@
     <string name="starting_game_title">Starting game</string>
     <string name="starting_game_content">
         To start a game one of the two players needs to select HOST and the other one CONNECT after pressing PLAY. This is because one needs to host the game server and the other player needs to connect to the host server.\n\n
-
         When you first enter the game, you will be instructed to point towards your opponent in order to lock your position. It is important to do this correctly
         for the game to work properly.\n\n
-         </string>
+     </string>
 
     <string name="how_to_serve_title">How to serve</string>
     <string name="how_to_serve_content">
@@ -61,17 +60,21 @@
     </string>
 
     <string name="how_to_strike_title">How to strike</string>
-    <string name="how_to_strike_content"></string>
+    <string name="how_to_strike_content">
+        To strike the ball hold the phone as shown in the picture below and move the phone forwards quite fast. You can\'t strike the ball if you move your phone too slow. And if you move your phone too fast you will strike the ball out of bounds and loose that round.\n\n
+        Your phone will vibrate when you perform a correct strike.
+    </string>
 
     <string name="how_to_catch_title">How to catch ball</string>
-    Your opponent have to catch the ball where you struck it. When you or the opponent catches the ball, you need to lock the direction for your next strike within
-    some seconds, otherwise you will lose.
-    <string name="how_to_catch_content"></string>
-    <string name="image">Image</string>
+    <string name="how_to_catch_content">
+        When you need to catch a ball a notification will show on your screen and your phone will do a fast vibration.\n
+        To then catch a ball you need to point your phone towards the degree that shows up in the pop up message on screen when your opponent shot a ball to you.\n
+        If you successfully catch the ball you will get a pop up where you should in a couple of seconds lock in the direction where you wish to return the ball. And after that perform a strike, as shown in previous slide.
+    </string>
 
     <string name="instructions_dialog_title">Instructions</string>
-    <string name="instructions_dialog_message">If you want to delete a game from your history of played games,
+    <string name="instructions_dialog_message">
+        If you want to delete a game from your history of played games,
         you can simply swipe the game to the left or right. If you delete a game in this way, you will not be able to retrieve it back later!
-
     </string>
 </resources>
