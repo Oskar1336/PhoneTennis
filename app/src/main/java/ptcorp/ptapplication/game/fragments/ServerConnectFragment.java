@@ -1,13 +1,11 @@
 package ptcorp.ptapplication.game.fragments;
 
-
 import android.app.Dialog;
 import android.app.Fragment;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +19,11 @@ import java.util.ArrayList;
 import ptcorp.ptapplication.R;
 import ptcorp.ptapplication.bluetooth.bluetoothConnection.BTDevice;
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ServerConnectFragment extends DialogFragment {
-    private static final String TAG = "ServerConnectFragment";
     private ListView mServers;
     private ListAdapter mServersAdapter;
     private ActionProcessButton mCancelBtn;

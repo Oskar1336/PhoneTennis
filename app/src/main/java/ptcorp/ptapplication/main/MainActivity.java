@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
@@ -151,32 +150,18 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         };
     }
 
-    public interface RecyclerViewListener{
-        void removeFromList(int position);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser(); // null if not signed in
-    }
-
     @Override
     protected void onDestroy() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             mAuth.signOut();
         }
-
         super.onDestroy();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult: Går in i onActivityResult" + requestCode);
         if (resultCode == GameActivity.GAME_RESULT_CODE) {
-            Log.d(TAG, "onActivityResult: Lägger till i databas");
             GameScore gameScore = data.getParcelableExtra(GameActivity.GAME_RESULT);
             gDB.addGame(gameScore);
             LeaderboardScore score = new LeaderboardScore();
@@ -236,23 +221,21 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                         if (task.isSuccessful()) {
                             loginFragment.setLoginBtnProgress(100);
                             loginFragment.clearFocus();
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
 
+                            // Sign in success, update UI with the signed-in user's information
                             mHandlerDB = new FirebaseDatabaseHandler(mAuth);
                             mHandlerDB.addOnUpdateListener(MainActivity.this);
                             initCurrentUser();
                             fragmentHolder.setCurrentItem(NAV_HOME);
                             homeFragment.setUsername(mHandlerDB.getUsername());
                             nav.setVisibility(View.VISIBLE);
-                            displayToast("Logged in!");
+                            displayToast(getString(R.string.logged_in));
                         } else {
                             loginFragment.setLoginBtnProgress(-1);
                             new ButtonHandler().execute();
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -342,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.w(TAG, "Sleep thread error", e);
             }
             return null;
         }
@@ -384,8 +367,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         }
 
         @Override
-        public void onPageScrollStateChanged(int state) {
-        }
+        public void onPageScrollStateChanged(int state) { }
     }
-
 }

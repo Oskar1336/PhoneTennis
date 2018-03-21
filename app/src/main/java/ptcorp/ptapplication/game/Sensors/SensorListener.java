@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener;
 
 /**
  * Created by LinusHakansson on 2018-03-06.
+ *
  */
 
 public class SensorListener implements SensorEventListener {

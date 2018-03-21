@@ -41,7 +41,6 @@ public class BluetoothConnectionService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand: Starting service");
         return START_STICKY;
     }
 
@@ -51,16 +50,12 @@ public class BluetoothConnectionService extends Service {
         if (mHostThread != null) mHostThread.stopBtHost();
         if (mClientThread != null) mClientThread.stopBtClient();
         if (mBtGatt != null) mBtGatt.close();
-
-        Log.d(TAG, "onDestroy: On destroy");
-
         super.onDestroy();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind: BluetoothConnectionService");
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         return new BtBinder();
     }
@@ -130,20 +125,6 @@ public class BluetoothConnectionService extends Service {
 
         mClientThread = new BtClientThread(mBtDevice);
         mClientThread.start();
-    }
-
-    /**
-     * Stop connecting to a device.
-     */
-    public void stopClient() {
-        if (mClientThread != null) mClientThread.stopBtClient();
-    }
-
-    /**
-     * Disconnect from the Bluetooth connection.
-     */
-    public void disconnectFromDevice() {
-        mConnectedThread.disconnect();
     }
 
     /**
@@ -310,7 +291,6 @@ public class BluetoothConnectionService extends Service {
 
             while(running) {
                 try {
-                    Log.i(TAG, "Listening for incoming bl");
                     mListener.onMessageReceived(mBtOIS.readObject());
                 } catch (IOException e) {
                     if (running) {
@@ -330,13 +310,12 @@ public class BluetoothConnectionService extends Service {
                 mBtOOS.writeObject(obj);
                 mBtOOS.reset();
             } catch (IOException e) {
-                Log.e(TAG, "Error when sending object", e);
+                Log.w(TAG, "Error when sending object", e);
             }
         }
 
         void disconnect() {
             Log.i(TAG, "Closing bluetooth connected socket");
-
             if (running) {
                 running = false;
                 try {

@@ -9,6 +9,7 @@ import ptcorp.ptapplication.game.enums.GameState;
 
 /**
  * Created by LinusHakansson on 2018-03-09.
+ *
  */
 
 public class InitGame implements Parcelable, Serializable {

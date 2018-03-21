@@ -352,5 +352,4 @@ public class GameFragment extends Fragment{
             super.onCancelled();
         }
     }
-
 }

@@ -22,7 +22,7 @@ import ptcorp.ptapplication.game.GameActivity;
  */
 
 public class BluetoothController{
-    public static final int BLUETOOTH_ENABLE_REQUEST_CODE = 5;
+    private static final int BLUETOOTH_ENABLE_REQUEST_CODE = 5;
     public static final int BLUETOOTH_DISCOVERABLE_REQUEST_CODE = 6;
 
     private static final String TAG = "BluetoothController";
@@ -35,7 +35,6 @@ public class BluetoothController{
     private boolean mBtServiceBound = false;
 
     private final BroadcastReceiver mBtSearchReciever;
-    private boolean mIsSearchingForDevices;
 
     private DeviceSearchListener mListener;
 
@@ -73,6 +72,10 @@ public class BluetoothController{
     public void onDestroy() {
         mActivity.stopService(mBtServiceConnIntent);
 
+    }
+
+    public boolean isBluetoothAvailable() {
+        return mBtAdapter.isEnabled();
     }
 
     public void setSearchListener(DeviceSearchListener listener) {
@@ -128,8 +131,6 @@ public class BluetoothController{
             filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
             filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
             mActivity.registerReceiver(mBtSearchReciever, filter);
-
-            mIsSearchingForDevices = true;
         }
     }
 
@@ -145,7 +146,6 @@ public class BluetoothController{
         } catch (Exception e) {
             Log.i(TAG, "onDestroy: SearchReceiver not registered before");
         }
-        mIsSearchingForDevices = false;
     }
 
     private void checkBTPermissions() {
@@ -204,8 +204,6 @@ public class BluetoothController{
             if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
                 BluetoothDevice dev = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                Log.d(TAG, "onReceive: " + dev.getName() + " / " + dev.getAddress());
-
                 boolean isPhone = true;
                 if (dev.getBluetoothClass() != null) {
                     if (dev.getBluetoothClass().getMajorDeviceClass() != BluetoothClass.Device.Major.PHONE) {
@@ -215,7 +213,6 @@ public class BluetoothController{
                 if (isPhone) {
                     BTDevice btDevice = new BTDevice(
                             intent.getStringExtra(BluetoothDevice.EXTRA_NAME),
-                            intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE),
                             dev
                     );
                     mListener.onDeviceFound(btDevice);
@@ -234,13 +231,8 @@ public class BluetoothController{
 
                 if (btDevice.getAddress().equals(mConnectionService.getSelectedDevice().getAddress())) {
                     if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                        Log.d(TAG, "onReceive: connecting to device");
                         mConnectionService.connectToDevice(btDevice);
                         mActivity.unregisterReceiver(mBtBondReceiver);
-                    } else if (btDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                        Log.d(TAG, "onReceive: Bonding device");
-                    } else if (btDevice.getBondState() == BluetoothDevice.BOND_NONE) {
-                        Log.d(TAG, "onReceive: Bond none");
                     }
                 }
             }
@@ -250,7 +242,6 @@ public class BluetoothController{
     private class BtServiceConnection implements ServiceConnection {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d(TAG, "onServiceConnected: Service connected/bound");
             mConnectionService = ((BluetoothConnectionService.BtBinder)service).getService();
             mBtServiceBound = true;
             mConnectionService.setListener(mActivity);
@@ -258,7 +249,6 @@ public class BluetoothController{
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected: Service unbound");
             mBtServiceBound = false;
         }
     }

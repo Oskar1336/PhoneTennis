@@ -10,6 +10,7 @@ import ptcorp.ptapplication.game.enums.GameWinner;
 
 /**
  * Created by LinusHakansson on 2018-03-01.
+ *
  */
 
 public class RoundResult implements Parcelable, Serializable {

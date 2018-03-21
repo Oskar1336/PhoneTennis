@@ -17,12 +17,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 import ptcorp.ptapplication.R;
@@ -44,6 +44,7 @@ import ptcorp.ptapplication.game.pojos.RoundResult;
 import ptcorp.ptapplication.game.pojos.StrikeInformation;
 import ptcorp.ptapplication.main.MainActivity;
 import ptcorp.ptapplication.main.pojos.GameScore;
+
 
 public class GameActivity extends AppCompatActivity implements ConnectFragment.ConnectFragmentListener, DeviceSearchListener, BtServiceListener,
         ServerConnectFragment.DeviceListListener, SensorListener.SensorResult, GameFragment.GameListener {
@@ -71,7 +72,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private BluetoothController mBtController;
     private GameFragment mGameFragment;
 
-    private GameState mOtherDeviceState;
     private GameState mThisDeviceState;
     private boolean mIsHost = false;
     private GameSettings mGameSettings;
@@ -94,10 +94,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private float[] mOrientation = new float[3];
     private float mCurrentDegree;
 
-    private PlayerPositions playerPositions;
     private RoundResult mRoundResult;
     private float degree;
-    private ImageView mCompass;
     private boolean mTimeToStrike;
     private Handler uiHandler;
     private float strikeDirection;
@@ -118,7 +116,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mBtController = new BluetoothController(this);
         mBtController.setSearchListener(this);
         uiHandler = new Handler();
-        mCompass = findViewById(R.id.ivCompass);
         v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         setupSensors();
     }
@@ -173,8 +170,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE &&
-                resultCode == 200) {
+        if (requestCode == BluetoothController.BLUETOOTH_DISCOVERABLE_REQUEST_CODE && resultCode == 200) {
             mBtController.startHostThread();
 
             loadingFragment = new LoadingFragment();
@@ -245,9 +241,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     private void startGame() {
         Random rnd = new Random();
-//        int whoStarts = rnd.nextInt(2);
-        int whoStarts = 1; // TODO: 2018-03-07 Change to random serve
-
+        int whoStarts = rnd.nextInt(2);
         if (whoStarts == GameActivity.HOST_STARTS) {
             mGameSettings = new GameSettings(GameActivity.HOST_STARTS);
         } else {
@@ -287,7 +281,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     finish();
-                    // TODO: 2018-03-08 Send score to activity
                 }
             });
             builder.create().show();
@@ -304,11 +297,24 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     finish();
-                    // TODO: 2018-03-08 Send Score to activity
                 }
             });
             builder.create().show();
         }
+    }
+
+    private void showBluetoothNotAvailableError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.bluetooth_error);
+        builder.setMessage(R.string.bluetooth_not_activated);
+        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        builder.create().show();
     }
 
     //Loser sends this
@@ -342,7 +348,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                  }
             }), 2000);
         }
-        Log.d(TAG, "outgoing: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
         mBtController.write(mRoundResult);
     }
 
@@ -381,14 +386,13 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onBluetoothDisconnected(Exception e) {
         // TODO: 2018-03-01 Notify user and give choice of either reconnect or just go back to MainActivity
-        Log.d(TAG, "onBluetoothDisconnected: Disconnected");
+        Log.i(TAG, "onBluetoothDisconnected: Disconnected");
     }
 
     @Override
     public void onMessageReceived(Object obj) {
-        Log.d(TAG, "onMessageReceived: " + obj.getClass().getName());
         if (obj instanceof InitGame) {
-            mOtherDeviceState = ((InitGame) obj).getGameState();
+            GameState mOtherDeviceState = ((InitGame) obj).getGameState();
             opponentUsername = ((InitGame) obj).getOpponentName();
             if (GameState.DEVICE_READY.equals(mOtherDeviceState) &&
                     GameState.DEVICE_READY.equals(mThisDeviceState)) {
@@ -420,7 +424,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         } else if(obj instanceof StrikeInformation){
             mGameFragment.hideWaitingForServe();
             StrikeInformation strikeInformation = (StrikeInformation)obj;
-            Log.d(TAG, "onMessageReceived: TIME IN AIR: " + strikeInformation.getTimeInAir());
             float opponentStrike = strikeInformation.getDirection();
             moveToPosition = degree;
             moveToPosition -= opponentStrike;
@@ -446,7 +449,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }), (long) (strikeInformation.getTimeInAir() * 1000));
         } else if (obj instanceof RoundResult){
             mRoundResult = (RoundResult)obj;
-            Log.d(TAG, "incoming: host: " + mRoundResult.getHostPoints() + " client: " + mRoundResult.getClientPoints());
             mGameFragment.updateClientPoints(mRoundResult.getClientPoints());
             mGameFragment.updateHostPoints(mRoundResult.getHostPoints());
 
@@ -481,7 +483,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 showHostNotStartedError();
             }
         });
-        // TODO: 2018-03-07 update scores before quitting
     }
 
     @Override
@@ -490,15 +491,17 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             @Override
             public void run() {
                 mGameFragment.hideWaitingForServe();
-                if (!mIsHost) {
-                    showHostNotStartedError();
+                if (mBtController.isBluetoothAvailable()) {
+                    if (!mIsHost) {
+                        showHostNotStartedError();
+                    } else {
+                        showNotConnectedError();
+                    }
                 } else {
-                    showNotConnectedError();
+                    showBluetoothNotAvailableError();
                 }
             }
         });
-
-        // TODO: 2018-03-07 update scores before quitting
     }
 
     @Override
@@ -559,7 +562,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void onLock() {
-        playerPositions = new PlayerPositions();
+        PlayerPositions playerPositions = new PlayerPositions();
         degree = 0;
         for(int i = 0; i<5; i++){
             degree += mCurrentDegree;
@@ -578,7 +581,6 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     @Override
     public void onStrike() {
         mTimeToStrike = true;
-        // TODO: 2018-03-09 Calculate degree correct
         strikeDirection = mCurrentDegree - degree;
     }
 
@@ -589,11 +591,11 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void onGameFinished() {
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
         Date today = Calendar.getInstance().getTime();
         String stringDate = df.format(today);
         GameScore gameScore;
-        Log.d(TAG, "onGameFinished: Jag " + username + "Opponent " + opponentUsername);
+
         if (mIsHost) {
             gameScore = new GameScore(username, opponentUsername, stringDate, mRoundResult.getHostPoints(), mRoundResult.getClientPoints());
         }else{
@@ -622,14 +624,10 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             username = getIntent().getStringExtra(MainActivity.USERNAME);
             final InitGame initGame = new InitGame(GameState.DEVICE_READY, username);
 
-
-
             Handler loadingTimer = new Handler();
             loadingTimer.postDelayed((handlerRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "run: " + mThisDeviceState.name());
-//                    mBtController.write(GameState.DEVICE_READY);
                     mBtController.write(initGame);
                 }
             }), 4000);

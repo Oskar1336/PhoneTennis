@@ -77,4 +77,8 @@
         If you want to delete a game from your history of played games,
         you can simply swipe the game to the left or right. If you delete a game in this way, you will not be able to retrieve it back later!
     </string>
+    <string name="bluetooth_not_activated">Bluetooth is not activated!</string>
+    <string name="logged_in">Logged in!</string>
+    <string name="auth_failed">Authentication failed.</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

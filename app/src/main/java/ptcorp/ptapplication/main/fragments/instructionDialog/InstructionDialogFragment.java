@@ -28,13 +28,8 @@ public class InstructionDialogFragment extends DialogFragment {
 
     private final short INSTRUCTION_AMOUNT = 5;
 
-    private DialogViewPager mVpInstructions;
-    private ActionProcessButton mApbNext, mApbPrev;
     private DottedProgressBar mDpbProgress;
 
-    private View mView;
-
-    private short mCurVpPos;
     private int mLastPosition;
 
     private InstructionFragment mAboutFragment;
@@ -50,14 +45,14 @@ public class InstructionDialogFragment extends DialogFragment {
         if (d != null) {
             int w = ViewGroup.LayoutParams.MATCH_PARENT;
             int h = ViewGroup.LayoutParams.MATCH_PARENT;
-            d.getWindow().setLayout(w, h);
+            if (d.getWindow() != null)
+                d.getWindow().setLayout(w, h);
         }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCurVpPos = 0;
         mLastPosition = 0;
 
         mAboutFragment = new InstructionFragment();
@@ -76,7 +71,6 @@ public class InstructionDialogFragment extends DialogFragment {
         mStartingGameFragment = new InstructionFragment();
         mStartingGameFragment.setTitle(R.string.starting_game_title);
         mStartingGameFragment.setText(R.string.starting_game_content);
-//        mStartingGameFragment.setImage(R.drawable.start_point);
 
         mServeFragment = new InstructionFragment();
         mServeFragment.setTitle(R.string.how_to_serve_title);
@@ -87,12 +81,10 @@ public class InstructionDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_dialog_how_to_play, container, false);
+        View mView = inflater.inflate(R.layout.fragment_dialog_how_to_play, container, false);
 
         mDpbProgress = mView.findViewById(R.id.dpb_progress);
-        mVpInstructions = mView.findViewById(R.id.vp_instructions);
-        mApbNext = mView.findViewById(R.id.btn_next);
-        mApbPrev = mView.findViewById(R.id.btn_previous);
+        DialogViewPager mVpInstructions = mView.findViewById(R.id.vp_instructions);
 
         final InstructionPager ip = new InstructionPager(getChildFragmentManager());
 
@@ -107,32 +99,10 @@ public class InstructionDialogFragment extends DialogFragment {
             public void onPageSelected(int position) {
                 if (position > mLastPosition) {
                     mDpbProgress.incDotPosition();
-                    mCurVpPos++;
                 } else {
                     mDpbProgress.decDotPosition();
-                    mCurVpPos--;
                 }
                 mLastPosition = position;
-            }
-        });
-
-        mApbNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurVpPos < ip.getCount()) {
-                    mCurVpPos++;
-                    mVpInstructions.setCurrentItem(mCurVpPos);
-                }
-            }
-        });
-
-        mApbPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurVpPos > 0) {
-                    mCurVpPos--;
-                    mVpInstructions.setCurrentItem(mCurVpPos);
-                }
             }
         });
 

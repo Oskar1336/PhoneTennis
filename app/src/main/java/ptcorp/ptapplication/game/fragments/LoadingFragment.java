@@ -15,6 +15,7 @@ import ptcorp.ptapplication.R;
 
 /**
  * Created by LinusHakansson on 2018-03-01.
+ *
  */
 
 public class LoadingFragment extends DialogFragment {

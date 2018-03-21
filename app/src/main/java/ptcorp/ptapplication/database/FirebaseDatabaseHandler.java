@@ -10,23 +10,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import ptcorp.ptapplication.main.MainActivity;
 import ptcorp.ptapplication.main.pojos.LeaderboardScore;
 
 
 /**
  * Created by LinusHakansson on 2018-02-21.
+ *
  */
 
 public class FirebaseDatabaseHandler {
     private static final String TAG = "FirebaseDatabaseHandler";
-    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseRef;
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseUser user;
     private String userID;
     private HashMap<String,LeaderboardScore> mScoreList;
@@ -34,19 +30,15 @@ public class FirebaseDatabaseHandler {
     private OnDatabaseUpdateListener mListener;
 
     public FirebaseDatabaseHandler(FirebaseAuth mFirebaseAuth) {
-        this.mFirebaseAuth = mFirebaseAuth;
         user = mFirebaseAuth.getCurrentUser();
-        userID = user.getUid();
+        if (user != null) userID = user.getUid();
         mScoreList = new HashMap<>();
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mFirebaseDatabase.getReference();
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                //TODO: Update recyclerView adapter from here
                 showData(dataSnapshot);
             }
 
@@ -65,17 +57,14 @@ public class FirebaseDatabaseHandler {
 
     public void updateScoreForUser(LeaderboardScore newScore) {
         LeaderboardScore score;
-        Log.d(TAG, "updateScoreForUser: usrId" + userID);
         if (mScoreList.containsKey(userID)) {
             score = mScoreList.get(userID);
-            Log.d(TAG, "updateScoreForUser: " + score.getUsername());
             if (newScore.getWonGames() == 1) {
                 score.setWonGames(score.getWonGames() + 1);
             } else {
                 score.setLostGames(score.getLostGames() + 1);
             }
         } else{
-            Log.d(TAG, "updateScoreForUser: new user " + getUsername());
             score = new LeaderboardScore();
             score.setUsername(getUsername());
             if(newScore.getWonGames() == 1){
@@ -84,7 +73,6 @@ public class FirebaseDatabaseHandler {
                 score.setLostGames(1);
             }
         }
-        Log.d(TAG, "updateScoreForUser: " + score.getUsername());
         saveScore(score);
     }
 
@@ -92,13 +80,10 @@ public class FirebaseDatabaseHandler {
     private void showData(DataSnapshot dataSnapshot) {
         for (DataSnapshot dsScore : dataSnapshot.child("Leaderboard").child("Scores").getChildren()) {
             LeaderboardScore leaderboardScore = new LeaderboardScore();
-            Log.d(TAG, "showData: " + dsScore.toString());
             leaderboardScore.setUsername(dsScore.getValue(LeaderboardScore.class).getUsername());
             leaderboardScore.setWonGames(dsScore.getValue(LeaderboardScore.class).getWonGames());
             leaderboardScore.setLostGames(dsScore.getValue(LeaderboardScore.class).getLostGames());
-//            dataSnapshot.child("Leaderboard").child("Scores")
             mScoreList.put(dsScore.getKey() ,leaderboardScore);
-
         }
 
         if(mListener != null)

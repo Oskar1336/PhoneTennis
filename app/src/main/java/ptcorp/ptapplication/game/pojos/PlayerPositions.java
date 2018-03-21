@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * Created by LinusHakansson on 2018-03-06.
+ *
  */
 
 public class PlayerPositions implements Parcelable, Serializable {

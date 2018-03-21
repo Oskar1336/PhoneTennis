@@ -61,7 +61,7 @@ public class GamesFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.instructions_dialog_title)
                 .setMessage(R.string.instructions_dialog_message)
-                .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getText(R.string.dismiss), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
