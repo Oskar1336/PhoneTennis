@@ -123,10 +123,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <ImageView
-            android:id="@+id/ivWinRate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_winrate" />
+                android:id="@+id/ivWinRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_winrate" />
 
             <TextView
                 android:id="@+id/tvMyWinrate"
@@ -137,142 +137,4 @@
                 android:textSize="30sp" />
         </TableRow>
     </TableLayout>
-
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/llPlayer"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="32dp"-->
-        <!--fbutton:layout_constraintEnd_toEndOf="parent"-->
-        <!--fbutton:layout_constraintStart_toStartOf="parent"-->
-        <!--fbutton:layout_constraintTop_toBottomOf="@id/btnHowToPlay">-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/ivPlayer"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:src="@drawable/icons8_tennis_player_48" />-->
-
-
-        <!--<TextView-->
-            <!--android:id="@+id/tvPlayerName"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="2"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:layout_weight="2"-->
-            <!--android:textSize="30sp" />-->
-    <!--</LinearLayout>-->
-
-
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/llWins"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--fbutton:layout_constraintEnd_toEndOf="parent"-->
-        <!--fbutton:layout_constraintStart_toStartOf="parent"-->
-        <!--fbutton:layout_constraintTop_toBottomOf="@id/llPlayer">-->
-        <!--<ImageView-->
-            <!--android:id="@+id/ivWins"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="1"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:layout_weight="3"-->
-            <!--android:src="@drawable/ic_win"-->
-            <!--fbutton:layout_constraintBottom_toTopOf="@+id/ivLoses"-->
-            <!--fbutton:layout_constraintEnd_toStartOf="@+id/guideline" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/tvMyWins"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="2"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:layout_weight="2"-->
-            <!--android:textSize="30sp"-->
-            <!--fbutton:layout_constraintBottom_toTopOf="@+id/ivLoses"-->
-            <!--fbutton:layout_constraintStart_toStartOf="@+id/guideline"-->
-            <!--fbutton:layout_constraintTop_toTopOf="@+id/ivWins" />-->
-    <!--</LinearLayout>-->
-
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/llLosses"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--fbutton:layout_constraintEnd_toEndOf="parent"-->
-        <!--fbutton:layout_constraintStart_toStartOf="parent"-->
-        <!--fbutton:layout_constraintTop_toBottomOf="@id/llWins">-->
-        <!--<ImageView-->
-            <!--android:id="@+id/ivLoses"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="1"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:layout_weight="3"-->
-            <!--android:src="@drawable/ic_skull"-->
-            <!--fbutton:layout_constraintBottom_toTopOf="@+id/ivWinRate"-->
-            <!--fbutton:layout_constraintEnd_toStartOf="@+id/guideline" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/tvMyLosses"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="2"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:layout_weight="2"-->
-            <!--android:textSize="30sp"-->
-            <!--fbutton:layout_constraintBottom_toBottomOf="@+id/ivLoses"-->
-            <!--fbutton:layout_constraintStart_toEndOf="@+id/ivLoses"-->
-            <!--fbutton:layout_constraintTop_toTopOf="@+id/ivLoses" />-->
-    <!--</LinearLayout>-->
-
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/llWinrate"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--fbutton:layout_constraintEnd_toEndOf="parent"-->
-        <!--fbutton:layout_constraintStart_toStartOf="parent"-->
-        <!--fbutton:layout_constraintTop_toBottomOf="@id/llLosses">-->
-        <!--<ImageView-->
-            <!--android:id="@+id/ivWinRate"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="1"-->
-            <!--android:layout_weight="3"-->
-            <!--android:src="@drawable/ic_winrate"-->
-            <!--fbutton:layout_constraintBottom_toBottomOf="parent"-->
-            <!--fbutton:layout_constraintStart_toStartOf="@+id/btnPlay"-->
-            <!--fbutton:layout_constraintTop_toTopOf="parent"-->
-            <!--fbutton:layout_constraintVertical_bias="0.965" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/tvMyWinrate"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="2"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:layout_weight="3"-->
-            <!--android:textSize="30sp"-->
-            <!--fbutton:layout_constraintBottom_toBottomOf="@+id/ivWinRate"-->
-            <!--fbutton:layout_constraintStart_toEndOf="@+id/ivWinRate"-->
-            <!--fbutton:layout_constraintTop_toTopOf="@+id/ivWinRate" />-->
-    <!--</LinearLayout>-->
-
 </android.support.constraint.ConstraintLayout>
