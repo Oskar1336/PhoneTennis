@@ -29,8 +29,8 @@
     <string name="waiting_for_serve">Waiting for your opponent to serve</string>
     <string name="instructional_image">Instructional image</string>
     <string name="no_instruction">No instruction</string>
-    <string name="how_to_play">How to play</string>
     <string name="image">Image</string>
+    <string name="how_to_play">How to play</string>
 
     <string name="about_the_game_title">About the game</string>
     <string name="about_the_game_content">

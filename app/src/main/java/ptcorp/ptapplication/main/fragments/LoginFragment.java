@@ -53,6 +53,19 @@ public class LoginFragment extends Fragment {
         mtf_username = view.findViewById(R.id.mtf_username);
         mtf_password = view.findViewById(R.id.mtf_password);
 
+        mtf_username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mtf_username.isExpanded()) {
+                    mtf_username.reduce();
+                    mtf_password.reduce();
+                } else {
+                    mtf_username.expand();
+                    mtf_password.expand();
+                }
+            }
+        });
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

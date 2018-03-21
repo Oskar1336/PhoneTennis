@@ -40,7 +40,7 @@
         android:fontFamily="@font/bungee_shade"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:text="How to play"
+        android:text="@string/how_to_play"
         android:textColor="#fff"
         android:textSize="24sp"
 
@@ -53,6 +53,27 @@
         fbutton:shadowColor="@color/fbutton_default_shadow_color"
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="3dp" />
+
+    <!--<TableLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<TableRow-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <!--<TableRow-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <!--<TableRow-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <!--<TableRow-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+    <!--</TableLayout>-->
 
 
     <LinearLayout
