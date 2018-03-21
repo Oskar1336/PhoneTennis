@@ -100,6 +100,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
     private Handler uiHandler;
     private float strikeDirection;
     private float moveToPosition;
+    private boolean mGameStarted;
 
     private Runnable handlerRunnable;
 
@@ -111,6 +112,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
         mFragmentManager = getSupportFragmentManager();
         setConnectFragment();
 
+        mGameStarted = false;
         mRoundResult = new RoundResult();
 
         mBtController = new BluetoothController(this);
@@ -156,15 +158,17 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
     @Override
     public void onBackPressed() {
-        if(mIsHost && !mRoundResult.isGameOver()){
-            mRoundResult.setClientWinner();
-            mGameWinner = GameWinner.CLIENTWON;
-        } else if(!mIsHost && !mRoundResult.isGameOver()){
-            mRoundResult.setHostWinner();
-            mGameWinner = GameWinner.HOSTWON;
+        if (mGameStarted) {
+            if(mIsHost && !mRoundResult.isGameOver()){
+                mRoundResult.setClientWinner();
+                mGameWinner = GameWinner.CLIENTWON;
+            } else if(!mIsHost && !mRoundResult.isGameOver()){
+                mRoundResult.setHostWinner();
+                mGameWinner = GameWinner.HOSTWON;
+            }
+            mBtController.write(mRoundResult);
+            this.onGameFinished();
         }
-        mBtController.write(mRoundResult);
-        this.onGameFinished();
         super.onBackPressed();
     }
 
@@ -421,6 +425,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     mGameFragment.hideInitGame();
                     mGameFragment.lockOpponentDirectionDialog();
                 }
+            mGameStarted = true;
         } else if(obj instanceof StrikeInformation){
             mGameFragment.hideWaitingForServe();
             StrikeInformation strikeInformation = (StrikeInformation)obj;
