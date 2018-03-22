@@ -230,14 +230,12 @@ public class BluetoothController{
     private class BondStateReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "onReceive: BondState " + intent.getAction());
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent.getAction())) {
                 BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (btDevice.getAddress().equals(mConnectionService.getSelectedDevice().getAddress())) {
                     if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                         mConnectionService.connectToDevice(btDevice);
-                        Log.d(TAG, "onReceive: unregister receiver");
                         mActivity.unregisterReceiver(mBtBondReceiver);
                     }
                 }
