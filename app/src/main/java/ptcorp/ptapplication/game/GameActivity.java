@@ -184,7 +184,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                     mBtController.stopHostThread();
                 }
             });
-            loadingFragment.setTitle("Waiting for opponent");
+            loadingFragment.setTitle(getString(R.string.waiting_for_opponent));
             loadingFragment.setCancelable(false);
             loadingFragment.show(mFragmentManager, "loadingFragment");
         } else {
@@ -343,7 +343,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             }
             mGameFragment.showMatchResult(message);
         } else{
-            mGameFragment.showRoundMessage("You lost the point!");
+            mGameFragment.showRoundMessage(getString(R.string.you_lost_the_point));
             uiHandler.postDelayed((handlerRunnable =new Runnable() {
                  @Override
                  public void run() {
@@ -428,6 +428,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             mGameStarted = true;
         } else if(obj instanceof StrikeInformation){
             mGameFragment.hideWaitingForServe();
+
             StrikeInformation strikeInformation = (StrikeInformation)obj;
             float opponentStrike = strikeInformation.getDirection();
             moveToPosition = degree;
@@ -435,12 +436,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
 
             v.vibrate(vibratePattern,-1);
 
-            if(opponentStrike < 0){
-                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
-            } else if(opponentStrike > 0){
-                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
-            } else{
-                mGameFragment.showNewDegree("Your opponent shot right at you!");
+            if(opponentStrike < 0) {
+//                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
+                mGameFragment.showNewDegree(getString(R.string.shot_to_your_left, Math.abs(opponentStrike)));
+            } else if(opponentStrike > 0) {
+//                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
+                mGameFragment.showNewDegree(getString(R.string.shot_to_your_right, Math.abs(opponentStrike)));
+            } else {
+                mGameFragment.showNewDegree(getString(R.string.shot_at_you));
             }
             uiHandler.postDelayed((handlerRunnable = new Runnable() {
                 @Override
@@ -468,14 +471,14 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                 }
                 mGameFragment.showMatchResult(message);
             }else{
-                mGameFragment.showRoundMessage("You won the ball!");
+                mGameFragment.showRoundMessage(getString(R.string.you_won_the_ball));
                 uiHandler.postDelayed((handlerRunnable = new Runnable() {
                     @Override
                     public void run() {
                         mGameFragment.dismissRoundMessage();
                         mGameFragment.showWaitingForServeDialog();
                     }
-                }),2000);
+                }),1500);
             }
         }
     }

@@ -81,4 +81,10 @@
     <string name="logged_in">Logged in!</string>
     <string name="auth_failed">Authentication failed.</string>
     <string name="dismiss">Dismiss</string>
+    <string name="you_lost_the_point">You lost the point!</string>
+    <string name="shot_to_your_right">Your opponent shot %d to the right!</string>
+    <string name="shot_to_your_left">Your opponent shot %d to the left!</string>
+    <string name="shot_at_you">Your opponent shot right at you!</string>
+    <string name="you_won_the_ball">You won the ball!</string>
+    <string name="waiting_for_opponent">Waiting for opponent</string>
 </resources>
