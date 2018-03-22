@@ -234,7 +234,7 @@ public class BluetoothController{
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent.getAction())) {
                 BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                if (btDevice.getAddress().equals(mConnectionService.getSelectedDevice().getAddress())) {
+                if (btDevice != null && btDevice.getAddress().equals(mConnectionService.getSelectedDevice().getAddress())) {
                     if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                         mConnectionService.connectToDevice(btDevice);
                         Log.d(TAG, "onReceive: unregister receiver");
