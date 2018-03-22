@@ -437,10 +437,8 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
             v.vibrate(vibratePattern,-1);
 
             if(opponentStrike < 0) {
-//                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the left");
                 mGameFragment.showNewDegree(getString(R.string.shot_to_your_left, Math.abs(opponentStrike)));
             } else if(opponentStrike > 0) {
-//                mGameFragment.showNewDegree("Your opponent shot " + Math.abs(opponentStrike) + " to the right");
                 mGameFragment.showNewDegree(getString(R.string.shot_to_your_right, Math.abs(opponentStrike)));
             } else {
                 mGameFragment.showNewDegree(getString(R.string.shot_at_you));

@@ -59,10 +59,6 @@ public class BluetoothController{
             mBtServiceConnection = new BtServiceConnection();
             mActivity.bindService(mBtServiceConnIntent, mBtServiceConnection, Context.BIND_AUTO_CREATE);
         }
-
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-//        mActivity.registerReceiver(mBtBondReceiver, filter);
     }
 
     public void onPause() {
@@ -75,6 +71,8 @@ public class BluetoothController{
 
     public void onDestroy() {
         mActivity.stopService(mBtServiceConnIntent);
+        mActivity.unregisterReceiver(mBtSearchReciever);
+        mActivity.unregisterReceiver(mBtBondReceiver);
     }
 
     public boolean isBluetoothAvailable() {
