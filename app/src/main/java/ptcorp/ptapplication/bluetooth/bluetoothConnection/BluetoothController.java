@@ -60,9 +60,9 @@ public class BluetoothController{
             mActivity.bindService(mBtServiceConnIntent, mBtServiceConnection, Context.BIND_AUTO_CREATE);
         }
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        mActivity.registerReceiver(mBtBondReceiver, filter);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+//        mActivity.registerReceiver(mBtBondReceiver, filter);
     }
 
     public void onPause() {
@@ -70,13 +70,11 @@ public class BluetoothController{
             mActivity.unbindService(mBtServiceConnection);
             mBtServiceBound = false;
         }
-        mActivity.unregisterReceiver(mBtBondReceiver);
         stopSearchingForDevices();
     }
 
     public void onDestroy() {
         mActivity.stopService(mBtServiceConnIntent);
-
     }
 
     public boolean isBluetoothAvailable() {
@@ -180,9 +178,10 @@ public class BluetoothController{
         if (mBtAdapter.getBondedDevices().contains(device)) {
             mConnectionService.connectToDevice(device);
         } else {
-//            IntentFilter filter = new IntentFilter();
-//            filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-//            mActivity.registerReceiver(mBtBondReceiver, filter);
+            IntentFilter bondfilter = new IntentFilter();
+            bondfilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            mActivity.registerReceiver(mBtBondReceiver, bondfilter);
+
             mConnectionService.pairDevice(device);
         }
     }
@@ -231,13 +230,15 @@ public class BluetoothController{
     private class BondStateReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive: BondState " + intent.getAction());
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(intent.getAction())) {
                 BluetoothDevice btDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (btDevice.getAddress().equals(mConnectionService.getSelectedDevice().getAddress())) {
                     if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                         mConnectionService.connectToDevice(btDevice);
-//                        mActivity.unregisterReceiver(mBtBondReceiver);
+                        Log.d(TAG, "onReceive: unregister receiver");
+                        mActivity.unregisterReceiver(mBtBondReceiver);
                     }
                 }
             }
