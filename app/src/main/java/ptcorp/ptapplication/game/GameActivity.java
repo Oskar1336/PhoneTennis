@@ -350,7 +350,7 @@ public class GameActivity extends AppCompatActivity implements ConnectFragment.C
                      mGameFragment.dismissRoundMessage();
                      mGameFragment.serveDialog();
                  }
-            }), 2000);
+            }), 2500);
         }
         mBtController.write(mRoundResult);
     }
