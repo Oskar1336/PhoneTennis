@@ -110,6 +110,7 @@ public class BluetoothConnectionService extends Service {
      */
     public void pairDevice(BluetoothDevice device) {
         if (!mConnected) {
+            mBtDevice = device;
             device.createBond();
         }
     }
